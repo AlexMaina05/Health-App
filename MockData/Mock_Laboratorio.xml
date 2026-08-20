@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" classCode="DOCCLIN" moodCode="EVN">
+    <realmCode code="IT"/>
+    <typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040"/>
+    <id root="2.16.840.1.113883.2.9.2.130.4.1" extension="LAB-MOCK-2026-001"/>
+    <code code="11502-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Referto di Laboratorio"/>
+    <title>Esami Ematochimici di Routine</title>
+    <effectiveTime value="20260821083000"/>
+    <confidentialityCode code="N" codeSystem="2.16.840.1.113883.5.25"/>
+    <languageCode code="it-IT"/>
+
+    <!-- Paziente / Intestatario FSE -->
+    <recordTarget>
+        <patientRole>
+            <id root="2.16.840.1.113883.2.9.4.3.2" extension="RSSMRA85M01H501Z"/>
+            <patient>
+                <name>
+                    <family>Rossi</family>
+                    <given>Mario</given>
+                </name>
+                <administrativeGenderCode code="M" codeSystem="2.16.840.1.113883.5.1"/>
+                <birthTime value="19850801"/>
+            </patient>
+        </patientRole>
+    </recordTarget>
+
+    <component>
+        <structuredBody>
+            <component>
+                <section>
+                    <code code="18719-5" codeSystem="2.16.840.1.113883.6.1" displayName="Chimica Clinica"/>
+                    <title>Esami di Laboratorio</title>
+                    <entry>
+                        <!-- Glicemia: LOINC 15074-8 (Quantità Pura PQ) -->
+                        <observation classCode="OBS" moodCode="EVN">
+                            <code code="15074-8" codeSystem="2.16.840.1.113883.6.1" displayName="Glucosio basale"/>
+                            <effectiveTime value="20260821083000"/>
+                            <value xsi:type="PQ" value="94.5" unit="mg/dL"/>
+                            <referenceRange>
+                                <observationRange>
+                                    <value xsi:type="IVL_PQ">
+                                        <low value="70.0" unit="mg/dL"/>
+                                        <high value="99.0" unit="mg/dL"/>
+                                    </value>
+                                </observationRange>
+                            </referenceRange>
+                        </observation>
+                    </entry>
+                    <entry>
+                        <!-- Colesterolo Totale: LOINC 2093-3 (Valore Fuori Range per test UI) -->
+                        <observation classCode="OBS" moodCode="EVN">
+                            <code code="2093-3" codeSystem="2.16.840.1.113883.6.1" displayName="Colesterolo Totale"/>
+                            <effectiveTime value="20260821083000"/>
+                            <value xsi:type="PQ" value="215.0" unit="mg/dL"/>
+                            <referenceRange>
+                                <observationRange>
+                                    <value xsi:type="IVL_PQ">
+                                        <low value="120.0" unit="mg/dL"/>
+                                        <high value="200.0" unit="mg/dL"/>
+                                    </value>
+                                </observationRange>
+                            </referenceRange>
+                        </observation>
+                    </entry>
+                    <entry>
+                        <!-- Pressione Arteriosa String-Fallback: LOINC 8480-6 (Composito "125/80") -->
+                        <observation classCode="OBS" moodCode="EVN">
+                            <code code="8480-6" codeSystem="2.16.840.1.113883.6.1" displayName="Pressione Arteriosa"/>
+                            <effectiveTime value="20260821083000"/>
+                            <value xsi:type="ST" value="125/80"/>
+                        </observation>
+                    </entry>
+                    <entry>
+                        <!-- Parametro non mappabile su grafici Salute (Skipped Code): LOINC 777-3 Piastrine -->
+                        <observation classCode="OBS" moodCode="EVN">
+                            <code code="777-3" codeSystem="2.16.840.1.113883.6.1" displayName="Piastrine"/>
+                            <effectiveTime value="20260821083000"/>
+                            <value xsi:type="PQ" value="240" unit="10*3/uL"/>
+                            <referenceRange>
+                                <observationRange>
+                                    <value xsi:type="IVL_PQ">
+                                        <low value="150" unit="10*3/uL"/>
+                                        <high value="400" unit="10*3/uL"/>
+                                    </value>
+                                </observationRange>
+                            </referenceRange>
+                        </observation>
+                    </entry>
+                </section>
+            </component>
+        </structuredBody>
+    </component>
+</ClinicalDocument>
