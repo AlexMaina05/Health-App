@@ -24,7 +24,7 @@ It seamlessly extracts HL7 CDA R2 XML payloads embedded within FSE PDF/A-3 repor
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/RosettaHealth.git
+   git clone https://github.com/AlexMaina05/RosettaHealth.git
    ```
 2. **Open in Xcode:**
    Drag the `Sources` package into a new iOS App project, or open the Swift Package directly.
