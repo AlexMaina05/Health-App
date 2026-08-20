@@ -41,7 +41,7 @@ RosettaHealth employs a **Producer-Consumer IPC pattern** to navigate iOS sandbo
 1. **Producer (Share Extension)** parses the PDF securely and writes a `PendingFHIR_*.json` bundle into the shared App Group container.
 2. **Consumer (AppViewModel)** detects the pending bundle when the main app returns to the foreground (`.scenePhase`), processes the ingestion into HealthKit, and atomically removes the file.
 
-For deeper architectural details, refer to the [Technical Design Document](Technical_Design_Document_v2.md).
+For deeper architectural details, refer to the [Technical Design Document](Technical_Design_Document_v3.md).
 
 ## License 📄
 
