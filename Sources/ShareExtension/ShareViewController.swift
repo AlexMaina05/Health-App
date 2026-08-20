@@ -24,7 +24,21 @@ final class ShareViewController: UIViewController {
                     return
                 }
                 
+                // Copia sincrona: salva il file prima che il blocco di completamento termini
+                // iOS distrugge fileURL non appena si esce da questa closure!
+                let safeURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".pdf")
+                do {
+                    try FileManager.default.copyItem(at: fileURL, to: safeURL)
+                    // GDPR Compliance: Forzatura crittografia hardware AES-256
+                    try FileManager.default.setAttributes([.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], ofItemAtPath: safeURL.path)
+                } catch {
+                    self?.extensionContext?.completeRequest(returningItems: nil)
+                    return
+                }
+                
                 Task {
+                    defer { try? FileManager.default.removeItem(at: safeURL) }
+                    
                     do {
                         guard let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.dev.alexmaina.rosettahealth") else {
                             throw RosettaError.appGroupContainerUnavailable
@@ -32,26 +46,27 @@ final class ShareViewController: UIViewController {
                         
                         do {
                             // Tentativo di estrazione XML pura
-                            let xmlData = try PDFEmbeddedAttachmentExtractor.extractXML(from: fileURL)
+                            let xmlData = try PDFEmbeddedAttachmentExtractor.extractXML(from: safeURL)
                             let fileName = "PendingCDA_\(UUID().uuidString).xml"
                             let destURL = groupURL.appendingPathComponent(fileName)
-                            try xmlData.write(to: destURL)
+                            try xmlData.write(to: destURL, options: .completeFileProtectionUntilFirstUserAuthentication)
                         } catch RosettaError.noEmbeddedXMLFound {
                             // Fallback: è un PDF raster, lo copiamo per l'OCR nell'app principale
                             let fileName = "PendingPDF_\(UUID().uuidString).pdf"
                             let destURL = groupURL.appendingPathComponent(fileName)
-                            try FileManager.default.copyItem(at: fileURL, to: destURL)
+                            try FileManager.default.copyItem(at: safeURL, to: destURL)
+                            try FileManager.default.setAttributes([.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], ofItemAtPath: destURL.path)
                         }
                         
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
                         }
                     } catch let error as RosettaError {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.extensionContext?.cancelRequest(withError: error)
                         }
                     } catch {
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             let genericError = NSError(domain: "RosettaHealth", code: -1, userInfo: [NSLocalizedDescriptionKey: error.localizedDescription])
                             self.extensionContext?.cancelRequest(withError: genericError)
                         }

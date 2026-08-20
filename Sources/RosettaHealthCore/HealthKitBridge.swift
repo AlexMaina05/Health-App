@@ -113,17 +113,39 @@ public final class HealthKitBridge {
             if case .observation(let obs) = entry.resource {
                 guard let coding = obs.code.coding.first,
                       let metric = loincToHKMap[coding.code],
-                      let quantity = obs.valueQuantity,
                       let sampleType = HKQuantityType.quantityType(forIdentifier: metric.type) else {
                     skipped.append(obs)
                     continue
                 }
                 
-                let rawValue = quantity.value
-                let normalizedValue = metric.conversion?(rawValue, quantity.unit) ?? rawValue
-                let date = isoFormatter.date(from: obs.effectiveDateTime) ?? Date()
+                var finalValue: Double? = nil
                 
-                let hkQuantity = HKQuantity(unit: metric.defaultUnit, doubleValue: normalizedValue)
+                if let quantity = obs.valueQuantity {
+                    finalValue = metric.conversion?(quantity.value, quantity.unit) ?? quantity.value
+                } else if let valueString = obs.valueString {
+                    // Fallback per Pressione Arteriosa composita "120/80" o testuale
+                    if metric.type == .bloodPressureSystolic || metric.type == .bloodPressureDiastolic {
+                        let components = valueString.split(separator: "/")
+                        if components.count == 2 {
+                            if metric.type == .bloodPressureSystolic {
+                                finalValue = Double(components[0].trimmingCharacters(in: .whitespacesAndNewlines))
+                            } else if metric.type == .bloodPressureDiastolic {
+                                finalValue = Double(components[1].trimmingCharacters(in: .whitespacesAndNewlines))
+                            }
+                        }
+                    }
+                    if finalValue == nil {
+                        finalValue = Double(valueString.trimmingCharacters(in: .letters.union(.whitespacesAndNewlines)))
+                    }
+                }
+                
+                guard let rawValue = finalValue else {
+                    skipped.append(obs)
+                    continue
+                }
+                
+                let date = isoFormatter.date(from: obs.effectiveDateTime) ?? Date()
+                let hkQuantity = HKQuantity(unit: metric.defaultUnit, doubleValue: rawValue)
                 let sample = HKQuantitySample(
                     type: sampleType,
                     quantity: hkQuantity,

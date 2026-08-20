@@ -15,6 +15,13 @@ let package = Package(
     targets: [
         .target(
             name: "RosettaHealthCore",
-            dependencies: [])
+            dependencies: [],
+            linkerSettings: [
+                .linkedFramework("HealthKit"),
+                .linkedFramework("PDFKit"),
+                .linkedFramework("Vision"),
+                .linkedFramework("UIKit")
+            ]
+        )
     ]
 )

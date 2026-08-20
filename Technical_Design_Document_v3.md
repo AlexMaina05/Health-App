@@ -38,10 +38,11 @@ Il container condiviso (`group.dev.alexmaina.rosettahealth`) gestisce due tipolo
 
 Il motore secondario implementa deterministicamente le regole del **Microsoft FHIR-Converter**. Oltre a popolare l'interfaccia SwiftUI, estrae le `HKQuantitySample`.
 
-### 3.1 Normalizzazione Unità di Misura (`MetricTarget`)
-Apple HealthKit richiede unità di misura rigorose. Il bridge (`HealthKitBridge.swift`) mappa i codici LOINC su specifici `HKQuantityTypeIdentifier` tramite la struttura `MetricTarget`, che garantisce:
+### 3.1 Normalizzazione Unità di Misura & Fallback di Parsing testuale (`MetricTarget`)
+Apple HealthKit richiede unità di misura rigorose e tipi numerici puri (quantità doppie). Il bridge (`HealthKitBridge.swift`) mappa i codici LOINC su specifici `HKQuantityTypeIdentifier` tramite la struttura `MetricTarget`, che garantisce:
 - Un'unità di default supportata (es. `mg/dL`, `%`).
-- Una closure di conversione opzionale (`(Double, String) -> Double`) per regolarizzare automaticamente valori difformi (es. da `g/dL` a `mg/dL`) prima del salvataggio.
+- Una closure di conversione opzionale (`(Double, String) -> Double`) per regolarizzare automaticamente valori difformi.
+- **Parsing String-Fallback (Resilienza ai Dati Sporchi)**: Se il referto FHIR restituisce la Pressione Arteriosa (o altre metriche) incapsulata in stringhe composite non normalizzate (es. `obs.valueString = "120/80"` anziché un campo numerico separato), un parser di fallback interno a `HealthKitBridge` processa i delimitatori e converte dinamicamente le frazioni testuali in campioni numerici `Double` validi, assicurando l'ingestione nei grafici anziché lo scarto.
 
 ### 3.2 Fallback Silenziosi (UI & FHIR Export)
 1. **Codici Regionali non-LOINC**: Vengono esportati correttamente nel JSON FHIR, preservando il testo originale, ma ignorati dall'ingestione in Apple Salute.
@@ -64,8 +65,8 @@ Il sistema gestisce categorie particolari di dati personali.
 Il progetto è progettato *secure by default*: esclude formalmente l'inizializzazione di stack di networking (`URLSession` non invocato). Tutte le elaborazioni avvengono al 100% sulla CPU locale (CoreGraphics per PDF, XMLParser nativo).
 
 ### 4.2 Data Protection & Lifecycle di Cleanup
-- Tutti i dati sanitari e i documenti `PendingCDA_*.xml` beneficiano della crittografia di sistema tramite policy di **Data Protection**.
-- **Regola di Cleanup Rigida**: Qualsiasi file depositato nel container condiviso viene cancellato in modo irreversibile dall'`AppViewModel` immediatamente dopo la chiamata di ingestione in HealthKit, garantendo zero-retention sui dati esposti nel file system.
+- **Crittografia GDPR By-Design**: Oltre alla direttiva dichiarativa negli entitlements (`NSFileProtectionCompleteUntilFirstUserAuthentication`), RosettaHealth implementa un paradigma *Defense-in-Depth* applicando programmaticamente la crittografia tramite le opzioni di `FileManager` (`setAttributes`) e `Data` (`write(options:)`) su ogni operazione di I/O (inclusi i file temporanei e i report JSON FHIR).
+- **Regola di Cleanup Rigida**: Qualsiasi file depositato nel container condiviso viene cancellato in modo atomico e irreversibile dall'`AppViewModel` (tramite blocchi `defer`) immediatamente dopo la chiamata di elaborazione/ingestione, garantendo zero-retention sui dati sensibili esposti nel file system.
 
 ---
 

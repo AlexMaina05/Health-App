@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import HealthKit
 import RosettaHealthCore
+import OSLog
 
 @MainActor
 public final class AppViewModel: ObservableObject {
@@ -16,6 +17,7 @@ public final class AppViewModel: ObservableObject {
     
     private let transcoder = RosettaTranscoder()
     private let healthBridge = HealthKitBridge()
+    private let logger = Logger(subsystem: "dev.alexmaina.rosettahealth", category: "AppViewModel")
     
     public let appGroupIdentifier = "group.dev.alexmaina.rosettahealth"
     
@@ -38,22 +40,31 @@ public final class AppViewModel: ObservableObject {
         
         do {
             let files = try FileManager.default.contentsOfDirectory(at: groupURL, includingPropertiesForKeys: nil)
-            
-            // Separiamo i file CDA XML puri e i PDF da elaborare
             let pendingXMLs = files.filter { $0.lastPathComponent.hasPrefix("PendingCDA_") && $0.pathExtension == "xml" }
             let pendingPDFs = files.filter { $0.lastPathComponent.hasPrefix("PendingPDF_") && $0.pathExtension == "pdf" }
             
+            if pendingXMLs.isEmpty && pendingPDFs.isEmpty { return }
+            
+            isProcessing = true
+            
             var totalSynced = 0
             var newSkipped: [String] = []
+            var newObservations: [FHIRObservation] = []
+            var wasOCRUsed = false
             
+            // 1. Processa XML Nativi
             for file in pendingXMLs {
                 if let xmlData = try? Data(contentsOf: file) {
                     do {
                         _ = try await healthBridge.ingestCDADocument(xmlData: xmlData)
                         let bundle = try transcoder.transcode(cdaData: xmlData)
+                        self.currentBundle = bundle // Conserva l'ultimo bundle per eventuale export
                         let result = try await healthBridge.ingestQuantities(fhirBundle: bundle)
+                        
                         totalSynced += result.savedCount
                         newSkipped.append(contentsOf: result.skippedObservations.map { $0.code.text ?? $0.code.coding.first?.display ?? $0.code.coding.first?.code ?? "Parametro Sconosciuto" })
+                        newObservations.append(contentsOf: bundle.entry.compactMap { if case .observation(let o) = $0.resource { return o } else { return nil } })
+                        
                         try FileManager.default.removeItem(at: file)
                     } catch let err as RosettaError {
                         self.activeError = err
@@ -66,20 +77,44 @@ public final class AppViewModel: ObservableObject {
                 }
             }
             
+            // 2. Processa PDF Raster (OCR Fallback) in modo incrementale
             for file in pendingPDFs {
-                // Sfruttiamo il metodo esistente che sa già smistare le ExtractionResult
-                await processPDF(url: file)
+                do {
+                    let extractionResult = try await PDFEmbeddedAttachmentExtractor.extract(from: file)
+                    if case .rasterOCR(let metrics) = extractionResult {
+                        wasOCRUsed = true
+                        let mappedObs = metrics.map { metric in
+                            return FHIRObservation(
+                                id: UUID().uuidString,
+                                status: "final",
+                                code: FHIRCodeableConcept(
+                                    coding: [FHIRCoding(system: "http://loinc.org", code: metric.loincCode, display: metric.name)],
+                                    text: metric.name
+                                ),
+                                effectiveDateTime: ISO8601DateFormatter().string(from: metric.date),
+                                valueQuantity: FHIRQuantity(value: metric.value, unit: metric.unit, system: "http://unitsofmeasure.org", code: metric.unit)
+                            )
+                        }
+                        newObservations.append(contentsOf: mappedObs)
+                        let count = try await healthBridge.ingestRawMetrics(metrics: metrics)
+                        totalSynced += count
+                    }
+                } catch {
+                    logger.error("Errore fallback OCR su file condiviso: \(error.localizedDescription)")
+                }
                 try? FileManager.default.removeItem(at: file)
             }
             
-            if totalSynced > 0 {
-                self.syncedSamplesCount += totalSynced
-            }
-            if !newSkipped.isEmpty {
-                self.skippedCodes = Array(Set(newSkipped))
-            }
+            // Aggiornamento finale cumulativo della UI
+            if totalSynced > 0 { self.syncedSamplesCount += totalSynced }
+            if !newSkipped.isEmpty { self.skippedCodes.append(contentsOf: Array(Set(newSkipped))) }
+            if !newObservations.isEmpty { self.extractedObservations.append(contentsOf: newObservations) }
+            if wasOCRUsed { self.isOCRExtracted = true }
+            
+            isProcessing = false
+            
         } catch {
-            print("Errore durante la sincronizzazione: \(error)")
+            logger.error("Errore grave durante la lettura del container: \(error.localizedDescription)")
         }
     }
     
@@ -89,32 +124,23 @@ public final class AppViewModel: ObservableObject {
         skippedCodes.removeAll()
         isOCRExtracted = false
         self.extractedObservations.removeAll()
+        self.currentBundle = nil
         
         do {
             let extractionResult = try await PDFEmbeddedAttachmentExtractor.extract(from: url)
             
             switch extractionResult {
             case .cdaXML(let xmlData):
-                // Flusso CDA Normale (Archivio Ufficiale)
                 _ = try await healthBridge.ingestCDADocument(xmlData: xmlData)
-                
                 let bundle = try transcoder.transcode(cdaData: xmlData)
                 self.currentBundle = bundle
-                
-                self.extractedObservations = bundle.entry.compactMap { entry in
-                    if case .observation(let obs) = entry.resource { return obs }
-                    return nil
-                }
-                
+                self.extractedObservations = bundle.entry.compactMap { if case .observation(let obs) = $0.resource { return obs } else { return nil } }
                 let result = try await healthBridge.ingestQuantities(fhirBundle: bundle)
                 self.syncedSamplesCount += result.savedCount
                 self.skippedCodes = Array(Set(result.skippedObservations.map { $0.code.text ?? $0.code.coding.first?.display ?? $0.code.coding.first?.code ?? "Parametro Sconosciuto" }))
                 
             case .rasterOCR(let metrics):
-                // Flusso Fallback (Graceful Degradation)
                 self.isOCRExtracted = true
-                
-                // Mappiamo le ExtractedMetric in FHIRObservation per popolare la UI
                 self.extractedObservations = metrics.map { metric in
                     return FHIRObservation(
                         id: UUID().uuidString,
@@ -124,16 +150,12 @@ public final class AppViewModel: ObservableObject {
                             text: metric.name
                         ),
                         effectiveDateTime: ISO8601DateFormatter().string(from: metric.date),
-                        valueQuantity: FHIRQuantity(value: metric.value, unit: metric.unit, system: "http://unitsofmeasure.org", code: metric.unit),
-                        valueString: nil,
-                        referenceRange: nil
+                        valueQuantity: FHIRQuantity(value: metric.value, unit: metric.unit, system: "http://unitsofmeasure.org", code: metric.unit)
                     )
                 }
-                
                 let count = try await healthBridge.ingestRawMetrics(metrics: metrics)
                 self.syncedSamplesCount += count
             }
-            
         } catch let err as RosettaError {
             self.activeError = err
         } catch {
@@ -144,12 +166,20 @@ public final class AppViewModel: ObservableObject {
     }
     
     public func exportFHIRJSON() -> URL? {
+        // SCELTA ARCHITETTURALE INTENZIONALE:
+        // Blocchiamo l'export FHIR JSON per i referti processati via OCR (currentBundle = nil)
+        // per mantenere la validità formale dell'ecosistema FHIR e impedire che dati estratti
+        // in maniera euristica vengano esportati come documenti clinici validati alla fonte.
         guard let bundle = currentBundle else { return nil }
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
         guard let data = try? encoder.encode(bundle) else { return nil }
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("FHIR_Report_\(UUID().uuidString.prefix(8)).json")
-        try? data.write(to: tempURL)
+        do {
+            try data.write(to: tempURL, options: .completeFileProtectionUntilFirstUserAuthentication)
+        } catch {
+            return nil
+        }
         return tempURL
     }
 }

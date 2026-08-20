@@ -196,9 +196,22 @@ public struct ContentView: View {
                 case .success(let urls):
                     if let selectedURL = urls.first {
                         let secured = selectedURL.startAccessingSecurityScopedResource()
-                        Task {
-                            await viewModel.processPDF(url: selectedURL)
+                        
+                        // Copia sincrona per prevenire race condition sui file descriptor
+                        let tempDir = FileManager.default.temporaryDirectory
+                        let safeURL = tempDir.appendingPathComponent(UUID().uuidString + ".pdf")
+                        
+                        do {
+                            try FileManager.default.copyItem(at: selectedURL, to: safeURL)
                             if secured { selectedURL.stopAccessingSecurityScopedResource() }
+                            
+                            Task {
+                                defer { try? FileManager.default.removeItem(at: safeURL) }
+                                await viewModel.processPDF(url: safeURL)
+                            }
+                        } catch {
+                            if secured { selectedURL.stopAccessingSecurityScopedResource() }
+                            viewModel.activeError = .pdfCorrupted
                         }
                     }
                 case .failure(_):
