@@ -17,6 +17,8 @@ public final class AppViewModel: ObservableObject {
     @Published public var isHealthKitAuthorized = false
     
     @AppStorage("ownerFiscalCode") public var ownerFiscalCode: String = ""
+    @AppStorage("isCDSActive") public var isCDSActive: Bool = true
+    @AppStorage("isOCREnabled") public var isOCREnabled: Bool = true
     
     private let transcoder = RosettaTranscoder()
     private let healthBridge = HealthKitBridge()
@@ -91,7 +93,7 @@ public final class AppViewModel: ObservableObject {
             for file in pendingPDFs {
                 do {
                     let extractionResult = try await PDFEmbeddedAttachmentExtractor.extract(from: file)
-                    if case .rasterOCR(let metrics) = extractionResult {
+                    if case .rasterOCR(let metrics) = extractionResult, isOCREnabled {
                         wasOCRUsed = true
                         let mappedObs = metrics.map { metric in
                             return FHIRObservation(
@@ -152,6 +154,10 @@ public final class AppViewModel: ObservableObject {
                 self.skippedCodes = Array(Set(result.skippedObservations.map { $0.code.text ?? $0.code.coding.first?.display ?? $0.code.coding.first?.code ?? "Parametro Sconosciuto" }))
                 
             case .rasterOCR(let metrics):
+                guard isOCREnabled else {
+                    throw RosettaError.malformedXML(underlying: "Allegato XML non trovato e l'Estrazione Ottica (OCR) è disattivata nelle impostazioni.")
+                }
+                
                 self.isOCRExtracted = true
                 self.extractedObservations = metrics.map { metric in
                     return FHIRObservation(
@@ -178,7 +184,7 @@ public final class AppViewModel: ObservableObject {
         updateWidgetData()
         
         // Esegue il modulo di Medicina Preventiva (CDS) in background
-        if !self.extractedObservations.isEmpty {
+        if isCDSActive && !self.extractedObservations.isEmpty {
             await runClinicalDecisionSupport(for: self.extractedObservations)
         }
         

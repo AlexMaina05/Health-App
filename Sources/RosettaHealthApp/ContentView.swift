@@ -302,23 +302,59 @@ public struct ContentView: View {
         }
     }
 }
-
 public struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
+    
+    // Privacy & Multi-Profile
     @AppStorage("ownerFiscalCode") private var ownerFiscalCode: String = ""
+    
+    // User Experience / Feature Toggles
+    @AppStorage("isCDSActive") private var isCDSActive: Bool = true
+    @AppStorage("isOCREnabled") private var isOCREnabled: Bool = true
     
     public init() {}
     
     public var body: some View {
         NavigationStack {
             Form {
-                Section(header: Text("Fascicolo Familiare (Prevenzione Inquinamento)"), footer: Text("Inserisci il tuo Codice Fiscale. RosettaHealth bloccherà automaticamente il salvataggio in Apple Salute di qualsiasi referto appartenente a terzi (es. figli o genitori).")) {
+                Section {
                     TextField("Codice Fiscale Proprietario", text: $ownerFiscalCode)
                         .autocapitalization(.allCharacters)
                         .disableAutocorrection(true)
+                } header: {
+                    Text("Fascicolo Familiare")
+                } footer: {
+                    Text("RosettaHealth bloccherà automaticamente il salvataggio in Apple Salute di referti appartenenti a terzi (es. figli o genitori) se il Codice Fiscale non coincide.")
+                }
+                
+                Section {
+                    Toggle(isOn: $isCDSActive) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Notifiche Medicina Preventiva")
+                                .font(.headline)
+                            Text("Ricevi un avviso se i tuoi parametri (es. Colesterolo) mostrano un trend in peggioramento nel tempo.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .tint(.purple)
+                    
+                    Toggle(isOn: $isOCREnabled) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Estrazione Ottica (OCR)")
+                                .font(.headline)
+                            Text("Usa l'intelligenza artificiale per recuperare dati da vecchi PDF privi di XML medico (Graceful Degradation).")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .tint(.blue)
+                    
+                } header: {
+                    Text("Esperienza Utente e Moduli")
                 }
             }
-            .navigationTitle("Impostazioni Profilo")
+            .navigationTitle("Impostazioni")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
