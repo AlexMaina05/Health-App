@@ -47,6 +47,8 @@ Il risultato? Il PDF burocratico diventa istantaneamente un grafico sanitario in
 
 L'infrastruttura di RosettaHealth si basa su una rigorosa architettura **Producer-Consumer** via `App Groups` e un motore di transcodifica avanzato:
 
+> 📚 **Approfondimento**: Per tutti i dettagli su modelli dati, sicurezza IPC e flussi, consulta il [**Technical Design Document (TDD)**](Technical_Design_Document_v3.md).
+
 ### Interoperabilità Transfrontaliera (IPS)
 Il *Rosetta Engine* implementa deterministicamente la semantica del **Microsoft FHIR-Converter**. Non si limita a generare codice FHIR R4, ma inietta attivamente i metadati del profilo **International Patient Summary (IPS)**. L'esportazione JSON generata dall'App è formalmente riconosciuta a livello internazionale, consentendo la portabilità clinica transfrontaliera all'interno dell'Unione Europea.
 
