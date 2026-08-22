@@ -57,14 +57,17 @@ public final class HealthKitBridge {
             throw RosettaError.healthKitUnavailable
         }
         
-        var typesToWrite: Set<HKSampleType> = Set(loincToHKMap.values.compactMap { HKQuantityType.quantityType(forIdentifier: $0.type) })
+        let quantityTypes = Set(loincToHKMap.values.compactMap { HKQuantityType.quantityType(forIdentifier: $0.type) })
+        var typesToWrite: Set<HKSampleType> = quantityTypes
+        var typesToRead: Set<HKObjectType> = quantityTypes
         
         if let documentType = cdaType {
             typesToWrite.insert(documentType)
+            typesToRead.insert(documentType)
         }
         
         do {
-            try await healthStore.requestAuthorization(toShare: typesToWrite, read: [])
+            try await healthStore.requestAuthorization(toShare: typesToWrite, read: typesToRead)
         } catch {
             throw RosettaError.authorizationDenied
         }
@@ -96,6 +99,31 @@ public final class HealthKitBridge {
         }
         
         return cdaSample
+    }
+    
+    // MARK: - Fetch Historical Data (Per Clinical Decision Support)
+    public func fetchHistoricalSamples(for identifier: HKQuantityTypeIdentifier, limit: Int = 3) async throws -> [HKQuantitySample] {
+        guard let sampleType = HKQuantityType.quantityType(forIdentifier: identifier) else {
+            throw RosettaError.missingSampleType(identifier: identifier.rawValue)
+        }
+        
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKSampleQuery(sampleType: sampleType, predicate: nil, limit: limit, sortDescriptors: [sortDescriptor]) { _, samples, error in
+                if let error = error {
+                    continuation.resume(throwing: RosettaError.ingestionFailed(underlying: error.localizedDescription))
+                    return
+                }
+                
+                if let quantitySamples = samples as? [HKQuantitySample] {
+                    continuation.resume(returning: quantitySamples)
+                } else {
+                    continuation.resume(returning: [])
+                }
+            }
+            healthStore.execute(query)
+        }
     }
     
     // MARK: - Ingestione Quantitativa Selettiva (Grafici Salute)

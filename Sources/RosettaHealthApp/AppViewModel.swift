@@ -3,6 +3,7 @@ import SwiftUI
 import HealthKit
 import RosettaHealthCore
 import OSLog
+import UserNotifications
 
 @MainActor
 public final class AppViewModel: ObservableObject {
@@ -29,6 +30,11 @@ public final class AppViewModel: ObservableObject {
         do {
             try await healthBridge.requestAuthorization()
             self.isHealthKitAuthorized = true
+            
+            // Richiesta permessi notifiche per il Clinical Decision Support (CDS)
+            let center = UNUserNotificationCenter.current()
+            _ = try? await center.requestAuthorization(options: [.alert, .sound, .badge])
+            
             await syncPendingDocuments()
         } catch let error as RosettaError {
             self.activeError = error
@@ -171,7 +177,35 @@ public final class AppViewModel: ObservableObject {
         // Aggiorna i dati per il Widget (Lock Screen / Home Screen)
         updateWidgetData()
         
+        // Esegue il modulo di Medicina Preventiva (CDS) in background
+        if !self.extractedObservations.isEmpty {
+            await runClinicalDecisionSupport(for: self.extractedObservations)
+        }
+        
         isProcessing = false
+    }
+    
+    private func runClinicalDecisionSupport(for observations: [FHIRObservation]) async {
+        let cds = ClinicalDecisionSupport()
+        var checkedTypes: Set<HKQuantityTypeIdentifier> = []
+        
+        for obs in observations {
+            guard let loinc = obs.code.coding.first?.code,
+                  let target = healthBridge.loincToHKMap[loinc] else { continue }
+            
+            let hkType = target.type
+            if checkedTypes.contains(hkType) { continue }
+            checkedTypes.insert(hkType)
+            
+            do {
+                let history = try await healthBridge.fetchHistoricalSamples(for: hkType, limit: 3)
+                if let alert = await cds.analyze(samples: history, type: hkType) {
+                    await cds.dispatchNotification(for: alert)
+                }
+            } catch {
+                logger.error("Errore CDS per \\(hkType.rawValue): \\(error.localizedDescription)")
+            }
+        }
     }
     
     /// Salva un riepilogo delle metriche correnti nell'App Group per essere lette dal Widget
