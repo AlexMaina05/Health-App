@@ -8,31 +8,34 @@ public struct ContentView: View {
     @State private var isShowingFileImporter = false
     @State private var exportURL: URL?
     @State private var isShowingShareSheet = false
+    @State private var isShowingSettings = false
 
     public init() {}
 
     public var body: some View {
         NavigationStack {
             List {
-                // MARK: - Dashboard Hero
+                // MARK: - Premium Dashboard Hero
                 Section {
                     VStack(spacing: 20) {
                         HStack(spacing: 16) {
                             ZStack {
                                 Circle()
-                                    .fill(viewModel.isHealthKitAuthorized ? Color.green.opacity(0.15) : Color.red.opacity(0.15))
+                                    .fill(viewModel.isHealthKitAuthorized ? Color.white.opacity(0.2) : Color.red.opacity(0.2))
                                     .frame(width: 60, height: 60)
                                 Image(systemName: viewModel.isHealthKitAuthorized ? "heart.text.square.fill" : "lock.shield.fill")
                                     .font(.system(size: 30))
-                                    .foregroundColor(viewModel.isHealthKitAuthorized ? .green : .red)
+                                    .foregroundColor(viewModel.isHealthKitAuthorized ? .white : .red)
+                                    .symbolEffect(.bounce, options: .nonRepeating, value: viewModel.syncedSamplesCount)
                             }
                             
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(viewModel.isHealthKitAuthorized ? "HealthKit Connesso" : "Autorizzazione Richiesta")
+                                Text(viewModel.isHealthKitAuthorized ? "HealthKit Attivo" : "Autorizzazione")
                                     .font(.headline)
-                                Text("Integrazione nativa FSE attiva")
+                                    .foregroundColor(.white)
+                                Text("Integrazione nativa FSE")
                                     .font(.subheadline)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(.white.opacity(0.8))
                             }
                             Spacer()
                         }
@@ -43,53 +46,97 @@ public struct ContentView: View {
                             }) {
                                 Text("Abilita Integrazione")
                                     .font(.headline)
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.red)
                                     .frame(maxWidth: .infinity)
                                     .padding()
-                                    .background(Color.red.gradient)
+                                    .background(Color.white)
                                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                                    .shadow(color: .red.opacity(0.3), radius: 8, y: 4)
                             }
                         } else {
                             HStack {
                                 VStack(alignment: .leading) {
                                     Text("Parametri Sincronizzati")
                                         .font(.caption)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(.white.opacity(0.8))
                                     Text("\(viewModel.syncedSamplesCount)")
                                         .font(.system(.title, design: .rounded).weight(.bold))
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(.white)
+                                        .contentTransition(.numericText()) // Animazione numerica fluida
                                 }
                                 Spacer()
-                                Button(action: { isShowingFileImporter = true }) {
+                                Button(action: {
+                                    let generator = UIImpactFeedbackGenerator(style: .medium)
+                                    generator.impactOccurred()
+                                    isShowingFileImporter = true 
+                                }) {
                                     Image(systemName: "doc.badge.plus")
                                         .font(.system(size: 20, weight: .bold))
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.blue)
                                         .padding(16)
-                                        .background(Color.blue.gradient)
+                                        .background(Color.white)
                                         .clipShape(Circle())
-                                        .shadow(color: .blue.opacity(0.3), radius: 6, y: 4)
+                                        .shadow(color: .black.opacity(0.1), radius: 6, y: 4)
                                 }
                                 .disabled(viewModel.isProcessing)
                             }
                             .padding(.top, 8)
                         }
                     }
-                    .padding(.vertical, 8)
+                    .padding(20)
+                    .background {
+                        LinearGradient(
+                            colors: [Color.blue, Color.purple.opacity(0.8)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    }
+                    .listRowInsets(EdgeInsets()) // Rimuove i margini di default della List per la card
                 }
-                .listRowBackground(Color(uiColor: .secondarySystemGroupedBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                .shadow(color: Color.purple.opacity(0.2), radius: 15, x: 0, y: 8)
+                .padding(.bottom, 8)
                 
-                // MARK: - Indicatore Caricamento
+                // MARK: - Premium Processing Indicator
                 if viewModel.isProcessing {
                     Section {
                         HStack(spacing: 16) {
-                            ProgressView()
+                            Image(systemName: "waveform.path.ecg")
+                                .font(.title2)
+                                .foregroundColor(.blue)
+                                .symbolEffect(.pulse, isActive: true)
                             Text("Estrazione referto in corso...")
-                                .font(.callout)
-                                .foregroundColor(.secondary)
+                                .font(.headline)
+                                .foregroundColor(.primary)
                             Spacer()
                         }
                     }
+                }
+                
+                // MARK: - Premium Empty State
+                if viewModel.extractedObservations.isEmpty && !viewModel.isProcessing && viewModel.isHealthKitAuthorized {
+                    Section {
+                        VStack(spacing: 16) {
+                            Image(systemName: "folder.badge.magnifyingglass")
+                                .font(.system(size: 50, weight: .light))
+                                .foregroundStyle(
+                                    LinearGradient(colors: [.blue, .purple], startPoint: .top, endPoint: .bottom)
+                                )
+                                .padding(.bottom, 8)
+                            
+                            Text("Nessun referto attivo")
+                                .font(.title3)
+                                .fontWeight(.bold)
+                            
+                            Text("RosettaHealth è in attesa.\nCondividi un PDF dal tuo Fascicolo Regionale tramite il tasto '+' o dal menu di condivisione di iOS.")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal, 20)
+                        }
+                        .padding(.vertical, 40)
+                        .frame(maxWidth: .infinity)
+                    }
+                    .listRowBackground(Color.clear)
                 }
                 
                 // MARK: - Avviso OCR (Graceful Degradation)
@@ -117,6 +164,9 @@ public struct ContentView: View {
                     Section {
                         ForEach(viewModel.extractedObservations, id: \.id) { obs in
                             ObservationRowView(observation: obs)
+                                .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
                         }
                     } header: {
                         Text("Dettaglio Analisi (\(viewModel.extractedObservations.count))")
@@ -177,6 +227,13 @@ public struct ContentView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("RosettaHealth")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { isShowingSettings = true }) {
+                        Image(systemName: "person.text.rectangle")
+                    }
+                }
+            }
             .task {
                 await viewModel.syncPendingDocuments()
             }
@@ -203,6 +260,9 @@ public struct ContentView: View {
                         
                         do {
                             try FileManager.default.copyItem(at: selectedURL, to: safeURL)
+                            // Audit GDPR: Forziamo la crittografia esplicita anche sul file temporaneo
+                            try FileManager.default.setAttributes([.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], ofItemAtPath: safeURL.path)
+                            
                             if secured { selectedURL.stopAccessingSecurityScopedResource() }
                             
                             Task {
@@ -223,6 +283,9 @@ public struct ContentView: View {
                     ShareSheet(activityItems: [url])
                 }
             }
+            .sheet(isPresented: $isShowingSettings) {
+                SettingsView()
+            }
             .alert(isPresented: Binding<Bool>(
                 get: { viewModel.activeError != nil },
                 set: { if !$0 { viewModel.activeError = nil } }
@@ -233,6 +296,34 @@ public struct ContentView: View {
                     Text(error.failureReason ?? "")
                     if let suggestion = error.recoverySuggestion {
                         Text("\n\(suggestion)")
+                    }
+                }
+            }
+        }
+    }
+}
+
+public struct SettingsView: View {
+    @Environment(\.dismiss) private var dismiss
+    @AppStorage("ownerFiscalCode") private var ownerFiscalCode: String = ""
+    
+    public init() {}
+    
+    public var body: some View {
+        NavigationStack {
+            Form {
+                Section(header: Text("Fascicolo Familiare (Prevenzione Inquinamento)"), footer: Text("Inserisci il tuo Codice Fiscale. RosettaHealth bloccherà automaticamente il salvataggio in Apple Salute di qualsiasi referto appartenente a terzi (es. figli o genitori).")) {
+                    TextField("Codice Fiscale Proprietario", text: $ownerFiscalCode)
+                        .autocapitalization(.allCharacters)
+                        .disableAutocorrection(true)
+                }
+            }
+            .navigationTitle("Impostazioni Profilo")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Fine") {
+                        dismiss()
                     }
                 }
             }
@@ -300,9 +391,9 @@ struct ObservationRowView: View {
             }
         }
         .padding(16)
-        .background(Color(uiColor: .secondarySystemGroupedBackground))
+        .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .shadow(color: Color.black.opacity(0.06), radius: 10, x: 0, y: 4)
+        .shadow(color: Color.black.opacity(0.08), radius: 12, x: 0, y: 6)
     }
 }
 

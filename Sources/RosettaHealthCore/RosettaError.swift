@@ -16,6 +16,7 @@ public enum RosettaError: LocalizedError, CustomNSError {
     case authorizationDenied
     case missingSampleType(identifier: String)
     case ingestionFailed(underlying: String)
+    case cfMismatch(expected: String, found: String)
     
     // IPC / App Group Errors
     case appGroupContainerUnavailable
@@ -34,6 +35,7 @@ public enum RosettaError: LocalizedError, CustomNSError {
         case .authorizationDenied: return "Accesso ad Apple Salute negato."
         case .missingSampleType: return "Parametro non mappabile su Salute."
         case .ingestionFailed: return "Fallimento salvataggio su Salute."
+        case .cfMismatch: return "Referto appartenente a terzi."
         case .appGroupContainerUnavailable: return "Spazio di archiviazione condiviso non accessibile."
         case .corruptedPendingFile: return "File di sincronizzazione corrotto."
         case .diskWriteFailed: return "Errore di scrittura su disco."
@@ -52,6 +54,7 @@ public enum RosettaError: LocalizedError, CustomNSError {
         case .authorizationDenied: return "L'utente non ha concesso le autorizzazioni di lettura/scrittura per i dati clinici."
         case .missingSampleType(let identifier): return "Il parametro clinico (\(identifier)) non possiede un corrispettivo in HKQuantityType."
         case .ingestionFailed(let underlying): return "HealthKit ha rifiutato il salvataggio dei campioni: \(underlying)."
+        case .cfMismatch(let expected, let found): return "Il Codice Fiscale estratto (\(found)) non corrisponde a quello del proprietario configurato (\(expected))."
         case .appGroupContainerUnavailable: return "La sandbox non è riuscita a risolvere il path del Security Application Group identifier."
         case .corruptedPendingFile(let fileName): return "Il file in coda \(fileName) non contiene un Bundle FHIR valido."
         case .diskWriteFailed(let underlying): return "Impossibile serializzare il referto sul container: \(underlying)"
@@ -70,6 +73,8 @@ public enum RosettaError: LocalizedError, CustomNSError {
             return "Apri l'app Salute > Condivisione > App > RosettaHealth e abilita tutti i permessi."
         case .missingSampleType, .ingestionFailed:
             return "Controlla lo stato dei sensori e dei permessi."
+        case .cfMismatch:
+            return "Per evitare inquinamento di Apple Salute, il salvataggio automatico è stato bloccato."
         case .appGroupContainerUnavailable, .corruptedPendingFile, .diskWriteFailed:
             return "Verifica che gli App Groups Entitlements siano configurati correttamente nel progetto Xcode."
         }

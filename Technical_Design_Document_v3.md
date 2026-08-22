@@ -55,6 +55,11 @@ Nel panorama sanitario italiano, alcuni referti vengono ancora erogati come PDF 
 - **Ingestione Metriche Grezze**: Vengono generati esclusivamente campioni quantitativi (`HKQuantitySample`) per popolare i grafici (Glicemia, Pressione, Colesterolo) ricavati tramite Regex. Questi campioni vengono "marchiati" a livello di database con i metadati di provenienza: `"EXTRACTION_METHOD": "APPLE_VISION_OCR_FALLBACK"` e `"CONFIDENCE_LEVEL": "HEURISTIC_REGEX"`, preservando l'integrità medico-legale dell'App.
 - **Feedback UI**: L'interfaccia utente notifica l'evento mostrando un badge viola specifico che avverte l'utente della natura probabilistica (OCR) del dato.
 
+### 3.4 Interoperabilità Transfrontaliera (International Patient Summary - IPS)
+Il transcoder non si limita a generare un generico formato FHIR R4, ma modella le strutture dati (`FHIRModels.swift`) affinché rispettino i vincoli del profilo **IPS (International Patient Summary)**.
+- **Iniezione Dinamica Metadati**: Al momento dell'istanziazione, il motore inietta i `Profile Identifier` ufficiali di HL7 all'interno del nodo `meta.profile` di ogni risorsa (es. `http://hl7.org/fhir/uv/ips/StructureDefinition/Bundle-uv-ips` per il `FHIRBundle` e `Composition-uv-ips` per la `FHIRComposition`).
+- **Validità Estesa**: L'esportazione JSON risultante è formalmente riconosciuta a livello internazionale, permettendo al paziente di condividere un referto digitale strutturato leggibile istantaneamente in qualsiasi struttura ospedaliera dell'Unione Europea dotata di EMR aderenti allo standard IPS, superando i limiti del formato legacy CDA R2 italiano.
+
 ---
 
 ## 4. Gestione Sicurezza e Privacy (GDPR Art. 9)
@@ -67,6 +72,10 @@ Il progetto è progettato *secure by default*: esclude formalmente l'inizializza
 ### 4.2 Data Protection & Lifecycle di Cleanup
 - **Crittografia GDPR By-Design**: Oltre alla direttiva dichiarativa negli entitlements (`NSFileProtectionCompleteUntilFirstUserAuthentication`), RosettaHealth implementa un paradigma *Defense-in-Depth* applicando programmaticamente la crittografia tramite le opzioni di `FileManager` (`setAttributes`) e `Data` (`write(options:)`) su ogni operazione di I/O (inclusi i file temporanei e i report JSON FHIR).
 - **Regola di Cleanup Rigida**: Qualsiasi file depositato nel container condiviso viene cancellato in modo atomico e irreversibile dall'`AppViewModel` (tramite blocchi `defer`) immediatamente dopo la chiamata di elaborazione/ingestione, garantendo zero-retention sui dati sensibili esposti nel file system.
+
+### 4.3 Prevenzione Inquinamento Dati (Multi-Profile Routing)
+L'infrastruttura Apple Health è strettamente personale ("mono-utente"). Dato che i cittadini italiani spesso scaricano i referti dei propri familiari (es. figli o genitori), l'ingestione cieca dei documenti corromperebbe il database del proprietario.
+- **Validazione Fiscale (CF Match)**: L'`AppViewModel` introduce un Security Checkpoint (`checkPatientMatch()`). Estraendo il Codice Fiscale del Paziente dal Bundle FHIR (tag `<patientRole>`), il sistema verifica la congruenza con l'Identificativo Proprietario salvato nelle impostazioni dell'app (`@AppStorage`). In caso di discrepanza, solleva l'eccezione `.cfMismatch`, bloccando chirurgicamente il transito dei parametri estranei verso HealthKit.
 
 ---
 
@@ -129,3 +138,12 @@ L'infrastruttura di Error Handling si affida all'enum nativo `RosettaError` (con
 - **IPC**: Errori di scrittura su container o malformazione del payload XML in transito (es. `.appGroupContainerUnavailable`).
 
 Ogni errore solleva alert nativi SwiftUI non bloccanti contenenti `failureReason` e `recoverySuggestion`.
+
+---
+
+## 8. Quality Assurance & Unit Testing (XCTest)
+
+Per certificare la sicurezza e la resilienza del motore di transcodifica clinica, il modulo `RosettaHealthCore` implementa una suite strutturata tramite il framework nativo `XCTest`.
+- **Validazione Parser (Mocking)**: Vengono iniettati payload XML fittizi per certificare che il `RosettaTranscoder` estragga correttamente le metriche (es. Glicemia `15074-8`) e i profili IPS.
+- **Resilienza (Edge Cases)**: Sono coperti test specifici per la gestione della degradazione morbida (*Graceful Degradation*), ad esempio l'assenza del nodo Paziente o la mancanza dell'intestazione `<ClinicalDocument>`.
+- **Static Mapping**: I test unitari su `HealthKitBridge` prevengono regressioni sul mapping dei codici LOINC critici (es. Pressione, Colesterolo) e certificano la sicurezza matematica del fallback testuale sulle stringhe composite.

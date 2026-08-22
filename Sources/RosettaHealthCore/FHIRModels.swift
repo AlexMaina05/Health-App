@@ -1,8 +1,16 @@
 import Foundation
 
+public struct FHIRMeta: Codable {
+    public let profile: [String]
+    public init(profile: [String]) {
+        self.profile = profile
+    }
+}
+
 public struct FHIRBundle: Codable {
     public let resourceType: String = "Bundle"
     public let id: String
+    public let meta: FHIRMeta?
     public let identifier: FHIRIdentifier?
     public let type: String // "document" or "collection"
     public let timestamp: String
@@ -10,6 +18,8 @@ public struct FHIRBundle: Codable {
     
     public init(id: String = UUID().uuidString, type: String = "document", timestamp: String, entry: [FHIRBundleEntry], identifier: FHIRIdentifier? = nil) {
         self.id = id
+        // Iniezione Profilo IPS (International Patient Summary)
+        self.meta = FHIRMeta(profile: ["http://hl7.org/fhir/uv/ips/StructureDefinition/Bundle-uv-ips"])
         self.type = type
         self.timestamp = timestamp
         self.entry = entry
@@ -58,6 +68,7 @@ public enum FHIRResource: Codable {
 public struct FHIRObservation: Codable {
     public let resourceType: String = "Observation"
     public let id: String
+    public let meta: FHIRMeta?
     public let status: String
     public let category: [FHIRCodeableConcept]?
     public let code: FHIRCodeableConcept
@@ -69,6 +80,8 @@ public struct FHIRObservation: Codable {
     
     public init(id: String = UUID().uuidString, status: String = "final", category: [FHIRCodeableConcept]? = nil, code: FHIRCodeableConcept, subject: FHIRReference = FHIRReference(reference: "Patient/unknown"), effectiveDateTime: String, valueQuantity: FHIRQuantity?, valueString: String? = nil, referenceRange: [FHIRReferenceRange]? = nil) {
         self.id = id
+        // Iniezione Profilo IPS
+        self.meta = FHIRMeta(profile: ["http://hl7.org/fhir/uv/ips/StructureDefinition/Observation-uv-ips"])
         self.status = status
         self.category = category
         self.code = code
@@ -83,20 +96,42 @@ public struct FHIRObservation: Codable {
 public struct FHIRPatient: Codable {
     public let resourceType: String = "Patient"
     public let id: String
+    public let meta: FHIRMeta?
     public let identifier: [FHIRIdentifier]?
     public let name: [FHIRHumanName]?
     public let gender: String?
     public let birthDate: String?
+    
+    public init(id: String, identifier: [FHIRIdentifier]?, name: [FHIRHumanName]?, gender: String?, birthDate: String?) {
+        self.id = id
+        // Iniezione Profilo IPS
+        self.meta = FHIRMeta(profile: ["http://hl7.org/fhir/uv/ips/StructureDefinition/Patient-uv-ips"])
+        self.identifier = identifier
+        self.name = name
+        self.gender = gender
+        self.birthDate = birthDate
+    }
 }
 
 public struct FHIRComposition: Codable {
     public let resourceType: String = "Composition"
     public let id: String
+    public let meta: FHIRMeta?
     public let status: String = "final"
     public let type: FHIRCodeableConcept
     public let subject: FHIRReference
     public let date: String
     public let title: String
+    
+    public init(id: String, type: FHIRCodeableConcept, subject: FHIRReference, date: String, title: String) {
+        self.id = id
+        // Iniezione Profilo IPS
+        self.meta = FHIRMeta(profile: ["http://hl7.org/fhir/uv/ips/StructureDefinition/Composition-uv-ips"])
+        self.type = type
+        self.subject = subject
+        self.date = date
+        self.title = title
+    }
 }
 
 public struct FHIRCodeableConcept: Codable {

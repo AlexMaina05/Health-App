@@ -22,6 +22,10 @@ let package = Package(
                 .linkedFramework("Vision"),
                 .linkedFramework("UIKit")
             ]
+        ),
+        .testTarget(
+            name: "RosettaHealthCoreTests",
+            dependencies: ["RosettaHealthCore"]
         )
     ]
 )

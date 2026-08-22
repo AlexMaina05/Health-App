@@ -15,6 +15,8 @@ public final class AppViewModel: ObservableObject {
     @Published public var isOCRExtracted = false
     @Published public var isHealthKitAuthorized = false
     
+    @AppStorage("ownerFiscalCode") public var ownerFiscalCode: String = ""
+    
     private let transcoder = RosettaTranscoder()
     private let healthBridge = HealthKitBridge()
     private let logger = Logger(subsystem: "dev.alexmaina.rosettahealth", category: "AppViewModel")
@@ -56,8 +58,10 @@ public final class AppViewModel: ObservableObject {
             for file in pendingXMLs {
                 if let xmlData = try? Data(contentsOf: file) {
                     do {
-                        _ = try await healthBridge.ingestCDADocument(xmlData: xmlData)
                         let bundle = try transcoder.transcode(cdaData: xmlData)
+                        try checkPatientMatch(bundle: bundle)
+                        
+                        _ = try await healthBridge.ingestCDADocument(xmlData: xmlData)
                         self.currentBundle = bundle // Conserva l'ultimo bundle per eventuale export
                         let result = try await healthBridge.ingestQuantities(fhirBundle: bundle)
                         
@@ -131,8 +135,10 @@ public final class AppViewModel: ObservableObject {
             
             switch extractionResult {
             case .cdaXML(let xmlData):
-                _ = try await healthBridge.ingestCDADocument(xmlData: xmlData)
                 let bundle = try transcoder.transcode(cdaData: xmlData)
+                try checkPatientMatch(bundle: bundle)
+                
+                _ = try await healthBridge.ingestCDADocument(xmlData: xmlData)
                 self.currentBundle = bundle
                 self.extractedObservations = bundle.entry.compactMap { if case .observation(let obs) = $0.resource { return obs } else { return nil } }
                 let result = try await healthBridge.ingestQuantities(fhirBundle: bundle)
@@ -181,5 +187,20 @@ public final class AppViewModel: ObservableObject {
             return nil
         }
         return tempURL
+    }
+    
+    private func checkPatientMatch(bundle: FHIRBundle) throws {
+        let cleanOwnerCF = ownerFiscalCode.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        guard !cleanOwnerCF.isEmpty else { return } // Bypass se non configurato
+        
+        if let patientEntry = bundle.entry.first(where: { if case .patient(_) = $0.resource { return true }; return false }),
+           case .patient(let patient) = patientEntry.resource,
+           let extractedCF = patient.identifier?.first(where: { $0.system == "http://hl7.it/sid/codiceFiscale" })?.value {
+            
+            let cleanExtractedCF = extractedCF.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+            if cleanExtractedCF != cleanOwnerCF {
+                throw RosettaError.cfMismatch(expected: cleanOwnerCF, found: cleanExtractedCF)
+            }
+        }
     }
 }
