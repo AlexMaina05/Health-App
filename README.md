@@ -61,6 +61,7 @@ The result? Your legacy government PDF instantly becomes an interactive, long-te
 * **👨‍👩‍👧‍👦 Multi-Profile Safety & Family Vault (SwiftData)**: Protects your Apple Health database from third-party data pollution. Reports belonging to family members are intelligently routed away from HealthKit and saved exclusively into an encrypted on-device **Family Vault**, creating a centralized EMR timeline for the whole family.
 * **🤖 Graceful Degradation (Apple Vision OCR)**: Extracts key parameters (Glucose, Cholesterol, Blood Pressure) from scanned/raster PDFs lacking embedded XML, with full provenance audit trailing. 
 * **📤 Share Extension & Safe IPC**: Extract and queue medical data in a single tap directly from Safari, Mail, or the Files app using iOS Share Sheets. 
+* **📈 Real-time Trend Sparklines (Swift Charts)**: Clinical parameters are visualized dynamically on the dashboard. The app asynchronously fetches historical HealthKit samples and generates smooth Catmull-Rom sparklines to instantly highlight worsening trends.
 * **🎨 Modern SwiftUI Interface**: Built with the latest Apple Human Interface Guidelines, featuring Glassmorphism, continuous squircle shapes, and native typographic designs.
 
 ---

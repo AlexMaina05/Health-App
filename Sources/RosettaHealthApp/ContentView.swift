@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import Charts
 import HealthKit
 import RosettaHealthCore
 
@@ -407,6 +408,8 @@ public struct SettingsView: View {
 struct ObservationRowView: View {
     let observation: FHIRObservation
     
+    @State private var history: [(date: Date, value: Double)] = []
+    
     // Logica di valutazione Range
     private var isOutOfRange: Bool {
         guard let qty = observation.valueQuantity?.value,
@@ -419,54 +422,94 @@ struct ObservationRowView: View {
     }
     
     var body: some View {
-        HStack(alignment: .center, spacing: 16) {
-            // Icona laterale
-            ZStack {
-                Circle()
-                    .fill(isOutOfRange ? Color.red.opacity(0.15) : Color.blue.opacity(0.15))
-                    .frame(width: 44, height: 44)
-                Image(systemName: isOutOfRange ? "exclamationmark.triangle.fill" : "waveform.path.ecg")
-                    .foregroundColor(isOutOfRange ? .red : .blue)
-            }
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(observation.code.text ?? observation.code.coding.first?.display ?? "Parametro Sconosciuto")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.primary)
-                    .lineLimit(2)
+        VStack(spacing: 8) {
+            HStack(alignment: .center, spacing: 16) {
+                // Icona laterale
+                ZStack {
+                    Circle()
+                        .fill(isOutOfRange ? Color.red.opacity(0.15) : Color.blue.opacity(0.15))
+                        .frame(width: 44, height: 44)
+                    Image(systemName: isOutOfRange ? "exclamationmark.triangle.fill" : "waveform.path.ecg")
+                        .foregroundColor(isOutOfRange ? .red : .blue)
+                }
                 
-                if let ranges = observation.referenceRange, let range = ranges.first {
-                    if let low = range.low?.value, let high = range.high?.value {
-                        Text("Range: \(String(format: "%.1f", low)) - \(String(format: "%.1f", high))")
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(observation.code.text ?? observation.code.coding.first?.display ?? "Parametro Sconosciuto")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
+                        .lineLimit(2)
+                    
+                    if let ranges = observation.referenceRange, let range = ranges.first {
+                        if let low = range.low?.value, let high = range.high?.value {
+                            Text("Range: \(String(format: "%.1f", low)) - \(String(format: "%.1f", high))")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+                
+                Spacer()
+                
+                VStack(alignment: .trailing, spacing: 2) {
+                    if let qty = observation.valueQuantity {
+                        Text(String(format: "%.2f", qty.value))
+                            .font(.system(.title3, design: .rounded).weight(.bold))
+                            .foregroundColor(isOutOfRange ? .red : .primary)
+                        Text(qty.unit)
                             .font(.caption2)
                             .foregroundColor(.secondary)
+                            .textCase(.uppercase)
+                    } else if let str = observation.valueString {
+                        Text(str)
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
                     }
                 }
             }
             
-            Spacer()
-            
-            VStack(alignment: .trailing, spacing: 2) {
-                if let qty = observation.valueQuantity {
-                    Text(String(format: "%.2f", qty.value))
-                        .font(.system(.title3, design: .rounded).weight(.bold))
-                        .foregroundColor(isOutOfRange ? .red : .primary)
-                    Text(qty.unit)
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                        .textCase(.uppercase)
-                } else if let str = observation.valueString {
-                    Text(str)
-                        .font(.subheadline)
-                        .foregroundColor(.primary)
+            // Mini-Grafico (Sparkline)
+            if history.count > 1 {
+                Chart {
+                    ForEach(history, id: \.date) { point in
+                        LineMark(
+                            x: .value("Data", point.date),
+                            y: .value("Valore", point.value)
+                        )
+                        .interpolationMethod(.catmullRom)
+                        .foregroundStyle(isOutOfRange ? Color.red.gradient : Color.blue.gradient)
+                        
+                        PointMark(
+                            x: .value("Data", point.date),
+                            y: .value("Valore", point.value)
+                        )
+                        .foregroundStyle(isOutOfRange ? Color.red : Color.blue)
+                    }
                 }
+                .frame(height: 50)
+                .chartXAxis(.hidden)
+                .chartYAxis(.hidden)
+                .padding(.top, 8)
             }
         }
         .padding(16)
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .shadow(color: Color.black.opacity(0.08), radius: 12, x: 0, y: 6)
+        .task {
+            await loadHistory()
+        }
+    }
+    
+    private func loadHistory() async {
+        guard let loinc = observation.code.coding.first?.code else { return }
+        let bridge = HealthKitBridge()
+        guard let target = bridge.loincToHKMap[loinc] else { return }
+        
+        if let samples = try? await bridge.fetchHistoricalSamples(for: target.type, limit: 5) {
+            let points = samples.map { (date: $0.startDate, value: $0.quantity.doubleValue(for: target.defaultUnit)) }
+            self.history = points.sorted { $0.date < $1.date }
+        }
     }
 }
 

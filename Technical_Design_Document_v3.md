@@ -132,9 +132,15 @@ Il progetto rispetta rigorosamente le **Apple Human Interface Guidelines (HIG)**
 
 ### 6.1 Implementazione Glassmorphism
 I risultati clinici estratti dal Rosetta Engine sono renderizzati come "Floating Cards":
-- L'utilizzo di `.background(.regularMaterial)` applica l'effetto vetro smerigliato e il vibracy control.
+- L'utilizzo di `.background(.ultraThinMaterial)` applica l'effetto vetro smerigliato e il vibracy control.
 - Le forme utilizzano il `RoundedRectangle` con stile `.continuous` (squircle) per massima fedeltà al design Apple.
 - La tipografia numerica sfrutta `design: .rounded` e `.bold()` come avviene nativamente nell'app Salute.
+
+### 6.2 Data Visualization (Swift Charts)
+I trend temporali delle misurazioni cliniche sono tracciati dinamicamente sfruttando il framework `Charts`.
+- **Sparklines Asincrone**: La `ObservationRowView` invoca un task in background (`.task`) per interrogare HealthKit (`fetchHistoricalSamples`) e recuperare le ultime 5 misurazioni del medesimo codice LOINC.
+- **Interpolazione Fluida**: I dati sono renderizzati con `LineMark` e `PointMark` sfruttando l'interpolazione `.catmullRom` per creare curve di livello organiche.
+- **Color Coding**: Se l'ultimo valore viola il Range di Riferimento del referto, il gradiente del grafico transita dinamicamente dal blu semantico al rosso (`.red.gradient`), segnalando visivamente l'anomalia.
 
 ---
 
