@@ -18,16 +18,22 @@ public final class HealthKitBridge {
     }
     
     public private(set) var loincToHKMap: [String: MetricTarget] = [
+
+        // MARK: - Glicemia & Metabolismo
         "15074-8": MetricTarget(type: .bloodGlucose, defaultUnit: HKUnit(from: "mg/dL")), 
         "2345-7":  MetricTarget(type: .bloodGlucose, defaultUnit: HKUnit(from: "mg/dL")), 
         "2339-0":  MetricTarget(type: .bloodGlucose, defaultUnit: HKUnit(from: "mg/dL")), 
         "4548-4":  MetricTarget(type: .bloodGlucose, defaultUnit: HKUnit.percent()),      
         "17856-6": MetricTarget(type: .bloodGlucose, defaultUnit: HKUnit.percent()),      
         "25428-4": MetricTarget(type: .bloodGlucose, defaultUnit: HKUnit.percent()),      
-        "2093-3":  MetricTarget(type: .dietaryCholesterol, defaultUnit: HKUnit(from: "mg/dL")), 
-        "2085-9":  MetricTarget(type: .dietaryCholesterol, defaultUnit: HKUnit(from: "mg/dL")), 
-        "13457-7": MetricTarget(type: .dietaryCholesterol, defaultUnit: HKUnit(from: "mg/dL")), 
-        "2571-8":  MetricTarget(type: .dietaryCholesterol, defaultUnit: HKUnit(from: "mg/dL")), 
+        
+        // MARK: - Profilo Lipidico
+        "2093-3":  MetricTarget(type: .dietaryCholesterol, defaultUnit: HKUnit(from: "mg/dL")), // Colesterolo Totale
+        "2085-9":  MetricTarget(type: .dietaryCholesterol, defaultUnit: HKUnit(from: "mg/dL")), // HDL
+        "13457-7": MetricTarget(type: .dietaryCholesterol, defaultUnit: HKUnit(from: "mg/dL")), // LDL
+        "2571-8":  MetricTarget(type: .dietaryFatTotal, defaultUnit: HKUnit.gram()),            // Trigliceridi (Mappato su Grassi Totali)
+        
+        // MARK: - Segni Vitali & Cardiologia
         "8867-4":  MetricTarget(type: .heartRate, defaultUnit: HKUnit.count().unitDivided(by: .minute())), 
         "8480-6":  MetricTarget(type: .bloodPressureSystolic, defaultUnit: HKUnit.millimeterOfMercury()),  
         "8462-4":  MetricTarget(type: .bloodPressureDiastolic, defaultUnit: HKUnit.millimeterOfMercury()), 
@@ -35,11 +41,38 @@ public final class HealthKitBridge {
         "59408-5": MetricTarget(type: .oxygenSaturation, defaultUnit: HKUnit.percent()),                    
         "9279-1":  MetricTarget(type: .respiratoryRate, defaultUnit: HKUnit.count().unitDivided(by: .minute())), 
         "8310-5":  MetricTarget(type: .bodyTemperature, defaultUnit: HKUnit.degreeCelsius()),               
-        "56478-1": MetricTarget(type: .bloodAlcoholContent, defaultUnit: HKUnit.percent()), 
+        "80404-7": MetricTarget(type: .heartRateVariabilitySDNN, defaultUnit: HKUnit.secondUnit(with: .milli)), 
+        
+        // MARK: - Antropometria & Composizione Corporea
+        "29463-7": MetricTarget(type: .bodyMass, defaultUnit: HKUnit.gramUnit(with: .kilo)),        // Peso
+        "3141-9":  MetricTarget(type: .bodyMass, defaultUnit: HKUnit.gramUnit(with: .kilo)),        
+        "8302-2":  MetricTarget(type: .height, defaultUnit: HKUnit.meter()),                        // Altezza
+        "39156-5": MetricTarget(type: .bodyMassIndex, defaultUnit: HKUnit.count()),                 // BMI
+        "8280-0":  MetricTarget(type: .waistCircumference, defaultUnit: HKUnit.meterUnit(with: .centi)), // Circonferenza Vita
+        "41982-0": MetricTarget(type: .bodyFatPercentage, defaultUnit: HKUnit.percent()),           // Massa Grassa
+        
+        // MARK: - Elettroliti & Minerali (Mappati su HKDietary)
         "2951-2":  MetricTarget(type: .dietarySodium, defaultUnit: HKUnit.gramUnit(with: .milli)), 
         "2823-3":  MetricTarget(type: .dietaryPotassium, defaultUnit: HKUnit.gramUnit(with: .milli)), 
         "17861-6": MetricTarget(type: .dietaryCalcium, defaultUnit: HKUnit.gramUnit(with: .milli)), 
-        "2498-4":  MetricTarget(type: .dietaryIron, defaultUnit: HKUnit.gramUnit(with: .milli)) 
+        "2498-4":  MetricTarget(type: .dietaryIron, defaultUnit: HKUnit.gramUnit(with: .milli)), 
+        "19123-9": MetricTarget(type: .dietaryMagnesium, defaultUnit: HKUnit.gramUnit(with: .milli)), 
+        "3236-8":  MetricTarget(type: .dietaryZinc, defaultUnit: HKUnit.gramUnit(with: .milli)), 
+        "2128-1":  MetricTarget(type: .dietaryCopper, defaultUnit: HKUnit.gramUnit(with: .milli)), 
+        "2777-1":  MetricTarget(type: .dietaryPhosphorus, defaultUnit: HKUnit.gramUnit(with: .milli)), 
+        
+        // MARK: - Vitamine (Mappate su HKDietary)
+        "1649-3":  MetricTarget(type: .dietaryVitaminD, defaultUnit: HKUnit.gramUnit(with: .micro)), // Vitamina D
+        "62238-1": MetricTarget(type: .dietaryVitaminD, defaultUnit: HKUnit.gramUnit(with: .micro)), 
+        "7085-4":  MetricTarget(type: .dietaryVitaminC, defaultUnit: HKUnit.gramUnit(with: .milli)), // Vitamina C
+        "2132-9":  MetricTarget(type: .dietaryVitaminB12, defaultUnit: HKUnit.gramUnit(with: .micro)), // Vitamina B12
+        "2275-6":  MetricTarget(type: .dietaryVitaminE, defaultUnit: HKUnit.gramUnit(with: .milli)), // Vitamina E
+        "2274-9":  MetricTarget(type: .dietaryVitaminA, defaultUnit: HKUnit.gramUnit(with: .micro)), // Vitamina A
+        
+        // MARK: - Tossicologia & Altro
+        "56478-1": MetricTarget(type: .bloodAlcoholContent, defaultUnit: HKUnit.percent()),
+        "94122-8": MetricTarget(type: .vo2Max, defaultUnit: HKUnit(from: "ml/kg*min"))
+
     ]
     
     private var cdaType: HKDocumentType? {
