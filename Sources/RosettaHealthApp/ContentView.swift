@@ -3,6 +3,7 @@ import SwiftData
 import Charts
 import HealthKit
 import RosettaHealthCore
+import UniformTypeIdentifiers
 
 public struct ContentView: View {
     @StateObject private var viewModel = AppViewModel()
@@ -304,6 +305,30 @@ public struct ContentView: View {
                         Text("\n\(suggestion)")
                     }
                 }
+            }
+            .onDrop(of: [.pdf], isTargeted: nil) { providers in
+                guard let provider = providers.first(where: { $0.hasItemConformingToTypeIdentifier(UTType.pdf.identifier) }) else {
+                    return false
+                }
+                
+                provider.loadFileRepresentation(forTypeIdentifier: UTType.pdf.identifier) { url, error in
+                    guard let fileURL = url else { return }
+                    
+                    let tempDir = FileManager.default.temporaryDirectory
+                    let safeURL = tempDir.appendingPathComponent(UUID().uuidString + ".pdf")
+                    do {
+                        try FileManager.default.copyItem(at: fileURL, to: safeURL)
+                        Task {
+                            await viewModel.processPDF(url: safeURL, modelContext: modelContext)
+                            try? FileManager.default.removeItem(at: safeURL)
+                        }
+                    } catch {
+                        Task { @MainActor in
+                            viewModel.activeError = .pdfCorrupted
+                        }
+                    }
+                }
+                return true
             }
         }
     }

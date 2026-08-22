@@ -1,12 +1,86 @@
 import UIKit
-import Social
+import SwiftUI
 import UniformTypeIdentifiers
 import RosettaHealthCore
 
+// MARK: - SwiftUI Custom UI for Share Extension
+@available(iOS 17.0, *)
+class ShareExtensionState: ObservableObject {
+    @Published var progress: Double = 0.0
+    @Published var statusText: String = "Acquisizione Referto..."
+    @Published var isSuccess: Bool = false
+    @Published var isError: Bool = false
+}
+
+@available(iOS 17.0, *)
+struct ShareExtensionView: View {
+    @ObservedObject var state: ShareExtensionState
+    
+    var body: some View {
+        VStack(spacing: 24) {
+            ZStack {
+                Circle()
+                    .fill(state.isError ? Color.red.opacity(0.2) : (state.isSuccess ? Color.green.opacity(0.2) : Color.purple.opacity(0.2)))
+                    .frame(width: 80, height: 80)
+                
+                Image(systemName: state.isError ? "xmark.octagon.fill" : (state.isSuccess ? "checkmark.seal.fill" : "doc.viewfinder.fill"))
+                    .font(.system(size: 40))
+                    .foregroundColor(state.isError ? .red : (state.isSuccess ? .green : .purple))
+                    .symbolEffect(.bounce, value: state.isSuccess)
+                    .symbolEffect(.pulse, isActive: !state.isSuccess && !state.isError)
+            }
+            
+            Text(state.statusText)
+                .font(.headline)
+                .foregroundColor(.primary)
+                .multilineTextAlignment(.center)
+            
+            if !state.isSuccess && !state.isError {
+                ProgressView(value: state.progress, total: 1.0)
+                    .progressViewStyle(.linear)
+                    .tint(.purple)
+                    .frame(width: 200)
+            }
+        }
+        .padding(40)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+        .shadow(color: Color.black.opacity(0.15), radius: 20, x: 0, y: 10)
+    }
+}
+
+@available(iOS 17.0, *)
 final class ShareViewController: UIViewController {
+    
+    private let viewState = ShareExtensionState()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        handleSharedPDF()
+        setupSwiftUIInterface()
+        
+        // Simula un po' di latenza per mostrare l'animazione premium
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.handleSharedPDF()
+        }
+    }
+    
+    private func setupSwiftUIInterface() {
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.4) // Sfondo scuro semi-trasparente
+        
+        let hostingController = UIHostingController(rootView: ShareExtensionView(state: viewState))
+        hostingController.view.backgroundColor = .clear
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        
+        addChild(hostingController)
+        view.addSubview(hostingController.view)
+        hostingController.didMove(toParent: self)
+        
+        NSLayoutConstraint.activate([
+            hostingController.view.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            hostingController.view.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+        
+        self.progressView = hostingController.view
     }
     
     private func handleSharedPDF() {
@@ -59,16 +133,30 @@ final class ShareViewController: UIViewController {
                         }
                         
                         await MainActor.run {
-                            self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
+                            self.viewState.progress = 1.0
+                            self.viewState.statusText = "Salvato nel Vault"
+                            self.viewState.isSuccess = true
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                                self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
+                            }
                         }
                     } catch let error as RosettaError {
                         await MainActor.run {
-                            self.extensionContext?.cancelRequest(withError: error)
+                            self.viewState.statusText = "Errore: \(error.localizedDescription)"
+                            self.viewState.isError = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                self.extensionContext?.cancelRequest(withError: error)
+                            }
                         }
                     } catch {
                         await MainActor.run {
+                            self.viewState.statusText = "Errore Sconosciuto"
+                            self.viewState.isError = true
                             let genericError = NSError(domain: "RosettaHealth", code: -1, userInfo: [NSLocalizedDescriptionKey: error.localizedDescription])
-                            self.extensionContext?.cancelRequest(withError: genericError)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                self.extensionContext?.cancelRequest(withError: genericError)
+                            }
                         }
                     }
                 }

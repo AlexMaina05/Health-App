@@ -151,6 +151,11 @@ Per garantire all'utente una conferma sensoriale delle operazioni di I/O (soprat
 ### 6.4 Premium Empty States
 In assenza di documenti (es. al primo avvio), l'interfaccia utilizza `ContentUnavailableView` (introdotta in iOS 17) fornendo chiamate all'azione interattive (CTA) stilizzate per guidare l'utente alla Share Extension.
 
+### 6.5 Advanced Inputs (Drag & Drop e Share UI Custom)
+L'ingestione dei documenti supporta paradigmi di input avanzati per massimizzare la flessibilità su tutti i device Apple:
+- **iPadOS Drag & Drop**: La `ContentView` espone il modifier nativo `.onDrop(of: [.pdf])` interfacciandosi con gli `NSItemProvider`. L'utente può affiancare l'app File e trascinare i PDF direttamente nella Dashboard.
+- **SwiftUI Share Extension**: Invece di usare il controller `SLComposeServiceViewController` standard (concepito per i Social Network e i pulsanti "Post"), l'App estende un `UIViewController` puro che inietta un `UIHostingController` contenente una vista SwiftUI reattiva. Questo permette di gestire animazioni asincrone fluide di estrazione, dismettendo il modale automaticamente in caso di successo.
+
 ---
 
 ## 7. Gestione degli Errori ed Eccezioni
