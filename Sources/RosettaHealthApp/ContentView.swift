@@ -1,4 +1,4 @@
-import SwiftUI
+﻿import SwiftUI
 import SwiftData
 import Charts
 import HealthKit
@@ -378,7 +378,7 @@ public struct SettingsView: View {
                         .autocapitalization(.allCharacters)
                         .disableAutocorrection(true)
                 } footer: {
-                    Text("RosettaHealth userà questi dati per garantire che i referti dei tuoi familiari non inquinino i tuoi grafici su Apple Salute.")
+                    Text("RosettaHealth userÃ  questi dati per garantire che i referti dei tuoi familiari non inquinino i tuoi grafici su Apple Salute.")
                 }
                 
                 Section(header: Text("Sicurezza (Privacy Screen)")) {
@@ -417,8 +417,43 @@ public struct SettingsView: View {
                     }
                     .tint(.blue)
                     
-                } header: {
+                                } header: {
                     Text("Esperienza Utente e Moduli")
+                }
+                
+                Section(header: Text("Crediti & Sviluppo")) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Image(systemName: "swift")
+                                .foregroundColor(.orange)
+                            Text("RosettaHealth v3.0")
+                                .font(.headline)
+                        }
+                        Text("Sviluppata interamente e orgogliosamente in Italia.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.vertical, 4)
+                    
+                    Link(destination: URL(string: "https://alexmaina.dev")!) {
+                        HStack {
+                            Image(systemName: "globe")
+                            Text("Alessandro Mainardi (Sito Web)")
+                            Spacer()
+                            Image(systemName: "arrow.up.right.square")
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    
+                    Link(destination: URL(string: "https://github.com/AlexMaina05")!) {
+                        HStack {
+                            Image(systemName: "chevron.left.forwardslash.chevron.right")
+                            Text("GitHub (@AlexMaina05)")
+                            Spacer()
+                            Image(systemName: "arrow.up.right.square")
+                                .foregroundColor(.secondary)
+                        }
+                    }
                 }
             }
             .navigationTitle("Impostazioni")
@@ -430,10 +465,7 @@ public struct SettingsView: View {
                     }
                 }
             }
-            .sensoryFeedback(trigger: viewModel.feedbackTrigger) { old, new in
-            return viewModel.isSuccess ? .success : .error
-        }
-        .onAppear {
+            .onAppear {
                 birthDate = Date(timeIntervalSince1970: dateOfBirthInterval)
             }
         }
@@ -555,3 +587,4 @@ struct ShareSheet: UIViewControllerRepresentable {
     }
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
+
