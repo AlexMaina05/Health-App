@@ -8,193 +8,157 @@ permalink: /tdd/
 
 ## Project Name: RosettaHealth (FSE CDA to Apple Health & FHIR R4)
 
-**Document Version:** 3.0.0
-**Target Environment:** iOS 17.0+ / Swift 5.10+ / SwiftUI / Xcode 15+
-**Classification:** Confidential / Technical Architecture
+**Document Version:** 3.0.0  
+**Target Environment:** iOS 17.0+ / watchOS 10.0+ / Swift 5.10+ / SwiftUI / Xcode 15+  
+**Classification:** Confidential / Technical Architecture  
 
 ---
 
 ## 1. Executive Summary & Problem Statement
 
 ### 1.1 Context & Problem
-Il Fascicolo Sanitario Elettronico italiano (FSE 2.0) rilascia referti in formato PDF/A-3 contenenti un payload XML strutturato (HL7 CDA R2). L'estrazione e l'integrazione di questi referti (Laboratorio, Radiologia, Visite Specialistiche) all'interno dell'ecosistema Apple Salute richiede elaborazioni complesse. La transcodifica deve avvenire al 100% on-device per aderire ai principi del GDPR (Art. 9) per i dati sanitari sensibili, evitando servizi cloud.
+Il Fascicolo Sanitario Elettronico italiano (FSE 2.0) rilascia referti in formato PDF/A-3 contenenti un payload XML strutturato (HL7 CDA R2). L'estrazione e l'integrazione di questi referti (Laboratorio, Radiologia, Visite Specialistiche) all'interno dell'ecosistema Apple Salute richiede elaborazioni complesse. 
+Il vincolo normativo fondamentale è la **Privacy (GDPR Art. 9)**: la transcodifica di dati sanitari sensibili deve avvenire al 100% on-device (Zero-Cloud Architecture), senza mai delegare l'elaborazione a server esterni.
 
 ### 1.2 The RosettaHealth Solution (Hybrid Ingestion Architecture)
 **RosettaHealth** risolve il problema adottando una duplice architettura nativa ("Best of Both Worlds"):
-1. **Ingestione Documentale Globale (`HKCDADocumentSample`):** Estrae il payload CDA XML puro e lo inietta direttamente in HealthKit come documento clinico nativo, garantendo l'archiviazione del referto ufficiale e la totale assenza di perdita dati (visite specialistiche, radiologia, lettere di dimissione).
-2. **Estrazione Quantitativa Selettiva (`HKQuantitySample`):** Parallelamente, il *Rosetta Engine* transcodifica l'XML in FHIR R4 JSON. Se rileva parametri numerici mappabili (es. glicemia, colesterolo, battito tramite codici LOINC), genera e salva in Salute anche i relativi campioni quantitativi (`HKQuantitySample`). Questo permette di popolare automaticamente i grafici storici dei Dati Sanitari di Apple Salute.
+1. **Ingestione Documentale Globale (`HKCDADocumentSample`):** Estrae il payload CDA XML puro e lo inietta direttamente in HealthKit come documento clinico nativo, garantendo l'archiviazione del referto ufficiale (lettere di dimissione, referti radiologici) senza alcuna perdita di metadati.
+2. **Estrazione Quantitativa Selettiva (`HKQuantitySample`):** Parallelamente, il *Rosetta Engine* transcodifica l'XML in FHIR R4 JSON. Se rileva parametri numerici mappabili (es. glicemia, colesterolo, battito tramite codici LOINC), genera e salva in Salute anche i relativi campioni quantitativi (`HKQuantitySample`). Questo permette di popolare automaticamente i grafici storici dell'app nativa.
 
 ---
 
 ## 2. Architettura IPC & App Group (Producer-Consumer)
 
-A causa dei vincoli di Sandbox di iOS e delle policy di *Data Protection* applicate ad `HKHealthStore` a schermo bloccato, l'estensione di condivisione non comunica direttamente con HealthKit. L'architettura implementa un pattern **Coda Offline Producer-Consumer**.
+A causa dei vincoli della Sandbox di iOS e delle policy di *Data Protection* applicate ad `HKHealthStore` a schermo bloccato, l'Estensione di Condivisione (Share Extension) non può comunicare direttamente con Apple Health. L'architettura implementa un pattern **Coda Offline Producer-Consumer**.
 
 ### 2.1 Topologia del Container Condiviso & Dual-Track IPC
-Il container condiviso (`group.dev.alexmaina.rosettahealth`) gestisce due tipologie di payload in base alla natura del documento, al fine di evitare il collasso del processo in background (Jetsam Event per superamento limiti RAM nella Share Extension):
+Il container condiviso (`group.dev.alexmaina.rosettahealth`) gestisce due tipologie di payload in base alla natura del documento, per evitare il collasso del processo in background (Jetsam Event per superamento limiti RAM):
 
 1. **Corsia Rapida CDA (`PendingCDA_<UUID>.xml`):** Payload XML puro estratto istantaneamente (e senza peso computazionale) dalla Share Extension e depositato per la sincronizzazione diretta.
-2. **Corsia Differita OCR (`PendingPDF_<UUID>.pdf`):** Copia binaria del PDF rasterizzato, depositata in fallback dalla Share Extension. L'estrazione tramite Apple Vision (Memory Intensive) viene demandata interamente al lifecycle dell'App Principale (Consumer).
+2. **Corsia Differita OCR (`PendingPDF_<UUID>.pdf`):** Copia binaria del PDF rasterizzato, depositata in fallback. L'estrazione tramite Apple Vision (Memory Intensive) viene demandata interamente al lifecycle dell'App Principale (Consumer) o ai task notturni.
 
-- **Consumer (AppViewModel)**: L'App principale, appena torna `.active`, scansiona il container, smista i file nelle relative pipeline (Ingestione Ibrida CDA o elaborazione asincrona OCR) e infine **cancella in modo atomico e irreversibile** i file consumati.
-
----
-
-## 3. Motore di Transcodifica & Normalizzazione (Rosetta Engine)
-
-Il motore secondario implementa deterministicamente le regole del **Microsoft FHIR-Converter**. Oltre a popolare l'interfaccia SwiftUI, estrae le `HKQuantitySample`.
-
-### 3.1 Normalizzazione Unità di Misura & Fallback di Parsing testuale (`MetricTarget`)
-Apple HealthKit richiede unità di misura rigorose e tipi numerici puri (quantità doppie). Il bridge (`HealthKitBridge.swift`) mappa i codici LOINC su specifici `HKQuantityTypeIdentifier` tramite la struttura `MetricTarget`, che garantisce:
-- Un'unità di default supportata (es. `mg/dL`, `%`).
-- Una closure di conversione opzionale (`(Double, String) -> Double`) per regolarizzare automaticamente valori difformi.
-- **Parsing String-Fallback (Resilienza ai Dati Sporchi)**: Se il referto FHIR restituisce la Pressione Arteriosa (o altre metriche) incapsulata in stringhe composite non normalizzate (es. `obs.valueString = "120/80"` anziché un campo numerico separato), un parser di fallback interno a `HealthKitBridge` processa i delimitatori e converte dinamicamente le frazioni testuali in campioni numerici `Double` validi, assicurando l'ingestione nei grafici anziché lo scarto.
-
-### 3.2 Fallback Silenziosi (UI & FHIR Export)
-1. **Codici Regionali non-LOINC**: Vengono esportati correttamente nel JSON FHIR, preservando il testo originale, ma ignorati dall'ingestione in Apple Salute.
-2. **Documenti Narrativi Non Strutturati**: Se mancano dati numerici, il transcoder genera un Bundle FHIR contenente unicamente la risorsa strutturale `Composition` e `Patient`, senza generare crash.
-
-### 3.3 Fallback Ottico e Graceful Degradation (Apple Vision OCR)
-Nel panorama sanitario italiano, alcuni referti vengono ancora erogati come PDF rasterizzati (scansioni cartacee) privi di allegato XML CDA strutturato. RosettaHealth implementa un pattern di *Graceful Degradation* per gestire questi scenari estremi:
-- **Estrazione Visiva**: Se il parser XML fallisce, subentra il modulo `VisionOCRExtractor` che renderizza la prima pagina in formato grafico ed esegue una `VNRecognizeTextRequest` nativa.
-- **Integrità Clinica (Audit Trail)**: Per prevenire la corruzione dell'archivio clinico, i dati OCR **non** generano un documento fittizio `HKCDADocumentSample`.
-- **Ingestione Metriche Grezze**: Vengono generati esclusivamente campioni quantitativi (`HKQuantitySample`) per popolare i grafici (Glicemia, Pressione, Colesterolo) ricavati tramite Regex. Questi campioni vengono "marchiati" a livello di database con i metadati di provenienza: `"EXTRACTION_METHOD": "APPLE_VISION_OCR_FALLBACK"` e `"CONFIDENCE_LEVEL": "HEURISTIC_REGEX"`, preservando l'integrità medico-legale dell'App.
-- **Feedback UI**: L'interfaccia utente notifica l'evento mostrando un badge viola specifico che avverte l'utente della natura probabilistica (OCR) del dato.
-
-### 3.4 Interoperabilità Transfrontaliera (International Patient Summary - IPS)
-Il transcoder non si limita a generare un generico formato FHIR R4, ma modella le strutture dati (`FHIRModels.swift`) affinché rispettino i vincoli del profilo **IPS (International Patient Summary)**.
-- **Iniezione Dinamica Metadati**: Al momento dell'istanziazione, il motore inietta i `Profile Identifier` ufficiali di HL7 all'interno del nodo `meta.profile` di ogni risorsa (es. `http://hl7.org/fhir/uv/ips/StructureDefinition/Bundle-uv-ips` per il `FHIRBundle` e `Composition-uv-ips` per la `FHIRComposition`).
-- **Validità Estesa**: L'esportazione JSON risultante è formalmente riconosciuta a livello internazionale, permettendo al paziente di condividere un referto digitale strutturato leggibile istantaneamente in qualsiasi struttura ospedaliera dell'Unione Europea dotata di EMR aderenti allo standard IPS, superando i limiti del formato legacy CDA R2 italiano.
+- **Consumer (AppViewModel / BGTaskScheduler)**: L'App principale scansiona il container asincronamente. Smista i file nelle relative pipeline e, terminata l'ingestione, esegue un **cleanup atomico e irreversibile** (implementato tramite blocchi `defer`) per eliminare tracce nel filesystem esposto.
 
 ---
 
-## 4. Gestione Sicurezza e Privacy (GDPR Art. 9)
+## 3. Modelli Dati & Family Vault (SwiftData)
 
-Il sistema gestisce categorie particolari di dati personali. 
+Per prevenire l'inquinamento del database biomedico dell'utente (Apple Health è strettamente mono-utente), l'App implementa il **Family Vault**, un EMR (Electronic Medical Record) crittografato gestito tramite `SwiftData`.
 
-### 4.1 Zero-Cloud Isolation Guarantee
-Il progetto è progettato *secure by default*: esclude formalmente l'inizializzazione di stack di networking (`URLSession` non invocato). Tutte le elaborazioni avvengono al 100% sulla CPU locale (CoreGraphics per PDF, XMLParser nativo).
+### 3.1 SwiftData Schema
+Il modello dati principale è `VaultDocument`, progettato per supportare attributi BLOB pesanti in storage esterno per non impattare sulle performance delle query SQL.
 
-### 4.2 Data Protection & Lifecycle di Cleanup
-- **Crittografia GDPR By-Design**: Oltre alla direttiva dichiarativa negli entitlements (`NSFileProtectionCompleteUntilFirstUserAuthentication`), RosettaHealth implementa un paradigma *Defense-in-Depth* applicando programmaticamente la crittografia tramite le opzioni di `FileManager` (`setAttributes`) e `Data` (`write(options:)`) su ogni operazione di I/O (inclusi i file temporanei e i report JSON FHIR).
-- **Regola di Cleanup Rigida**: Qualsiasi file depositato nel container condiviso viene cancellato in modo atomico e irreversibile dall'`AppViewModel` (tramite blocchi `defer`) immediatamente dopo la chiamata di elaborazione/ingestione, garantendo zero-retention sui dati sensibili esposti nel file system.
-
-### 4.3 Prevenzione Inquinamento Dati (Multi-Profile Routing & Family Vault)
-L'infrastruttura Apple Health è strettamente personale ("mono-utente"). Dato che i cittadini italiani spesso scaricano i referti dei propri familiari (es. figli o genitori), l'ingestione cieca dei documenti corromperebbe il database del proprietario. RosettaHealth implementa un pattern di **Dual Routing** basato su identificazione fiscale:
-- **Validazione Fiscale (CF Match)**: L'`AppViewModel` introduce un Security Checkpoint (`extractPatientInfo`). Il Codice Fiscale del Paziente viene estratto dal Bundle FHIR e confrontato con il proprietario dell'iPhone.
-- **Routing Biforcato**:
-  - *Se combacia*: Il referto viene iniettato nell'ecosistema Apple HealthKit E salvato localmente nel Vault.
-  - *Se non combacia*: L'ingestione in HealthKit viene interrotta chirurgicamente per prevenire corruzione (Anti-Inquinamento). Il referto originale (Bundle FHIR) viene instradato verso un database **SwiftData** crittografato on-device, costruendo di fatto un Fascicolo Sanitario Elettronico (*Family Vault*) multi-utente accessibile da una tab dedicata.
-
-### 4.4 Autenticazione Biometrica e Privacy Screen (GDPR)
-Per innalzare ulteriormente il livello di conformità all'Art. 32 del GDPR (Sicurezza del Trattamento), l'applicativo integra il framework `LocalAuthentication`. 
-- Quando l'app transita in stato `.inactive` o `.background`, il `BiometricAuthManager` genera immediatamente un evento di lock e oscura la vista (`.blur`), proteggendo i dati clinici dal Task Switcher di iOS (Privacy Screen).
-- Al rientro in `.active`, viene forzata la verifica dell'identità tramite **FaceID** o **TouchID** per decrittare lo schermo.
-- *(Nota di compilazione)*: È necessario aggiungere la chiave `NSFaceIDUsageDescription` nell'`Info.plist` del progetto Xcode ospite.
-
----
-
-## 5. Requisiti di Compilazione (Entitlements e Configuration)
-
-Per compilare il progetto su Xcode senza errori di Code Signing, configurare le seguenti capabilities:
-
-### 5.1 App Groups Entitlement
-Nei file `.entitlements` di **entrambi i target** (App Principale e Share Extension):
-
-```xml
-<key>com.apple.security.application-groups</key>
-<array>
-    <string>group.dev.alexmaina.rosettahealth</string>
-</array>
-
+```swift
+@Model
+public final class VaultDocument {
+    @Attribute(.unique) public var id: UUID
+    public var patientFiscalCode: String
+    public var documentDate: Date
+    public var loincMappings: [String: Double]
+    
+    // BLOB binario del PDF originale, archiviato out-of-line
+    @Attribute(.externalStorage) public var pdfData: Data?
+    
+    public init(...) { ... }
+}
 ```
 
-### 5.2 HealthKit Entitlement (Solo App Target)
-L'App principale deve abilitare HealthKit e richiedere le autorizzazioni per:
-1. La tipologia **Documenti Clinici** (`HKDocumentTypeIdentifier.CDA`).
-2. I tipi di **Quantità** mappati (Glicemia, Colesterolo, Frequenza Cardiaca, ecc.).
+### 3.2 Dual-Routing Engine
+L'AppViewModel estrae il Codice Fiscale del Paziente (dal CDA) e lo incrocia con i dati biometrici del proprietario dell'iPhone. 
+- **Match Positivo**: I dati vengono salvati in Apple Health e nel Vault locale.
+- **Match Negativo (Familiare)**: Intervento di Anti-Inquinamento. Il salvataggio su HealthKit viene abortito (Throw `RosettaError.unmatchedFiscalCode`), e il reperto viene dirottato esclusivamente sul `ModelContext` del Family Vault.
+
+---
+
+## 4. Motore di Transcodifica & Normalizzazione (Rosetta Engine)
+
+Il motore secondario implementa deterministicamente le regole del **Microsoft FHIR-Converter**. 
+
+### 4.1 Interoperabilità Transfrontaliera (IPS)
+Oltre alla mera estrazione numerica, il motore formatta i JSON finali in architetture `FHIR R4 Bundle`. Per garantire la mobilità del paziente a livello internazionale, inietta i Profile Identifier del framework **International Patient Summary (IPS)**:
+- `http://hl7.org/fhir/uv/ips/StructureDefinition/Bundle-uv-ips`
+Tale iniezione rende l'esportazione valida e compatibile con tutti gli EMR ospedalieri dell'Unione Europea.
+
+### 4.2 Mappatura Semantica e LOINC Target
+Apple HealthKit richiede unità di misura rigorose (`HKUnit`). Il bridge (`HealthKitBridge.swift`) mappa i codici internazionali LOINC su tipi nativi Apple tramite uno struct `MetricTarget`.
+
+| Metrica (IT) | LOINC (Primary) | HKQuantityTypeIdentifier | Fallback Unit |
+|--------------|-----------------|--------------------------|---------------|
+| Glicemia | `15074-8` | `.bloodGlucose` | `mg/dL` |
+| Colesterolo Totale | `2093-3` | `.dietaryCholesterol` | `mg/dL` |
+| Pressione Sistolica | `8480-6` | `.bloodPressureSystolic` | `mmHg` |
+| Pressione Diastolica | `8462-4` | `.bloodPressureDiastolic`| `mmHg` |
+
+- **Parsing String-Fallback (Resilienza ai Dati Sporchi)**: Se il referto FHIR restituisce misurazioni composite incapsulate in stringhe (es. `"120/80"`), un parser Regex interno scompatta i delimitatori in vettori validi (`[120.0, 80.0]`) e genera metriche `Double` accettabili da HealthKit.
+
+---
+
+## 5. Fallback Ottico (Apple Vision) e Annotazioni PDF
+
+Il panorama sanitario italiano presenta spesso referti PDF/raster generati da scansioni (privi dell'allegato XML nativo). Il sistema implementa un potente **Graceful Degradation Fallback**.
+
+### 5.1 Heuristic Regex & Vision Extraction
+Se `CGPDFDocument` non individua payload `application/xml` nell'alberatura, viene instanziato `VisionOCRExtractor`:
+- Renderizza il raster e invoca `VNRecognizeTextRequest`.
+- Utilizza un motore Regex euristico per individuare pattern clinici classici (es. `(?i)Colesterolo.*?(\d{3})\s*mg`).
+- **Audit Trail (Valenza Legale)**: I campioni estratti via OCR vengono generati escludendo il documento CDA in HealthKit e marcati con metadati espliciti `["EXTRACTION_METHOD": "APPLE_VISION_OCR_FALLBACK"]`. L'interfaccia SwiftUI etichetta questi campioni con un badge viola (Probabilistico).
+
+### 5.2 PDF Vector Annotations (PDFKit)
+Per garantire all'utente il controllo visivo, il `pdfData` grezzo viene passato ad una `UIViewRepresentable` che fa il wrap di `PDFView`. 
+L'IA calcola le `CGRect` delle *boundingBox* del testo riconosciuto. Queste coordinate vengono scalate nello spazio vettoriale di PDFKit e trasformate in `PDFAnnotation` con colore `.systemYellow` (Highlighter Effect), indicando all'utente l'esatto pixel da cui l'App ha estrapolato il dato numerico.
+
+---
+
+## 6. Ecosistema Avanzato (iOS, watchOS, BGTasks)
+
+### 6.1 Headless Background Fetch (BGTaskScheduler)
+Per consumare decine di PDF accodati, viene registrato un `BGProcessingTask`. 
+- **Headless Context**: L'App innesca un `ModelContainer` puramente slegato dalla UI (Headless).
+- Esegue il parsing XML notturno senza causare battery drain attivo all'utente.
+
+### 6.2 watchOS Companion App (Shared App Group)
+Per via delle limitazioni energetiche, Apple Watch non può eseguire pesanti estrazioni XML. 
+L'App iOS Serializza le *ultime misurazioni critiche* e le codifica in `UserDefaults(suiteName: "group.dev...")`.
+Il target `RosettaWatch` (compilato sotto direttive `#if os(watchOS)`) legge questi UserDefaults ed espone le metriche in tempo reale sotto forma di `Gauge` interattivi al polso, fornendo supporto decisionale senza risvegliare l'iPhone.
+
+### 6.3 Advanced Inputs (Share Extension & iPadOS Drag & Drop)
+- **Share Extension SwiftUI**: Intercetta esplicitamente file `public.composite-content` (PDF). Inietta un `UIHostingController` per fornire caricamenti con animazioni *Lottie-style* (`.symbolEffect`), superando l'interfaccia statica nativa "Post".
+- **iPadOS Drag & Drop**: Attraverso il modifier `.onDrop(of: [.pdf])`, gli `NSItemProvider` passano il riferimento binario direttamente alla Dashboard se il PDF viene trascinato dall'App File in Split View.
+
+---
+
+## 7. Requisiti di Sicurezza & Compliance (GDPR Art. 9)
+
+Trattando dati biometrici (Art. 9 GDPR), l'App è disegnata in ottica **Zero-Trust** e **Zero-Cloud**.
+
+### 7.1 Networking Isolation
+L'intero framework `Foundation.URLSession` è assente dalla business logic. Tutte le inferenze (Apple Neural Engine) e i task di transcodifica XML girano localmente sul SoC del dispositivo ospite.
+
+### 7.2 Entitlements e Permessi HealthKit
+Per compilare l'infrastruttura, Xcode necessita delle capability HealthKit:
 
 ```xml
 <key>com.apple.developer.healthkit</key>
 <true/>
-
 ```
 
-### 5.3 Data Protection Level (Entitlements)
-Permette la scrittura dei file XML da parte della Share Extension anche a schermo bloccato:
+Inoltre, il gruppo IPC necessita dell'entitlement di crittografia *Data At Rest* a schermo bloccato:
 
 ```xml
 <key>com.apple.developer.default-data-protection</key>
 <string>NSFileProtectionCompleteUntilFirstUserAuthentication</string>
-
 ```
 
-### 5.4 Info.plist (Privacy Strings)
-L'App principale necessita delle stringhe d'uso:
-- `NSHealthShareUsageDescription`
-
-- `NSHealthUpdateUsageDescription` (Motivazione: "Integrazione dei referti clinici CDA FSE e dei parametri vitali in Apple Salute").
-
-L'estensione necessita della regola di attivazione per intercettare esclusivamente i PDF (`NSExtensionActivationRule`).
+### 7.3 Privacy Screen e Biometria
+Se l'app transita in stato `.inactive` o entra nello Switcher delle App, il `BiometricAuthManager` inietta una vista `.blur(radius: 20)` a tutto schermo. 
+Il ripristino dell'interazione (stato `.active`) è sbloccabile esclusivamente richiedendo un prompt nativo di `LocalAuthentication` (FaceID o TouchID).
 
 ---
 
-## 6. Architettura User Interface (SwiftUI & HIG)
+## 8. Quality Assurance & Error Handling
 
-Il progetto rispetta rigorosamente le **Apple Human Interface Guidelines (HIG)** e adotta i pattern visivi introdotti a partire da iOS 16/17 (Glassmorphism e tipografia di sistema HealthKit).
+L'architettura gestisce le eccezioni tramite un enumeratore conformante a `LocalizedError` (`RosettaError`), separato per domini di fallimento: `.healthKitUnavailable`, `.pdfCorrupted`, `.unmatchedFiscalCode`, ecc.
 
-### 6.1 Implementazione Glassmorphism
-I risultati clinici estratti dal Rosetta Engine sono renderizzati come "Floating Cards":
-- L'utilizzo di `.background(.ultraThinMaterial)` applica l'effetto vetro smerigliato e il vibracy control.
-- Le forme utilizzano il `RoundedRectangle` con stile `.continuous` (squircle) per massima fedeltà al design Apple.
-- La tipografia numerica sfrutta `design: .rounded` e `.bold()` come avviene nativamente nell'app Salute.
-
-### 6.2 Data Visualization (Swift Charts)
-I trend temporali delle misurazioni cliniche sono tracciati dinamicamente sfruttando il framework `Charts`.
-- **Sparklines Asincrone**: La `ObservationRowView` invoca un task in background (`.task`) per interrogare HealthKit (`fetchHistoricalSamples`) e recuperare le ultime 5 misurazioni del medesimo codice LOINC.
-- **Interpolazione Fluida**: I dati sono renderizzati con `LineMark` e `PointMark` sfruttando l'interpolazione `.catmullRom` per creare curve di livello organiche.
-- **Color Coding**: Se l'ultimo valore viola il Range di Riferimento del referto, il gradiente del grafico transita dinamicamente dal blu semantico al rosso (`.red.gradient`), segnalando visivamente l'anomalia.
-
-### 6.3 Micro-Interazioni e Feedback Aptico
-Per garantire all'utente una conferma sensoriale delle operazioni di I/O (soprattutto in casi di latenza dovuti al Parsing o al motore OCR):
-- L'`AppViewModel` genera feedback aptici tramite `UINotificationFeedbackGenerator().notificationOccurred(.success / .error)` al termine del loop di ingestione o fallimento.
-- Animazioni fluide basate su `SF Symbols` (`.symbolEffect`) indicano lo stato di caricamento.
-- Nel Family Vault, i familiari sono contraddistinti da *Dynamic Avatars*: un `LinearGradient` calcolato in modo deterministico (hash) dal Codice Fiscale, permettendo riconoscimento visivo istantaneo senza esporre dati in chiaro.
-
-### 6.4 Premium Empty States
-In assenza di documenti (es. al primo avvio), l'interfaccia utilizza `ContentUnavailableView` (introdotta in iOS 17) fornendo chiamate all'azione interattive (CTA) stilizzate per guidare l'utente alla Share Extension.
-
-### 6.5 Advanced Inputs (Drag & Drop e Share UI Custom)
-L'ingestione dei documenti supporta paradigmi di input avanzati per massimizzare la flessibilità su tutti i device Apple:
-- **iPadOS Drag & Drop**: La `ContentView` espone il modifier nativo `.onDrop(of: [.pdf])` interfacciandosi con gli `NSItemProvider`. L'utente può affiancare l'app File e trascinare i PDF direttamente nella Dashboard.
-- **SwiftUI Share Extension**: Invece di usare il controller `SLComposeServiceViewController` standard (concepito per i Social Network e i pulsanti "Post"), l'App estende un `UIViewController` puro che inietta un `UIHostingController` contenente una vista SwiftUI reattiva. Questo permette di gestire animazioni asincrone fluide di estrazione, dismettendo il modale automaticamente in caso di successo.
-
----
-
-## 7. Gestione degli Errori ed Eccezioni
-
-L'infrastruttura di Error Handling si affida all'enum nativo `RosettaError` (conforme a `LocalizedError`), separato su 4 domini:
-- **PDF/A-3**: Errori di estrazione (es. `.pdfCorrupted`, `.encryptedPDFNotSupported`).
-- **Parsing SAX**: Riservato al Rosetta Engine (es. `.malformedXML`, `.missingClinicalDocumentHeader`).
-- **HealthKit**: Fallimenti di autorizzazione o mancato supporto del tipo di documento CDA/Quantity (es. `.healthKitUnavailable`).
-- **IPC**: Errori di scrittura su container o malformazione del payload XML in transito (es. `.appGroupContainerUnavailable`).
-
-Ogni errore solleva alert nativi SwiftUI non bloccanti contenenti `failureReason` e `recoverySuggestion`.
-
----
-
-## 8. Ecosistema Avanzato (iOS & watchOS)
-
-L'architettura supporta estensioni profonde nell'ecosistema Apple:
-- **Elaborazione Notturna (BGTaskScheduler)**: Tramite `BackgroundTaskManager`, iOS risveglia l'app in background (tipicamente di notte o in carica) per smaltire massivamente code di documenti PDF accumulati tramite Share Extension o Widget.
-- **Evidenziazione PDF (PDFKit + Vision)**: I dati numerici trascritti dall'Intelligenza Artificiale vengono rimappati sullo spazio vettoriale del PDF originale usando `PDFAnnotation`. L'utente può aprire il documento raster e vedere il parametro (es. Colesterolo) evidenziato di giallo.
-- **watchOS Companion App**: Il Target `RosettaWatch` estende l'App su Apple Watch. Siccome HealthKit non è interrogabile a schermo spento, l'orologio si sincronizza all'App Group `UserDefaults` per renderizzare indicatori `Gauge` in tempo reale sul quadrante, fornendo alert di Medicina Preventiva direttamente al polso.
-
----
-
-## 9. Quality Assurance & Unit Testing (XCTest)
-
-Per certificare la sicurezza e la resilienza del motore di transcodifica clinica, il modulo `RosettaHealthCore` implementa una suite strutturata tramite il framework nativo `XCTest`.
-- **Validazione Parser (Mocking)**: Vengono iniettati payload XML fittizi per certificare che il `RosettaTranscoder` estragga correttamente le metriche (es. Glicemia `15074-8`) e i profili IPS.
-- **Resilienza (Edge Cases)**: Sono coperti test specifici per la gestione della degradazione morbida (*Graceful Degradation*), ad esempio l'assenza del nodo Paziente o la mancanza dell'intestazione `<ClinicalDocument>`.
-- **Static Mapping**: I test unitari su `HealthKitBridge` prevengono regressioni sul mapping dei codici LOINC critici (es. Pressione, Colesterolo) e certificano la sicurezza matematica del fallback testuale sulle stringhe composite.
+Per la certificazione di stabilità, il framework core usa `XCTest`:
+- **Mocking XML**: Iniezione di payload simulati per verificare la corretta lettura dei codici LOINC critici da parte del parser SAX.
+- **Resilienza Strutturale**: Valutazione della tolleranza d'errore (Graceful Fallback) se un referto medico è privo di intestazione o di *Patient ID*.
