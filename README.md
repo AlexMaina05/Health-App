@@ -103,6 +103,8 @@ Il motore di mappatura semantica trasla i codici identificativi (LOINC) presenti
 | **Pressione Diastolica**| `8462-4`, `85354-9` | `bloodPressureDiastolic` | mmHg |
 | **Frequenza Cardiaca** | `8867-4` | `heartRate` | bpm |
 
+*(Nota: Molte altre mappature LOINC sono estensibili nativamente modificando il dizionario in `HealthKitBridge.swift`)*
+
 ---
 **Progettato con ♥️ e SwiftUI per Apple Ecosystem.**  
-*Distribuito sotto licenza Open-Source (MIT).*
+*Distribuito sotto licenza GNU General Public License v3.0 (GPLv3) con App Store Exception.*
