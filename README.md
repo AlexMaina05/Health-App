@@ -62,7 +62,7 @@ The result? Your legacy government PDF instantly becomes an interactive, long-te
 * **🤖 Graceful Degradation (Apple Vision OCR)**: Extracts key parameters (Glucose, Cholesterol, Blood Pressure) from scanned/raster PDFs lacking embedded XML, with full provenance audit trailing. 
 * **📤 Share Extension & Safe IPC**: Extract and queue medical data in a single tap directly from Safari, Mail, or the Files app using iOS Share Sheets. 
 * **📈 Real-time Trend Sparklines (Swift Charts)**: Clinical parameters are visualized dynamically on the dashboard. The app asynchronously fetches historical HealthKit samples and generates smooth Catmull-Rom sparklines to instantly highlight worsening trends.
-* **🎨 Modern SwiftUI Interface**: Built with the latest Apple Human Interface Guidelines, featuring Glassmorphism, continuous squircle shapes, and native typographic designs.
+* **🎨 Modern SwiftUI Interface**: Built with the latest Apple Human Interface Guidelines, featuring Glassmorphism, continuous squircle shapes, and native typographic designs. Enhanced with Haptic Feedback, iOS 17 `ContentUnavailableView` empty states, and dynamic gradient avatars for family members.
 
 ---
 

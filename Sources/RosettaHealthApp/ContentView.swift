@@ -103,42 +103,44 @@ public struct ContentView: View {
                 // MARK: - Premium Processing Indicator
                 if viewModel.isProcessing {
                     Section {
-                        HStack(spacing: 16) {
-                            Image(systemName: "waveform.path.ecg")
-                                .font(.title2)
-                                .foregroundColor(.blue)
-                                .symbolEffect(.pulse, isActive: true)
-                            Text("Estrazione referto in corso...")
+                        VStack(spacing: 20) {
+                            Image(systemName: "scanner")
+                                .font(.system(size: 60))
+                                .foregroundStyle(.blue.gradient)
+                                .symbolEffect(.variableColor.iterative.reversing, options: .repeating)
+                            
+                            Text("Analisi e decrittazione in corso...")
                                 .font(.headline)
                                 .foregroundColor(.primary)
-                            Spacer()
+                            
+                            ProgressView()
+                                .progressViewStyle(.circular)
                         }
+                        .padding(.vertical, 30)
+                        .frame(maxWidth: .infinity)
                     }
+                    .listRowBackground(Color.clear)
                 }
                 
                 // MARK: - Premium Empty State
                 if viewModel.extractedObservations.isEmpty && !viewModel.isProcessing && viewModel.isHealthKitAuthorized {
                     Section {
-                        VStack(spacing: 16) {
-                            Image(systemName: "folder.badge.magnifyingglass")
-                                .font(.system(size: 50, weight: .light))
-                                .foregroundStyle(
-                                    LinearGradient(colors: [.blue, .purple], startPoint: .top, endPoint: .bottom)
-                                )
-                                .padding(.bottom, 8)
-                            
-                            Text("Nessun referto attivo")
-                                .font(.title3)
-                                .fontWeight(.bold)
-                            
-                            Text("RosettaHealth è in attesa.\nCondividi un PDF dal tuo Fascicolo Regionale tramite il tasto '+' o dal menu di condivisione di iOS.")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal, 20)
+                        ContentUnavailableView {
+                            Label("Nessun Referto", systemImage: "tray")
+                                .symbolEffect(.pulse)
+                        } description: {
+                            Text("Usa l'Estensione di Condivisione di iOS per estrarre referti da PDF archiviati in iCloud Drive o Ricevuti via Mail.")
+                        } actions: {
+                            Button(action: {
+                                isShowingShareSheet = true
+                            }) {
+                                Text("Apri Condivisione (Tutorial)")
+                                    .fontWeight(.bold)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.purple)
+                            .clipShape(Capsule())
                         }
-                        .padding(.vertical, 40)
-                        .frame(maxWidth: .infinity)
                     }
                     .listRowBackground(Color.clear)
                 }

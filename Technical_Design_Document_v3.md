@@ -142,6 +142,15 @@ I trend temporali delle misurazioni cliniche sono tracciati dinamicamente sfrutt
 - **Interpolazione Fluida**: I dati sono renderizzati con `LineMark` e `PointMark` sfruttando l'interpolazione `.catmullRom` per creare curve di livello organiche.
 - **Color Coding**: Se l'ultimo valore viola il Range di Riferimento del referto, il gradiente del grafico transita dinamicamente dal blu semantico al rosso (`.red.gradient`), segnalando visivamente l'anomalia.
 
+### 6.3 Micro-Interazioni e Feedback Aptico
+Per garantire all'utente una conferma sensoriale delle operazioni di I/O (soprattutto in casi di latenza dovuti al Parsing o al motore OCR):
+- L'`AppViewModel` genera feedback aptici tramite `UINotificationFeedbackGenerator().notificationOccurred(.success / .error)` al termine del loop di ingestione o fallimento.
+- Animazioni fluide basate su `SF Symbols` (`.symbolEffect`) indicano lo stato di caricamento.
+- Nel Family Vault, i familiari sono contraddistinti da *Dynamic Avatars*: un `LinearGradient` calcolato in modo deterministico (hash) dal Codice Fiscale, permettendo riconoscimento visivo istantaneo senza esporre dati in chiaro.
+
+### 6.4 Premium Empty States
+In assenza di documenti (es. al primo avvio), l'interfaccia utilizza `ContentUnavailableView` (introdotta in iOS 17) fornendo chiamate all'azione interattive (CTA) stilizzate per guidare l'utente alla Share Extension.
+
 ---
 
 ## 7. Gestione degli Errori ed Eccezioni

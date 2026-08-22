@@ -5,6 +5,7 @@ import RosettaHealthCore
 import OSLog
 import UserNotifications
 import SwiftData
+import UIKit
 
 @MainActor
 public final class AppViewModel: ObservableObject {
@@ -144,10 +145,13 @@ public final class AppViewModel: ObservableObject {
             if !newObservations.isEmpty { self.extractedObservations.append(contentsOf: newObservations) }
             if wasOCRUsed { self.isOCRExtracted = true }
             
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
             isProcessing = false
             
         } catch {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
             logger.error("Errore grave durante la lettura del container: \(error.localizedDescription)")
+            isProcessing = false
         }
     }
     
@@ -233,6 +237,7 @@ public final class AppViewModel: ObservableObject {
             await runClinicalDecisionSupport(for: self.extractedObservations)
         }
         
+        UINotificationFeedbackGenerator().notificationOccurred(self.activeError == nil ? .success : .error)
         isProcessing = false
     }
     

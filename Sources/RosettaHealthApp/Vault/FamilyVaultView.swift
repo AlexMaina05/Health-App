@@ -29,10 +29,19 @@ public struct FamilyVaultView: View {
                             
                             // Mostra il nome del paziente dedotto dall'ultimo documento
                             if let name = patientDocs.first?.patientName {
-                                HStack {
-                                    Image(systemName: "person.circle.fill")
-                                        .foregroundColor(.purple)
-                                        .imageScale(.large)
+                                HStack(spacing: 12) {
+                                    // Dynamic Avatar
+                                    ZStack {
+                                        Circle()
+                                            .fill(avatarGradient(for: cf))
+                                            .frame(width: 36, height: 36)
+                                        
+                                        Text(String(name.prefix(1)).uppercased())
+                                            .font(.headline)
+                                            .foregroundColor(.white)
+                                    }
+                                    .shadow(color: Color.black.opacity(0.1), radius: 3, y: 2)
+                                    
                                     Text(name)
                                         .font(.headline)
                                 }
@@ -58,6 +67,19 @@ public struct FamilyVaultView: View {
             }
             .navigationTitle("Family Vault")
         }
+    }
+    
+    private func avatarGradient(for string: String) -> LinearGradient {
+        let hash = abs(string.hashValue)
+        let colors: [[Color]] = [
+            [.blue, .purple],
+            [.orange, .red],
+            [.green, .teal],
+            [.pink, .purple],
+            [.yellow, .orange]
+        ]
+        let palette = colors[hash % colors.count]
+        return LinearGradient(colors: palette, startPoint: .topLeading, endPoint: .bottomTrailing)
     }
 }
 
