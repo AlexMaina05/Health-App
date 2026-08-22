@@ -21,7 +21,10 @@ public final class VaultDocument {
     // Il Bundle FHIR transcodificato (salvato come JSON Data grezzo per flessibilità)
     @Attribute(.externalStorage) public var fhirBundleJSON: Data
     
-    public init(id: UUID = UUID(), dateAdded: Date = Date(), patientName: String, fiscalCode: String, documentTitle: String, documentDate: Date, fhirBundleJSON: Data) {
+    // Il PDF Originale per le annotazioni vettoriali
+    @Attribute(.externalStorage) public var pdfData: Data?
+    
+    public init(id: UUID = UUID(), dateAdded: Date = Date(), patientName: String, fiscalCode: String, documentTitle: String, documentDate: Date, fhirBundleJSON: Data, pdfData: Data? = nil) {
         self.id = id
         self.dateAdded = dateAdded
         self.patientName = patientName
@@ -29,5 +32,6 @@ public final class VaultDocument {
         self.documentTitle = documentTitle
         self.documentDate = documentDate
         self.fhirBundleJSON = fhirBundleJSON
+        self.pdfData = pdfData
     }
 }

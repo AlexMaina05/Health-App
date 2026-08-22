@@ -170,7 +170,16 @@ Ogni errore solleva alert nativi SwiftUI non bloccanti contenenti `failureReason
 
 ---
 
-## 8. Quality Assurance & Unit Testing (XCTest)
+## 8. Ecosistema Avanzato (iOS & watchOS)
+
+L'architettura supporta estensioni profonde nell'ecosistema Apple:
+- **Elaborazione Notturna (BGTaskScheduler)**: Tramite `BackgroundTaskManager`, iOS risveglia l'app in background (tipicamente di notte o in carica) per smaltire massivamente code di documenti PDF accumulati tramite Share Extension o Widget.
+- **Evidenziazione PDF (PDFKit + Vision)**: I dati numerici trascritti dall'Intelligenza Artificiale vengono rimappati sullo spazio vettoriale del PDF originale usando `PDFAnnotation`. L'utente può aprire il documento raster e vedere il parametro (es. Colesterolo) evidenziato di giallo.
+- **watchOS Companion App**: Il Target `RosettaWatch` estende l'App su Apple Watch. Siccome HealthKit non è interrogabile a schermo spento, l'orologio si sincronizza all'App Group `UserDefaults` per renderizzare indicatori `Gauge` in tempo reale sul quadrante, fornendo alert di Medicina Preventiva direttamente al polso.
+
+---
+
+## 9. Quality Assurance & Unit Testing (XCTest)
 
 Per certificare la sicurezza e la resilienza del motore di transcodifica clinica, il modulo `RosettaHealthCore` implementa una suite strutturata tramite il framework nativo `XCTest`.
 - **Validazione Parser (Mocking)**: Vengono iniettati payload XML fittizi per certificare che il `RosettaTranscoder` estragga correttamente le metriche (es. Glicemia `15074-8`) e i profili IPS.

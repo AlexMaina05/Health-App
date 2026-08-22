@@ -92,7 +92,8 @@ public final class AppViewModel: ObservableObject {
                                     fiscalCode: patientInfo.cf,
                                     documentTitle: title,
                                     documentDate: Date(),
-                                    fhirBundleJSON: jsonData
+                                    fhirBundleJSON: jsonData,
+                                    pdfData: try? Data(contentsOf: file)
                                 )
                                 context.insert(vaultDoc)
                                 try? context.save()
@@ -195,7 +196,8 @@ public final class AppViewModel: ObservableObject {
                             fiscalCode: patientInfo.cf,
                             documentTitle: title,
                             documentDate: Date(),
-                            fhirBundleJSON: jsonData
+                            fhirBundleJSON: jsonData,
+                            pdfData: try? Data(contentsOf: url)
                         )
                         context.insert(vaultDoc)
                         try? context.save()

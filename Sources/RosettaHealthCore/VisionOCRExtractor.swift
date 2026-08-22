@@ -1,7 +1,9 @@
 import Foundation
 import PDFKit
 import Vision
+#if canImport(UIKit)
 import UIKit
+#endif
 
 public struct ExtractedMetric: Sendable {
     public let name: String
@@ -19,6 +21,7 @@ public struct ExtractedMetric: Sendable {
     }
 }
 
+#if os(iOS)
 public final class VisionOCRExtractor {
     
     public static func extractMetricsFromRasterPDF(url: URL) async throws -> [ExtractedMetric] {
@@ -138,3 +141,5 @@ public final class VisionOCRExtractor {
         return metrics
     }
 }
+
+#endif

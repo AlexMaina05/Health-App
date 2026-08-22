@@ -4,7 +4,8 @@ import PackageDescription
 let package = Package(
     name: "RosettaHealthCore",
     platforms: [
-        .iOS(.v17)
+        .iOS(.v17),
+        .watchOS(.v10)
     ],
     products: [
         .library(
@@ -18,9 +19,9 @@ let package = Package(
             dependencies: [],
             linkerSettings: [
                 .linkedFramework("HealthKit"),
-                .linkedFramework("PDFKit"),
                 .linkedFramework("Vision"),
-                .linkedFramework("UIKit")
+                .linkedFramework("PDFKit", .when(platforms: [.iOS, .macOS])),
+                .linkedFramework("UIKit", .when(platforms: [.iOS]))
             ]
         ),
         .testTarget(

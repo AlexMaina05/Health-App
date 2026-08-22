@@ -16,12 +16,15 @@ public final class PDFEmbeddedAttachmentExtractor {
             return .cdaXML(xmlData)
         }
         
+        #if os(iOS)
         let metrics = try await VisionOCRExtractor.extractMetricsFromRasterPDF(url: url)
         if metrics.isEmpty {
             throw RosettaError.noEmbeddedXMLFound
         }
-        
         return .rasterOCR(metrics)
+        #else
+        throw RosettaError.noEmbeddedXMLFound
+        #endif
     }
 
     public static func extractXML(from url: URL) throws -> Data {

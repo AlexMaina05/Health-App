@@ -71,6 +71,11 @@ public struct MainAppView: View {
             }
         }
         .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .background {
+                // Schedula l'esecuzione in background quando l'app va in sleep
+                BackgroundTaskManager.shared.scheduleNextProcessing()
+            }
+            
             if isBiometricLockEnabled && hasCompletedOnboarding {
                 if newPhase == .inactive || newPhase == .background {
                     // Blocca l'app appena va in background per attivare il Privacy Screen nello switcher

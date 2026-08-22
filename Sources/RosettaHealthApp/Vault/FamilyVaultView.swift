@@ -129,6 +129,27 @@ struct VaultDocumentDetailView: View {
                         }
                     }
                 }
+                
+                #if os(iOS)
+                if let pdfData = document.pdfData {
+                    Section("Documento Originale") {
+                        let searchTerms = bundle.entry.compactMap { if case .observation(let o) = $0.resource { return String((o.valueQuantity?.value ?? 0.0)) } else { return nil } }
+                        
+                        NavigationLink("Visualizza PDF Evidenziato") {
+                            // Scriviamo il data in un URL temporaneo per PDFKit
+                            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(document.id.uuidString).pdf")
+                            let _ = try? pdfData.write(to: tempURL)
+                            
+                            AnnotatedPDFView(url: tempURL, searchStrings: searchTerms)
+                                .navigationTitle("Referto Originale")
+                                .navigationBarTitleDisplayMode(.inline)
+                                .onDisappear {
+                                    try? FileManager.default.removeItem(at: tempURL)
+                                }
+                        }
+                    }
+                }
+                #endif
             } else {
                 Text("Errore nella decodifica del Bundle FHIR.")
                     .foregroundColor(.red)

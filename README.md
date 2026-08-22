@@ -63,6 +63,9 @@ The result? Your legacy government PDF instantly becomes an interactive, long-te
 * **📤 Custom Share Extension**: Extract and queue medical data directly from Safari, Mail, or the Files app. Features a fully custom SwiftUI override that provides visual extraction feedback without relying on the generic iOS "Post" dialog.
 * **👆 iPadOS Drag & Drop**: Natively supports dropping PDF files directly onto the dashboard for instant processing on iPad or Apple Silicon Macs.
 * **📈 Real-time Trend Sparklines (Swift Charts)**: Clinical parameters are visualized dynamically on the dashboard. The app asynchronously fetches historical HealthKit samples and generates smooth Catmull-Rom sparklines to instantly highlight worsening trends.
+* **⌚ watchOS Companion**: Monitor your Family Vault directly from your wrist. Uses shared App Groups to render health gauges without waking the iPhone.
+* **🌙 Nightly Background Fetch (BGTaskScheduler)**: The app silently wakes up while charging to process accumulated PDFs, using headless model contexts to parse and save everything before you wake up.
+* **🖍️ PDF Vector Annotations (PDFKit)**: Displays the original raster PDF with dynamic yellow highlights mapping exactly where Apple Vision OCR extracted the critical parameters.
 * **🎨 Modern SwiftUI Interface**: Built with the latest Apple Human Interface Guidelines, featuring Glassmorphism, continuous squircle shapes, and native typographic designs. Enhanced with Haptic Feedback, iOS 17 `ContentUnavailableView` empty states, and dynamic gradient avatars for family members.
 
 ---
