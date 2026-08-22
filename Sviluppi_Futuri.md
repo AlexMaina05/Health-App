@@ -68,3 +68,28 @@ Attualmente RosettaHealth opera come un sistema di transito puro (Pipe) con poli
 Attualmente, l'esportazione dei referti transcodificati in formato JSON IPS avviene in modo statico e manuale (condivisione file). Un'espansione post-tesi di caratura Enterprise prevede l'integrazione del protocollo globale **SMART on FHIR**.
 - **Implementazione (ASWebAuthenticationSession)**: Implementando un modulo `FHIRNetworkClient`, l'app permetterebbe al paziente di autenticarsi tramite OAuth 2.0 presso i portali dei propri ospedali o specialisti di riferimento.
 - **Il Paradosso della Privacy Risolto**: Pur rompendo tecnicamente l'isolamento *Zero-Cloud*, questa trasmissione avverrebbe sotto rigido layer crittografico (TLS 1.3) ed esclusivamente tramite consenso granulare. Si tratterebbe della massima espressione del **Diritto alla Portabilità dei Dati (Art. 20 GDPR)**, consentendo al cittadino di inviare il proprio Bundle FHIR direttamente all'EMR del medico curante, senza dover consegnare documenti cartacei.
+
+---
+
+## 9. Tracciamento Visivo e Annotazione PDF (PDFKit + Vision)
+Evoluzione del modulo di estrazione visiva. Invece di distruggere il PDF sorgente, questo verrebbe conservato nel *Vault Locale*. Sfruttando le coordinate spaziali (Bounding Boxes) restituite da Apple Vision, il sistema sovrapporrebbe annotazioni vettoriali al PDF (es. evidenziando di giallo la glicemia trovata), rendendo il processo di scansione IA totalmente trasparente e verificabile dall'utente.
+
+---
+
+## 10. Medicina Preventiva (Clinical Decision Support)
+Integrazione di algoritmi di *Trend Analysis*. Il sistema monitorerebbe lo storico delle `HKQuantitySample` (es. Colesterolo LDL) iniettate nel database. Nel caso in cui si rilevassero peggioramenti costanti su 3 referti consecutivi, il modulo CDS genererebbe allerte locali proattive (es. "Trend LDL in peggioramento del 15%"), sposando in pieno la filosofia della medicina preventiva.
+
+---
+
+## 11. Companion App per Apple Watch (watchOS)
+Sviluppo di un target *watchOS* indipendente. Permetterebbe di esporre *Complications* (widget sul quadrante) per richiamare visivamente a colpo d'occhio i parametri critici dell'ultimo emocromo o monitorare il quadro pressorio generale senza estrarre l'iPhone.
+
+---
+
+## 12. Automazione tramite App Intents (Comandi Rapidi)
+Esposizione delle funzionalità Core di RosettaHealth al framework `AppIntents`. Questo renderebbe l'app pilotabile dall'app Shortcuts di iOS, consentendo all'utente di creare automazioni *zero-click* (es. "Quando ricevo una mail dall'ASL, passa l'allegato PDF in background a RosettaHealth").
+
+---
+
+## 13. Integrazione Siri On-Device (Apple Intelligence)
+Sfruttando le capacità LLM locali (Neural Engine) introdotte con iOS 18, si implementerebbe l'interrogazione vocale dei referti ("Ehi Siri, quant'era il ferro nelle ultime analisi?"). Il processing avverrebbe rigorosamente sul dispositivo, azzerando i rischi di violazione GDPR derivanti dal cloud-processing vocale.

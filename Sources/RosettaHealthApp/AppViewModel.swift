@@ -168,7 +168,30 @@ public final class AppViewModel: ObservableObject {
             self.activeError = .malformedXML(underlying: error.localizedDescription)
         }
         
+        // Aggiorna i dati per il Widget (Lock Screen / Home Screen)
+        updateWidgetData()
+        
         isProcessing = false
+    }
+    
+    /// Salva un riepilogo delle metriche correnti nell'App Group per essere lette dal Widget
+    private func updateWidgetData() {
+        guard let sharedDefaults = UserDefaults(suiteName: "group.dev.alexmaina.rosettahealth") else { return }
+        
+        // Prendiamo la prima osservazione estratta come highlight (es. Colesterolo o Glicemia)
+        if let highlight = extractedObservations.first {
+            let metricName = highlight.code.text ?? highlight.code.coding.first?.display ?? "Parametro"
+            var metricValue = "N/D"
+            if let qty = highlight.valueQuantity {
+                metricValue = "\(qty.value) \(qty.unit)"
+            } else if let str = highlight.valueString {
+                metricValue = str
+            }
+            
+            sharedDefaults.set(metricName, forKey: "widget_metricName")
+            sharedDefaults.set(metricValue, forKey: "widget_metricValue")
+            sharedDefaults.set(Date().timeIntervalSince1970, forKey: "widget_lastUpdate")
+        }
     }
     
     public func exportFHIRJSON() -> URL? {
