@@ -12,6 +12,7 @@
 ---
 
 ## 📖 Indice
+- [Documentazione di Progetto](#-documentazione-di-progetto)
 - [Il Problema & La Soluzione](#-il-problema--la-soluzione)
 - [Come Funziona (User Journey)](#-come-funziona-user-journey)
 - [Architettura & Rosetta Engine](#-architettura--rosetta-engine)
@@ -19,6 +20,18 @@
 - [Ecosistema Avanzato (iOS & watchOS)](#-ecosistema-avanzato-ios--watchos)
 - [Privacy & GDPR Compliance](#-privacy--gdpr-compliance)
 - [Metriche Cliniche Supportate](#-metriche-cliniche-supportate)
+
+---
+
+---
+
+## 📚 Documentazione di Progetto
+
+Oltre al presente README, il progetto è corredato da una documentazione accademica e tecnica approfondita, suddivisa in tre documenti chiave:
+
+- 🏛️ [**Analisi dello Stato dell'Arte**](Stato_dell_Arte.md): Un'analisi del panorama italiano (FSE 2.0, HL7 CDA) e internazionale (FHIR R4), che evidenzia i limiti di interoperabilità superati da quest'app.
+- ⚙️ [**Technical Design Document (TDD)**](tdd.md): Il cuore ingegneristico del progetto. Dettaglia l'architettura Producer-Consumer, lo schema SwiftData, le regex per l'OCR, l'uso della Secure Enclave e molto altro.
+- 🚀 [**Sviluppi Futuri e Roadmap**](Sviluppi_Futuri.md): La vision di prodotto per le versioni future (v4.0+), inclusa l'integrazione di Small Language Models locali e cruscotti olistici proprietari.
 
 ---
 
