@@ -1,38 +1,30 @@
 # Sviluppi Futuri e Roadmap Architetturale (v4.0+)
 
-Avendo completato l'integrazione con Apple HealthKit, la messa in sicurezza multi-profilo (Family Vault), l'estensione ai Widget e l'analisi predittiva (CDS) in rigoroso rispetto del GDPR (Zero-Cloud), le seguenti funzionalità rappresentano i prossimi passi per trasformare RosettaHealth in un prodotto HealthTech *State of the Art*.
+Avendo completato l'integrazione con Apple HealthKit, la messa in sicurezza multi-profilo (Family Vault), l'estensione ai Widget, i Background Tasks notturni, l'annotazione vettoriale dei PDF e la Companion App per watchOS (in rigoroso rispetto del GDPR Zero-Cloud), le seguenti funzionalità rappresentano i prossimi passi per trasformare RosettaHealth nel punto di riferimento HealthTech europeo.
 
 ---
 
-## 1. Evoluzione del Motore di Estrazione (Intelligenza Artificiale Generativa Locale)
-L'attuale motore OCR utilizza euristiche e regex. L'integrazione di SLM (Small Language Models) nativi tramite **MLX** o **CoreML** (es. modelli NLP specializzati in ambito medico) permetterebbe di estrarre e strutturare testi liberi complessi (anamnesi, lettere di dimissione), elaborando tutto sul Neural Engine dell'iPhone senza mai inviare dati su cloud.
+## 1. Dashboard Olistica Proprietaria (Oltre i limiti di Apple Health)
+Apple Salute (HealthKit) limita storicamente i propri grafici nativi a un set predefinito di metriche (`HKQuantityTypeIdentifier`), escludendo parametri fondamentali della medicina di base (es. **Creatinina sierica, TSH, FT4, Transaminasi, Ferritina, Emoglobina Glicata**). 
+L'obiettivo è sviluppare un'interfaccia proprietaria in *Swift Charts* all'interno di RosettaHealth. L'App diventerà un aggregatore clinico assoluto: leggerà i dati autorizzati da Apple Salute e li intersecherà con i dati avanzati estratti dai referti FHIR archiviati nel Vault, offrendo al paziente (e al medico curante) un panorama ematologico completo e senza punti ciechi, superando i vincoli di sistema imposti da Cupertino.
 
 ---
 
-## 2. Sincronizzazione Trasparente in Background (BGTaskScheduler)
-Registrando un task di background tramite il framework `BackgroundTasks`, l'app potrebbe elaborare silenziosamente i referti depositati nel container condiviso dall'estensione senza che l'utente debba aprirla fisicamente, emettendo solo una notifica a operazione conclusa.
+## 2. Intelligenza Artificiale Generativa Locale (Small Language Models)
+L'attuale motore OCR utilizza euristiche e regex. L'integrazione di SLM (Small Language Models come Llama 3 8B o Mistral) nativi tramite il framework **MLX** o **CoreML** permetterebbe di processare testi narrativi medici complessi (es. "Il paziente presenta un lieve soffio sistolico e una frazione di eiezione del 55%"), strutturandoli in risorse FHIR elaborate interamente sul Neural Engine dell'iPhone, garantendo l'Assenza di Rete.
 
 ---
 
-## 3. Estensione Ontologica (SNOMED CT e Mappatura Dinamica)
-Espandere l'attuale mappatura LOINC statica con un database SQLite contenente l'ontologia SNOMED CT completa. Questo permetterebbe di convertire in codice FHIR non solo le misurazioni vitali, ma anche patologie, farmaci prescritti e allergie.
+## 3. Estensione Ontologica Globale (SNOMED CT)
+Espandere l'attuale mappatura LOINC statica con un database vettoriale locale (es. SQLite/CoreData) contenente l'ontologia completa **SNOMED CT** e **ICD-10**. Questo permetterebbe di convertire in codice strutturato non solo le misurazioni vitali, ma anche patologie, farmaci prescritti e allergie per una mappatura clinica totale.
 
 ---
 
 ## 4. Portabilità dei Dati: Integrazione SMART on FHIR
-Integrare il protocollo globale OAuth 2.0 (tramite `ASWebAuthenticationSession`) e un Client di Rete FHIR dedicato. Questo permetterebbe agli utenti di trasmettere direttamente, e con granularità di permessi, i propri referti transcodificati all'EMR dell'ospedale (piena attuazione dell'Art. 20 GDPR).
+Integrare il protocollo globale OAuth 2.0 (tramite `ASWebAuthenticationSession`) e un Client di Rete FHIR dedicato. Questo permetterebbe agli utenti di trasmettere direttamente, e con granularità di permessi, i propri referti transcodificati all'EMR (Electronic Medical Record) del proprio ospedale europeo, dando piena e formale attuazione al Diritto alla Portabilità dei Dati (Art. 20 GDPR).
 
 ---
 
-## 5. Tracciamento Visivo e Annotazione PDF (PDFKit + Vision)
-Sfruttando le Bounding Boxes restituite da Apple Vision, il PDF originale verrebbe conservato e visualizzato all'interno del Vault, evidenziando vettorialmente in giallo i parametri esatti estratti dall'OCR, per una totale trasparenza e verificabilità da parte del medico o del paziente.
-
----
-
-## 6. Companion App per Apple Watch (watchOS)
-Un target *watchOS* indipendente che offra *Complications* (widget quadrante) per tenere sempre sott'occhio i propri trend glicemici o pressori direttamente dal polso.
-
----
-
-## 7. Integrazione Siri On-Device (Apple Intelligence)
-Sfruttando le nuove capacità semantiche di Siri introdotte con iOS 18 (e l'esecuzione strettamente locale su Apple Silicon), implementare l'interrogazione vocale autonoma: *"Ehi Siri, chiedi a RosettaHealth quanto avevo di Colesterolo lo scorso Gennaio"*.
+## 5. Integrazione Apple Intelligence (AppIntents e Siri)
+Sfruttando le nuove capacità semantiche di Siri introdotte in iOS 18.1 (con esecuzione strettamente locale su Apple Silicon), implementare l'interrogazione vocale autonoma tramite il framework `AppIntents`. 
+Esempio di query: *"Ehi Siri, chiedi a RosettaHealth se il mio colesterolo e la mia creatinina sono peggiorati rispetto al referto dell'anno scorso"*.
