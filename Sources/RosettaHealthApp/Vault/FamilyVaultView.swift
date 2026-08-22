@@ -4,11 +4,22 @@ import RosettaHealthCore
 
 @available(iOS 17.0, *)
 public struct FamilyVaultView: View {
+    @Environment(\.modelContext) private var modelContext
     @Query(sort: \VaultDocument.dateAdded, order: .reverse) private var documents: [VaultDocument]
+    
+    @State private var searchText: String = ""
+    @State private var documentToDelete: VaultDocument? = nil
+    @State private var documentToShare: VaultDocument? = nil
+    @State private var isShowingShareSheet: Bool = false
     
     // Raggruppamento per Codice Fiscale
     private var groupedDocuments: [String: [VaultDocument]] {
-        Dictionary(grouping: documents, by: { $0.fiscalCode })
+        let filteredDocs = searchText.isEmpty ? documents : documents.filter { 
+            $0.documentTitle.localizedCaseInsensitiveContains(searchText) || 
+            $0.patientName.localizedCaseInsensitiveContains(searchText) ||
+            $0.fiscalCode.localizedCaseInsensitiveContains(searchText)
+        }
+        return Dictionary(grouping: filteredDocs, by: { $0.fiscalCode })
     }
     
     public init() {}
@@ -164,4 +175,18 @@ struct VaultDocumentDetailView: View {
         .navigationTitle(document.documentTitle)
         .navigationBarTitleDisplayMode(.inline)
     }
+}
+
+
+// MARK: - UIKit Share Sheet
+struct ShareSheet: UIViewControllerRepresentable {
+    var activityItems: [Any]
+    var applicationActivities: [UIActivity]? = nil
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
+        return controller
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

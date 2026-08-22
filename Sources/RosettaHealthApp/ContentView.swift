@@ -1,5 +1,6 @@
 ﻿import SwiftUI
 import SwiftData
+import TipKit
 import Charts
 import HealthKit
 import RosettaHealthCore
@@ -56,6 +57,8 @@ public struct ContentView: View {
                                     .padding()
                                     .background(Color.white)
                                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                    .scaleEffect(viewModel.isHealthKitAuthorized ? 1.0 : 1.05)
+                                    .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0).repeatForever(autoreverses: true), value: viewModel.isHealthKitAuthorized)
                             }
                         } else {
                             HStack {
@@ -466,6 +469,8 @@ public struct SettingsView: View {
                 }
             }
             .onAppear {
+            try? Tips.configure([.displayFrequency(.immediate), .datastoreLocation(.applicationDefault)])
+
                 birthDate = Date(timeIntervalSince1970: dateOfBirthInterval)
             }
         }
