@@ -1,3 +1,9 @@
+---
+layout: default
+title: Sviluppi Futuri
+permalink: /sviluppi/
+---
+
 # Sviluppi Futuri e Roadmap Architetturale (v4.0+)
 
 Avendo completato l'integrazione con Apple HealthKit, la messa in sicurezza multi-profilo (Family Vault), l'estensione ai Widget, i Background Tasks notturni, l'annotazione vettoriale dei PDF e la Companion App per watchOS (in rigoroso rispetto del GDPR Zero-Cloud), le seguenti funzionalità rappresentano i prossimi passi per trasformare RosettaHealth nel punto di riferimento HealthTech europeo.

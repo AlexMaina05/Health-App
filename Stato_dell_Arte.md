@@ -1,3 +1,9 @@
+---
+layout: default
+title: Analisi dello Stato dell'Arte
+permalink: /stato-dellarte/
+---
+
 # Analisi dello Stato dell'Arte: Fascicolo Sanitario Elettronico e Interoperabilità Consumer
 
 Questo documento analizza lo stato attuale dell'infrastruttura sanitaria digitale (con particolare focus sul panorama italiano), l'evoluzione degli standard di interoperabilità clinica e le limitazioni degli attuali ecosistemi consumer. L'analisi contestualizza la necessità architetturale e l'innovazione introdotta dal progetto **RosettaHealth**.
@@ -55,4 +61,5 @@ Dall'analisi dello stato dell'arte emerge un vuoto infrastrutturale che isola il
 1. **Interoperabilità Retroattiva (Local Transcoder)**: Invece di attendere l'adeguamento statale a FHIR, l'app intercetta il PDF/A-3, estrae l'XML CDA locale e lo converte in FHIR R4 JSON istantaneamente e *on-device*, fungendo da ponte (Rosetta Stone) tra la vecchia sanità e il nuovo ecosistema.
 2. **Dual-Track Ingestion (Bypass delle API Restricted)**: Non potendo usare l'API riservata `HKClinicalRecord`, l'app scompone chirurgicamente il dato in due vie legali e pubbliche: il salvataggio documentale integrale (`HKCDADocumentSample`) per l'archiviazione formale, e l'estrazione quantitativa selettiva (`HKQuantitySample`) per popolare i grafici di sistema.
 3. **Resilienza (Graceful Degradation)**: Riconoscendo che molti documenti del FSE sono scansioni rasterizzate prive di XML, l'architettura non fallisce ma adotta un piano di fallback tramite Computer Vision (Apple Vision OCR), garantendo l'estrazione del dato anche dai referti analogici, etichettandolo rigorosamente con metadati di provenienza per mantenere la validità dell'audit clinico.
-4. **Privacy by Design**: Ogni singola elaborazione, dal parsing XML all'inferenza IA, avviene sulla CPU locale senza alcuna chiamata di rete (`URLSession` assente), applicando programmaticamente la crittografia di grado militare hardware (AES-256) per conformità totale al GDPR.
+4. **Dashboard Olistica Proprietaria**: Dal momento che HealthKit supporta nativamente un numero ristretto di misurazioni grafiche (scartando ad esempio Creatinina e TSH), l'App funge non solo da traduttore, ma da *Electronic Medical Record (EMR)* indipendente, fornendo interfacce tridimensionali (Swift Charts 3D Scroll) e Live Activities su Dynamic Island per coprire i buchi architetturali di Apple.
+5. **Privacy by Design**: Ogni singola elaborazione, dal parsing XML all'inferenza IA, avviene sulla CPU locale senza alcuna chiamata di rete (`URLSession` assente), applicando programmaticamente la crittografia di grado militare hardware (AES-256) per conformità totale al GDPR.
