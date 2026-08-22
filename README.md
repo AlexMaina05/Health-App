@@ -97,14 +97,14 @@ Trattando *categorie particolari di dati personali (Art. 9 GDPR)*, l'app applica
 
 Il motore di mappatura semantica trasla i codici identificativi (LOINC) presenti nel FSE direttamente nella tassonomia di `HKQuantityTypeIdentifier` di Cupertino:
 
-| Nome Parametro | LOINC Mappati (Esempi) | Identificativo Apple Salute | Unità |
-|---|---|---|---|
-| **Glicemia / Glucosio** | `15074-8`, `2345-7` | `bloodGlucose` | mg/dL |
-| **Colesterolo Totale** | `2093-3`, `35200-5` | `dietaryCholesterol` | mg/dL |
-| **Colesterolo HDL** | `2085-9` | `dietaryCholesterol` | mg/dL |
-| **Pressione Sistolica** | `8480-6`, `85354-9` | `bloodPressureSystolic` | mmHg |
-| **Pressione Diastolica**| `8462-4`, `85354-9` | `bloodPressureDiastolic` | mmHg |
-| **Frequenza Cardiaca** | `8867-4` | `heartRate` | bpm |
+| Categoria | Nome Parametro | LOINC (Esempi) | Identificativo Apple Salute |
+|-----------|----------------|----------------|-----------------------------|
+| 🩸 **Metabolismo** | Glicemia / Glucosio | `15074-8`, `2345-7` | `bloodGlucose` |
+| 🫀 **Cardiologia** | Pressione, Battito, HRV, VO2 Max | `8480-6`, `80404-7` | `bloodPressureSystolic`, `heartRateVariabilitySDNN` |
+| 🍔 **Profilo Lipidico** | Colesterolo (Tot, HDL, LDL), Trigliceridi | `2093-3`, `2571-8` | `dietaryCholesterol`, `dietaryFatTotal` |
+| ⚖️ **Antropometria** | Peso, Altezza, BMI, Massa Grassa | `29463-7`, `39156-5` | `bodyMass`, `bodyMassIndex` |
+| 💊 **Vitamine** | Vitamina D, C, B12, A, E | `1649-3`, `2132-9` | `dietaryVitaminD`, `dietaryVitaminB12` |
+| 🧪 **Elettroliti** | Magnesio, Zinco, Sodio, Calcio, Ferro | `19123-9`, `3236-8` | `dietaryMagnesium`, `dietaryZinc` |
 
 *(Nota: Molte altre mappature LOINC sono estensibili nativamente modificando il dizionario in `HealthKitBridge.swift`)*
 

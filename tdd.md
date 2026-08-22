@@ -107,12 +107,19 @@ Tale iniezione rende l'esportazione valida e compatibile con tutti gli EMR osped
 ### 4.3 Mappatura Semantica e LOINC Target
 Il bridge (`HealthKitBridge.swift`) mappa i codici internazionali LOINC su tipi nativi Apple tramite uno struct `MetricTarget`.
 
-| Metrica (IT) | LOINC (Primary) | HKQuantityTypeIdentifier | Fallback Unit |
-|--------------|-----------------|--------------------------|---------------|
-| Glicemia | `15074-8` | `.bloodGlucose` | `mg/dL` |
-| Colesterolo Totale | `2093-3` | `.dietaryCholesterol` | `mg/dL` |
-| Pressione Sistolica | `8480-6` | `.bloodPressureSystolic` | `mmHg` |
-| Pressione Diastolica | `8462-4` | `.bloodPressureDiastolic`| `mmHg` |
+| Metrica (Categoria) | LOINC (Primary) | HKQuantityTypeIdentifier | Fallback Unit |
+|---------------------|-----------------|--------------------------|---------------|
+| **Metabolismo** (Glicemia) | `15074-8` | `.bloodGlucose` | `mg/dL` |
+| **Profilo Lipidico** (Colesterolo Totale) | `2093-3` | `.dietaryCholesterol` | `mg/dL` |
+| **Profilo Lipidico** (Trigliceridi) | `2571-8` | `.dietaryFatTotal` | `g` |
+| **Cardiologia** (Pressione Sistolica) | `8480-6` | `.bloodPressureSystolic` | `mmHg` |
+| **Cardiologia** (HRV - SDNN) | `80404-7` | `.heartRateVariabilitySDNN` | `ms` |
+| **Antropometria** (BMI) | `39156-5` | `.bodyMassIndex` | `count` |
+| **Antropometria** (Massa Grassa) | `41982-0` | `.bodyFatPercentage` | `%` |
+| **Vitamine** (Vitamina D) | `1649-3` | `.dietaryVitaminD` | `mcg` |
+| **Minerali** (Magnesio) | `19123-9` | `.dietaryMagnesium` | `mg` |
+
+*(Nota: La tabella sovrastante è un estratto. L'architettura supporta oltre 30 mappature LOINC native, includendo tossicologia, elettroliti e fitness avanzato come il VO2 Max).*
 
 **Parsing String-Fallback:** Se FHIR restituisce misurazioni composite incapsulate in stringhe (es. `"120/80"`), un parser Regex le scompatta in vettori validi (`[120.0, 80.0]`) e genera due metriche separate.
 
