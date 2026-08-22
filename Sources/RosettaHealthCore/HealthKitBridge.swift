@@ -115,7 +115,9 @@ public final class HealthKitBridge {
         let metadata: [String: Any] = [
             HKMetadataKeySyncIdentifier: "FSE-\(UUID().uuidString)",
             HKMetadataKeySyncVersion: 1,
-            "DocumentTitle": title
+            "DocumentTitle": title,
+            "RosettaHealth_Signature": "✅ Transcodificato e validato in locale (Zero-Cloud)",
+            "RosettaHealth_Engine": "v3.0 (HL7 CDA -> FHIR R4)"
         ]
         
         let cdaSample = try HKCDADocumentSample(
@@ -216,7 +218,9 @@ public final class HealthKitBridge {
                         HKMetadataKeyExternalUUID: obs.id,
                         HKMetadataKeySyncIdentifier: "FSE-\(obs.id)",
                         "LOINC_CODE": coding.code,
-                        "ORIGINAL_NAME": obs.code.text ?? coding.display ?? "Esame"
+                        "ORIGINAL_NAME": obs.code.text ?? coding.display ?? "Esame",
+                        "RosettaHealth_Signature": "✅ Estratto e validato in locale da FSE",
+                        "RosettaHealth_Engine": "v3.0"
                     ]
                 )
                 samplesToSave.append(sample)
@@ -252,7 +256,9 @@ public final class HealthKitBridge {
                 HKMetadataKeyExternalUUID: UUID().uuidString,
                 "EXTRACTION_METHOD": "APPLE_VISION_OCR_FALLBACK",
                 "CONFIDENCE_LEVEL": "HEURISTIC_REGEX",
-                "ORIGINAL_NAME": metric.name
+                "ORIGINAL_NAME": metric.name,
+                "RosettaHealth_Signature": "⚠️ Estratto tramite Vision AI (Fallback)",
+                "RosettaHealth_Engine": "v3.0 (Optical Character Recognition)"
             ]
             
             let sample = HKQuantitySample(
