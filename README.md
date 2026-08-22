@@ -64,7 +64,8 @@ Se il parser XML fallisce, subentra il modulo **VisionOCRExtractor**. Sfruttando
 |---------|-------------|-------------------|
 | **Apple Health Injection** | Inserimento in tempo reale dei referti CDA ufficiali (`HKCDADocumentSample`) e dei campioni quantitativi (`HKQuantitySample`). | `HealthKit` |
 | **Family Vault & Dual Routing** | **Prevenzione inquinamento dati**: L'app verifica il Codice Fiscale del PDF. Se non è il tuo (es. stai scaricando il referto di un genitore), nega l'accesso ad Apple Salute e lo salva nel *Family Vault* multi-utente, creando un EMR di famiglia separato. | `SwiftData` |
-| **Trend Sparklines** | Visualizzazione dinamica e fluida degli andamenti storici (interpolazione Catmull-Rom) ricavati asincronamente dall'historian di sistema. | `Swift Charts` |
+| **Trend Sparklines** | Visualizzazione dinamica e fluida degli andamenti storici (interpolazione Catmull-Rom) con animazioni 3D *CoverFlow* in scorrimento. | `Swift Charts` |
+| **Live Activities** | Monitoraggio del parsing documentale asincrono direttamente dalla **Dynamic Island** e dalla Lock Screen. | `ActivityKit` |
 | **Clinical Decision Support** | Un mini-motore di inferenza medica locale (`RosettaEngine`) che analizza i referti appena consumati e genera alert preventivi in caso di anomalie prolungate. | `RosettaEngine` |
 
 ---
@@ -73,7 +74,7 @@ Se il parser XML fallisce, subentra il modulo **VisionOCRExtractor**. Sfruttando
 
 L'app non è relegata a un contenitore isolato, ma sfrutta appieno il tessuto dell'ecosistema Apple:
 
-* 📤 **Custom Share Extension SwiftUI**: Estrae e accoda i referti scavalcando la noiosa "Share UI" standard di iOS, offrendo animazioni e feedback d'estrazione istantanei (Lottie-style).
+* 📤 **Custom Share Extension SwiftUI**: Estrae e accoda i referti scavalcando la noiosa "Share UI" standard di iOS, offrendo animazioni fluide e **Sensory Feedback** aptici nativi (iOS 17).
 * 👆 **iPadOS Drag & Drop**: Affiancando due app su iPad, puoi trascinare (`.onDrop(of: [.pdf])`) direttamente un malloppo di referti dentro la Dashboard.
 * ⌚ **watchOS Companion App**: Tieni monitorato il Family Vault direttamente dal polso. Comunica via `UserDefaults` (App Groups) per renderizzare `Gauge` (tachimetri) senza sprecare batteria o risvegliare l'iPhone.
 * 🌙 **Nightly Background Fetch**: Integrazione con `BGTaskScheduler`. Il dispositivo esegue l'elaborazione PDF massiva di notte (headless model context) per garantirti i grafici pronti al mattino.

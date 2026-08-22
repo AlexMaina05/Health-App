@@ -140,12 +140,16 @@ Per garantire all'utente il controllo visivo, il sistema esegue una complessa tr
 
 ## 6. Ecosistema Avanzato (iOS, watchOS, BGTasks)
 
-### 6.1 Headless Background Fetch (BGTaskScheduler)
+### 6.1 Live Activities & Dynamic Island (ActivityKit)
+Sfruttando il target `RosettaWidget`, l'App innesca una `Live Activity` quando l'utente processa uno o più PDF e porta l'applicazione in background. 
+La `Dynamic Island` si espande mostrando una `ProgressView` in tempo reale sulle operazioni di *Parsing XML* o *OCR Fallback*, migliorando enormemente la visibilità dei task asincroni del *Rosetta Engine*.
+
+### 6.2 Headless Background Fetch (BGTaskScheduler)
 Per consumare decine di PDF accodati, viene registrato un `BGProcessingTask` (richiede l'entitlement `UIBackgroundModes` -> `processing`). 
 - **Headless Context**: L'App innesca un `ModelContainer` puramente slegato dalla UI.
 - L'esecuzione massiva avviene esclusivamente quando l'iPhone è inattivo e in carica, azzerando il *battery drain* attivo percepito dall'utente.
 
-### 6.2 watchOS Companion App (Shared App Group)
+### 6.3 watchOS Companion App (Shared App Group)
 Per le limitazioni energetiche (e l'impossibilità di leggere HealthKit nativo in background persistente), il target iOS serializza le *ultime misurazioni critiche* in un `UserDefaults(suiteName: "group.dev...")` transitorio.
 Il target `RosettaWatch` (compilato sotto direttive `#if os(watchOS)`) consuma i dati e aggiorna le sue Complicazioni e `Gauge` interattivi, fornendo alert di Medicina Preventiva direttamente al polso senza risvegliare il SoC dell'iPhone.
 
@@ -176,7 +180,9 @@ Se l'app transita in stato `.inactive` (Task Switcher aperto), il `BiometricAuth
 
 Il livello di presentazione è costruito in **SwiftUI** rispettando le Apple Human Interface Guidelines (HIG).
 
-### 8.1 Glassmorphism & Swift Charts
+### 8.1 Glassmorphism, 3D Scroll Transitions & Sensory Feedback
+- **Scroll Transitions**: I referti all'interno del `FamilyVaultView` e `ContentView` sfruttano il modifier nativo iOS 17 `.scrollTransition`. Al variare dell'offset della ScrollView, il framework interpola dinamicamente `scaleEffect` e `rotation3DEffect`, restituendo un feedback visivo tridimensionale simile allo storico *CoverFlow* di Apple.
+- **Sensory Feedback**: Eliminato il vecchio `UIKit` in favore dell'API puramente dichiarativa `.sensoryFeedback(trigger:)`, innescando feedback aptici coordinati con gli stati della `Live Activity`.
 - L'interfaccia utilizza `RoundedRectangle` con stile `.continuous` (squircle) e materiali opachi (`.ultraThinMaterial`) per effetti di traslucenza (Glassmorphism).
 - Le storicità cliniche sono renderizzate tramite `Swift Charts`. Un task asincrono recupera da HealthKit gli ultimi campioni LOINC e li disegna con un'interpolazione `.catmullRom` per creare sparklines organiche. Il *Color Coding* degrada in `.red.gradient` se l'ultimo valore estratto eccede il range di sicurezza clinica.
 
