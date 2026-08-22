@@ -1,0 +1,118 @@
+import SwiftUI
+import SwiftData
+import RosettaHealthCore
+
+@available(iOS 17.0, *)
+public struct FamilyVaultView: View {
+    @Query(sort: \VaultDocument.dateAdded, order: .reverse) private var documents: [VaultDocument]
+    
+    // Raggruppamento per Codice Fiscale
+    private var groupedDocuments: [String: [VaultDocument]] {
+        Dictionary(grouping: documents, by: { $0.fiscalCode })
+    }
+    
+    public init() {}
+    
+    public var body: some View {
+        NavigationStack {
+            List {
+                if documents.isEmpty {
+                    ContentUnavailableView(
+                        "Vault Vuoto",
+                        systemImage: "folder.badge.person.crop",
+                        description: Text("I referti scansionati dei tuoi familiari verranno archiviati qui, in modo sicuro e locale.")
+                    )
+                } else {
+                    ForEach(groupedDocuments.keys.sorted(), id: \.self) { cf in
+                        Section(header: Text("Paziente: \(cf)")) {
+                            let patientDocs = groupedDocuments[cf] ?? []
+                            
+                            // Mostra il nome del paziente dedotto dall'ultimo documento
+                            if let name = patientDocs.first?.patientName {
+                                HStack {
+                                    Image(systemName: "person.circle.fill")
+                                        .foregroundColor(.purple)
+                                        .imageScale(.large)
+                                    Text(name)
+                                        .font(.headline)
+                                }
+                                .padding(.vertical, 4)
+                            }
+                            
+                            ForEach(patientDocs) { doc in
+                                NavigationLink(destination: VaultDocumentDetailView(document: doc)) {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(doc.documentTitle)
+                                            .font(.subheadline)
+                                            .fontWeight(.semibold)
+                                        
+                                        Text(doc.documentDate, style: .date)
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Family Vault")
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+struct VaultDocumentDetailView: View {
+    let document: VaultDocument
+    
+    var fhirBundle: FHIRBundle? {
+        let decoder = JSONDecoder()
+        return try? decoder.decode(FHIRBundle.self, from: document.fhirBundleJSON)
+    }
+    
+    var body: some View {
+        List {
+            Section("Dettagli Referto") {
+                LabeledContent("Paziente", value: document.patientName)
+                LabeledContent("Codice Fiscale", value: document.fiscalCode)
+                LabeledContent("Data Referto", value: document.documentDate.formatted(date: .long, time: .omitted))
+                LabeledContent("Archiviato il", value: document.dateAdded.formatted(date: .abbreviated, time: .shortened))
+            }
+            
+            if let bundle = fhirBundle {
+                Section("Misurazioni Cliniche") {
+                    let observations = bundle.entry.compactMap { if case .observation(let o) = $0.resource { return o } else { return nil } }
+                    
+                    if observations.isEmpty {
+                        Text("Nessuna osservazione quantitativa trovata.")
+                            .foregroundColor(.secondary)
+                    } else {
+                        ForEach(observations, id: \.id) { obs in
+                            VStack(alignment: .leading) {
+                                Text(obs.code.text ?? obs.code.coding.first?.display ?? "Misurazione")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                
+                                if let qty = obs.valueQuantity {
+                                    Text("\(qty.value, specifier: "%.2f") \(qty.unit)")
+                                        .font(.title3)
+                                        .foregroundColor(.purple)
+                                } else if let str = obs.valueString {
+                                    Text(str)
+                                        .font(.title3)
+                                        .foregroundColor(.purple)
+                                }
+                            }
+                            .padding(.vertical, 4)
+                        }
+                    }
+                }
+            } else {
+                Text("Errore nella decodifica del Bundle FHIR.")
+                    .foregroundColor(.red)
+            }
+        }
+        .navigationTitle(document.documentTitle)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}

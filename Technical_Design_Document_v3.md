@@ -73,9 +73,12 @@ Il progetto è progettato *secure by default*: esclude formalmente l'inizializza
 - **Crittografia GDPR By-Design**: Oltre alla direttiva dichiarativa negli entitlements (`NSFileProtectionCompleteUntilFirstUserAuthentication`), RosettaHealth implementa un paradigma *Defense-in-Depth* applicando programmaticamente la crittografia tramite le opzioni di `FileManager` (`setAttributes`) e `Data` (`write(options:)`) su ogni operazione di I/O (inclusi i file temporanei e i report JSON FHIR).
 - **Regola di Cleanup Rigida**: Qualsiasi file depositato nel container condiviso viene cancellato in modo atomico e irreversibile dall'`AppViewModel` (tramite blocchi `defer`) immediatamente dopo la chiamata di elaborazione/ingestione, garantendo zero-retention sui dati sensibili esposti nel file system.
 
-### 4.3 Prevenzione Inquinamento Dati (Multi-Profile Routing)
-L'infrastruttura Apple Health è strettamente personale ("mono-utente"). Dato che i cittadini italiani spesso scaricano i referti dei propri familiari (es. figli o genitori), l'ingestione cieca dei documenti corromperebbe il database del proprietario.
-- **Validazione Fiscale (CF Match)**: L'`AppViewModel` introduce un Security Checkpoint (`checkPatientMatch()`). Estraendo il Codice Fiscale del Paziente dal Bundle FHIR (tag `<patientRole>`), il sistema verifica la congruenza con l'Identificativo Proprietario salvato nelle impostazioni dell'app (`@AppStorage`). In caso di discrepanza, solleva l'eccezione `.cfMismatch`, bloccando chirurgicamente il transito dei parametri estranei verso HealthKit.
+### 4.3 Prevenzione Inquinamento Dati (Multi-Profile Routing & Family Vault)
+L'infrastruttura Apple Health è strettamente personale ("mono-utente"). Dato che i cittadini italiani spesso scaricano i referti dei propri familiari (es. figli o genitori), l'ingestione cieca dei documenti corromperebbe il database del proprietario. RosettaHealth implementa un pattern di **Dual Routing** basato su identificazione fiscale:
+- **Validazione Fiscale (CF Match)**: L'`AppViewModel` introduce un Security Checkpoint (`extractPatientInfo`). Il Codice Fiscale del Paziente viene estratto dal Bundle FHIR e confrontato con il proprietario dell'iPhone.
+- **Routing Biforcato**:
+  - *Se combacia*: Il referto viene iniettato nell'ecosistema Apple HealthKit E salvato localmente nel Vault.
+  - *Se non combacia*: L'ingestione in HealthKit viene interrotta chirurgicamente per prevenire corruzione (Anti-Inquinamento). Il referto originale (Bundle FHIR) viene instradato verso un database **SwiftData** crittografato on-device, costruendo di fatto un Fascicolo Sanitario Elettronico (*Family Vault*) multi-utente accessibile da una tab dedicata.
 
 ---
 

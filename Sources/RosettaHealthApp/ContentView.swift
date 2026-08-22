@@ -1,10 +1,13 @@
 import SwiftUI
+import SwiftData
 import HealthKit
 import RosettaHealthCore
 
 public struct ContentView: View {
     @StateObject private var viewModel = AppViewModel()
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.modelContext) private var modelContext
+    
     @State private var isShowingFileImporter = false
     @State private var exportURL: URL?
     @State private var isShowingShareSheet = false
@@ -42,7 +45,7 @@ public struct ContentView: View {
                         
                         if !viewModel.isHealthKitAuthorized {
                             Button(action: {
-                                Task { await viewModel.requestHealthKitAccess() }
+                                Task { await viewModel.requestHealthKitAccess(modelContext: modelContext) }
                             }) {
                                 Text("Abilita Integrazione")
                                     .font(.headline)
@@ -235,12 +238,12 @@ public struct ContentView: View {
                 }
             }
             .task {
-                await viewModel.syncPendingDocuments()
+                await viewModel.syncPendingDocuments(modelContext: modelContext)
             }
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .active {
                     Task {
-                        await viewModel.syncPendingDocuments()
+                        await viewModel.syncPendingDocuments(modelContext: modelContext)
                     }
                 }
             }
@@ -267,7 +270,7 @@ public struct ContentView: View {
                             
                             Task {
                                 defer { try? FileManager.default.removeItem(at: safeURL) }
-                                await viewModel.processPDF(url: safeURL)
+                                await viewModel.processPDF(url: safeURL, modelContext: modelContext)
                             }
                         } catch {
                             if secured { selectedURL.stopAccessingSecurityScopedResource() }

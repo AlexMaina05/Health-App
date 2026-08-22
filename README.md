@@ -57,7 +57,7 @@ The result? Your legacy government PDF instantly becomes an interactive, long-te
   - **Selective Quantitative Metrics (`HKQuantitySample`)**: Translates structured numerical observations into native historical charts. 
 * **On-Device Transcoding (Rosetta Engine)**: Implements Microsoft FHIR-Converter semantics natively in Swift, transforming CDA R2 into validated FHIR R4 JSON Bundles.
   - **🇪🇺 EU Cross-Border Interoperability**: Automatically injects **IPS (International Patient Summary)** metadata profiles (`Bundle-uv-ips`, `Composition-uv-ips`), ensuring the generated JSON is strictly compliant with international healthcare mobility standards.
-* **🛡️ Multi-Profile Safety (Anti-Pollution)**: Protects your Apple Health database from third-party data pollution. By validating the HL7 Patient Fiscal Code against the device owner, it blocks accidental ingestion of family members' medical reports.
+* **👨‍👩‍👧‍👦 Multi-Profile Safety & Family Vault (SwiftData)**: Protects your Apple Health database from third-party data pollution. Reports belonging to family members are intelligently routed away from HealthKit and saved exclusively into an encrypted on-device **Family Vault**, creating a centralized EMR timeline for the whole family.
 * **🤖 Graceful Degradation (Apple Vision OCR)**: Extracts key parameters (Glucose, Cholesterol, Blood Pressure) from scanned/raster PDFs lacking embedded XML, with full provenance audit trailing. 
 * **📤 Share Extension & Safe IPC**: Extract and queue medical data in a single tap directly from Safari, Mail, or the Files app using iOS Share Sheets. 
 * **🎨 Modern SwiftUI Interface**: Built with the latest Apple Human Interface Guidelines, featuring Glassmorphism, continuous squircle shapes, and native typographic designs.

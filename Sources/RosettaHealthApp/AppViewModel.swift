@@ -4,6 +4,7 @@ import HealthKit
 import RosettaHealthCore
 import OSLog
 import UserNotifications
+import SwiftData
 
 @MainActor
 public final class AppViewModel: ObservableObject {
@@ -28,7 +29,7 @@ public final class AppViewModel: ObservableObject {
     
     public init() {}
     
-    public func requestHealthKitAccess() async {
+    public func requestHealthKitAccess(modelContext: ModelContext? = nil) async {
         do {
             try await healthBridge.requestAuthorization()
             self.isHealthKitAuthorized = true
@@ -37,7 +38,7 @@ public final class AppViewModel: ObservableObject {
             let center = UNUserNotificationCenter.current()
             _ = try? await center.requestAuthorization(options: [.alert, .sound, .badge])
             
-            await syncPendingDocuments()
+            await syncPendingDocuments(modelContext: modelContext)
         } catch let error as RosettaError {
             self.activeError = error
         } catch {
@@ -45,7 +46,7 @@ public final class AppViewModel: ObservableObject {
         }
     }
     
-    public func syncPendingDocuments() async {
+    public func syncPendingDocuments(modelContext: ModelContext? = nil) async {
         guard let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupIdentifier) else { return }
         
         do {
@@ -67,21 +68,41 @@ public final class AppViewModel: ObservableObject {
                 if let xmlData = try? Data(contentsOf: file) {
                     do {
                         let bundle = try transcoder.transcode(cdaData: xmlData)
-                        try checkPatientMatch(bundle: bundle)
+                        let patientInfo = extractPatientInfo(bundle: bundle)
                         
-                        _ = try await healthBridge.ingestCDADocument(xmlData: xmlData)
                         self.currentBundle = bundle // Conserva l'ultimo bundle per eventuale export
-                        let result = try await healthBridge.ingestQuantities(fhirBundle: bundle)
-                        
-                        totalSynced += result.savedCount
-                        newSkipped.append(contentsOf: result.skippedObservations.map { $0.code.text ?? $0.code.coding.first?.display ?? $0.code.coding.first?.code ?? "Parametro Sconosciuto" })
                         newObservations.append(contentsOf: bundle.entry.compactMap { if case .observation(let o) = $0.resource { return o } else { return nil } })
+                        
+                        // Apple Salute (Solo se Proprietario)
+                        if patientInfo.isOwner {
+                            _ = try await healthBridge.ingestCDADocument(xmlData: xmlData)
+                            let result = try await healthBridge.ingestQuantities(fhirBundle: bundle)
+                            totalSynced += result.savedCount
+                            newSkipped.append(contentsOf: result.skippedObservations.map { $0.code.text ?? $0.code.coding.first?.display ?? $0.code.coding.first?.code ?? "Parametro Sconosciuto" })
+                        }
+                        
+                        // Vault Locale (SwiftData)
+                        if let context = modelContext {
+                            let encoder = JSONEncoder()
+                            if let jsonData = try? encoder.encode(bundle) {
+                                let title = bundle.type == "document" ? "Fascicolo Sanitario" : "Referto"
+                                let vaultDoc = VaultDocument(
+                                    patientName: patientInfo.name,
+                                    fiscalCode: patientInfo.cf,
+                                    documentTitle: title,
+                                    documentDate: Date(),
+                                    fhirBundleJSON: jsonData
+                                )
+                                context.insert(vaultDoc)
+                                try? context.save()
+                            }
+                        }
                         
                         try FileManager.default.removeItem(at: file)
                     } catch let err as RosettaError {
                         self.activeError = err
                     } catch {
-                        self.activeError = .ingestionFailed(underlying: error.localizedDescription)
+                        self.activeError = .malformedXML(underlying: error.localizedDescription)
                     }
                 } else {
                     self.activeError = .corruptedPendingFile(fileName: file.lastPathComponent)
@@ -130,7 +151,7 @@ public final class AppViewModel: ObservableObject {
         }
     }
     
-    public func processPDF(url: URL) async {
+    public func processPDF(url: URL, modelContext: Any? = nil) async {
         isProcessing = true
         activeError = nil
         skippedCodes.removeAll()
@@ -144,14 +165,38 @@ public final class AppViewModel: ObservableObject {
             switch extractionResult {
             case .cdaXML(let xmlData):
                 let bundle = try transcoder.transcode(cdaData: xmlData)
-                try checkPatientMatch(bundle: bundle)
+                let patientInfo = extractPatientInfo(bundle: bundle)
                 
-                _ = try await healthBridge.ingestCDADocument(xmlData: xmlData)
                 self.currentBundle = bundle
                 self.extractedObservations = bundle.entry.compactMap { if case .observation(let obs) = $0.resource { return obs } else { return nil } }
-                let result = try await healthBridge.ingestQuantities(fhirBundle: bundle)
-                self.syncedSamplesCount += result.savedCount
-                self.skippedCodes = Array(Set(result.skippedObservations.map { $0.code.text ?? $0.code.coding.first?.display ?? $0.code.coding.first?.code ?? "Parametro Sconosciuto" }))
+                
+                // 1. Apple Salute (Solo se è il proprietario)
+                if patientInfo.isOwner {
+                    _ = try await healthBridge.ingestCDADocument(xmlData: xmlData)
+                    let result = try await healthBridge.ingestQuantities(fhirBundle: bundle)
+                    self.syncedSamplesCount += result.savedCount
+                    self.skippedCodes = Array(Set(result.skippedObservations.map { $0.code.text ?? $0.code.coding.first?.display ?? $0.code.coding.first?.code ?? "Parametro Sconosciuto" }))
+                } else {
+                    // Non è il proprietario, scartiamo i dati da Apple Salute ma procediamo al Vault.
+                    logger.notice("Referto di \(patientInfo.name) deviato verso il Family Vault (Bypass HealthKit).")
+                }
+                
+                // 2. Salvataggio nel Vault Locale (SwiftData)
+                if let context = modelContext as? SwiftData.ModelContext {
+                    let encoder = JSONEncoder()
+                    if let jsonData = try? encoder.encode(bundle) {
+                        let title = bundle.type == "document" ? "Fascicolo Sanitario" : "Referto"
+                        let vaultDoc = VaultDocument(
+                            patientName: patientInfo.name,
+                            fiscalCode: patientInfo.cf,
+                            documentTitle: title,
+                            documentDate: Date(),
+                            fhirBundleJSON: jsonData
+                        )
+                        context.insert(vaultDoc)
+                        try? context.save()
+                    }
+                }
                 
             case .rasterOCR(let metrics):
                 guard isOCREnabled else {
@@ -233,12 +278,7 @@ public final class AppViewModel: ObservableObject {
             sharedDefaults.set(Date().timeIntervalSince1970, forKey: "widget_lastUpdate")
         }
     }
-    
-    public func exportFHIRJSON() -> URL? {
-        // SCELTA ARCHITETTURALE INTENZIONALE:
-        // Blocchiamo l'export FHIR JSON per i referti processati via OCR (currentBundle = nil)
-        // per mantenere la validità formale dell'ecosistema FHIR e impedire che dati estratti
-        // in maniera euristica vengano esportati come documenti clinici validati alla fonte.
+        public func exportFHIRJSON() -> URL? {
         guard let bundle = currentBundle else { return nil }
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
@@ -252,18 +292,26 @@ public final class AppViewModel: ObservableObject {
         return tempURL
     }
     
-    private func checkPatientMatch(bundle: FHIRBundle) throws {
-        let cleanOwnerCF = ownerFiscalCode.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-        guard !cleanOwnerCF.isEmpty else { return } // Bypass se non configurato
+    /// Analizza il bundle e determina se appartiene al proprietario del telefono.
+    /// Restituisce (isOwner, patientName, fiscalCode).
+    private func extractPatientInfo(bundle: FHIRBundle) -> (isOwner: Bool, name: String, cf: String) {
+        var pName = "Sconosciuto"
+        var pCF = "Sconosciuto"
         
         if let patientEntry = bundle.entry.first(where: { if case .patient(_) = $0.resource { return true }; return false }),
-           case .patient(let patient) = patientEntry.resource,
-           let extractedCF = patient.identifier?.first(where: { $0.system == "http://hl7.it/sid/codiceFiscale" })?.value {
+           case .patient(let patient) = patientEntry.resource {
             
-            let cleanExtractedCF = extractedCF.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-            if cleanExtractedCF != cleanOwnerCF {
-                throw RosettaError.cfMismatch(expected: cleanOwnerCF, found: cleanExtractedCF)
+            pName = [patient.name?.first?.given?.first, patient.name?.first?.family].compactMap { $0 }.joined(separator: " ")
+            if pName.isEmpty { pName = "Paziente Anonimo" }
+            
+            if let extractedCF = patient.identifier?.first(where: { $0.system == "http://hl7.it/sid/codiceFiscale" })?.value {
+                pCF = extractedCF.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
             }
         }
+        
+        let cleanOwnerCF = ownerFiscalCode.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        let isOwner = cleanOwnerCF.isEmpty || pCF == cleanOwnerCF
+        
+        return (isOwner, pName, pCF)
     }
 }
