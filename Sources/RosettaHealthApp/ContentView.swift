@@ -305,11 +305,17 @@ public struct ContentView: View {
         }
     }
 }
+
 public struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     
     // Privacy & Multi-Profile
+    @AppStorage("ownerFirstName") private var firstName: String = ""
+    @AppStorage("ownerLastName") private var lastName: String = ""
+    @AppStorage("ownerDateOfBirth") private var dateOfBirthInterval: Double = Date().timeIntervalSince1970
     @AppStorage("ownerFiscalCode") private var ownerFiscalCode: String = ""
+    
+    @State private var birthDate: Date = Date()
     
     // User Experience / Feature Toggles
     @AppStorage("isCDSActive") private var isCDSActive: Bool = true
@@ -320,14 +326,23 @@ public struct SettingsView: View {
     public var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    TextField("Codice Fiscale Proprietario", text: $ownerFiscalCode)
+                Section(header: Text("Dati Anagrafici (Proprietario)")) {
+                    TextField("Nome", text: $firstName)
+                        .textContentType(.givenName)
+                    
+                    TextField("Cognome", text: $lastName)
+                        .textContentType(.familyName)
+                    
+                    DatePicker("Data di Nascita", selection: $birthDate, displayedComponents: .date)
+                        .onChange(of: birthDate) { _, newDate in
+                            dateOfBirthInterval = newDate.timeIntervalSince1970
+                        }
+                    
+                    TextField("Codice Fiscale", text: $ownerFiscalCode)
                         .autocapitalization(.allCharacters)
                         .disableAutocorrection(true)
-                } header: {
-                    Text("Fascicolo Familiare")
                 } footer: {
-                    Text("RosettaHealth bloccherà automaticamente il salvataggio in Apple Salute di referti appartenenti a terzi (es. figli o genitori) se il Codice Fiscale non coincide.")
+                    Text("RosettaHealth userà questi dati per garantire che i referti dei tuoi familiari non inquinino i tuoi grafici su Apple Salute.")
                 }
                 
                 Section {
@@ -365,6 +380,9 @@ public struct SettingsView: View {
                         dismiss()
                     }
                 }
+            }
+            .onAppear {
+                birthDate = Date(timeIntervalSince1970: dateOfBirthInterval)
             }
         }
     }
