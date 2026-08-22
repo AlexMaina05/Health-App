@@ -100,32 +100,39 @@ Per compilare il progetto su Xcode senza errori di Code Signing, configurare le 
 
 ### 5.1 App Groups Entitlement
 Nei file `.entitlements` di **entrambi i target** (App Principale e Share Extension):
+
 ```xml
 <key>com.apple.security.application-groups</key>
 <array>
     <string>group.dev.alexmaina.rosettahealth</string>
 </array>
+
 ```
 
 ### 5.2 HealthKit Entitlement (Solo App Target)
 L'App principale deve abilitare HealthKit e richiedere le autorizzazioni per:
 1. La tipologia **Documenti Clinici** (`HKDocumentTypeIdentifier.CDA`).
 2. I tipi di **Quantità** mappati (Glicemia, Colesterolo, Frequenza Cardiaca, ecc.).
+
 ```xml
 <key>com.apple.developer.healthkit</key>
 <true/>
+
 ```
 
 ### 5.3 Data Protection Level (Entitlements)
 Permette la scrittura dei file XML da parte della Share Extension anche a schermo bloccato:
+
 ```xml
 <key>com.apple.developer.default-data-protection</key>
 <string>NSFileProtectionCompleteUntilFirstUserAuthentication</string>
+
 ```
 
 ### 5.4 Info.plist (Privacy Strings)
 L'App principale necessita delle stringhe d'uso:
 - `NSHealthShareUsageDescription`
+
 - `NSHealthUpdateUsageDescription` (Motivazione: "Integrazione dei referti clinici CDA FSE e dei parametri vitali in Apple Salute").
 
 L'estensione necessita della regola di attivazione per intercettare esclusivamente i PDF (`NSExtensionActivationRule`).
