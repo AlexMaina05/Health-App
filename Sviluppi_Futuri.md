@@ -16,21 +16,27 @@ L'obiettivo è sviluppare un'interfaccia proprietaria in *Swift Charts* all'inte
 
 ---
 
-## 2. Intelligenza Artificiale Generativa Locale (Small Language Models)
-L'attuale motore OCR utilizza euristiche e regex. L'integrazione di SLM (Small Language Models come Llama 3 8B o Mistral) nativi tramite il framework **MLX** o **CoreML** permetterebbe di processare testi narrativi medici complessi (es. "Il paziente presenta un lieve soffio sistolico e una frazione di eiezione del 55%"), strutturandoli in risorse FHIR elaborate interamente sul Neural Engine dell'iPhone, garantendo l'Assenza di Rete.
+## 2. Desktop-Class App per iPadOS 17 (NavigationSplitView)
+Grazie al nuovissimo supporto nativo di HealthKit introdotto da Apple in **iPadOS 17**, il database sanitario è ora accessibile anche dai tablet. Il prossimo passo architetturale per la UI prevede l'abbandono del semplice `NavigationStack` in favore di un layout a `NavigationSplitView`. 
+Questo permetterà di sfruttare i display di grandi dimensioni: la sidebar laterale ospiterà il *Family Vault* e la lista dei pazienti, mentre la *Detail View* centrale renderizzerà simultaneamente il referto PDF originale (via `PDFKit`) e i modelli tridimensionali delle metriche cliniche.
 
 ---
 
-## 3. Estensione Ontologica Globale (SNOMED CT)
+## 3. Intelligenza Artificiale Generativa Locale (Small Language Models)
+L'attuale motore OCR utilizza euristiche e regex. L'integrazione di SLM (Small Language Models come Llama 3 8B o Mistral) nativi tramite il framework **MLX** o **CoreML** permetterebbe di processare testi narrativi medici complessi (es. "Il paziente presenta un lieve soffio sistolico e una frazione di eiezione del 55%"), strutturandoli in risorse FHIR elaborate interamente sul Neural Engine dell'iPad/iPhone, garantendo l'Assenza di Rete.
+
+---
+
+## 4. Estensione Ontologica Globale (SNOMED CT)
 Espandere l'attuale mappatura LOINC statica con un database vettoriale locale (es. SQLite/CoreData) contenente l'ontologia completa **SNOMED CT** e **ICD-10**. Questo permetterebbe di convertire in codice strutturato non solo le misurazioni vitali, ma anche patologie, farmaci prescritti e allergie per una mappatura clinica totale.
 
 ---
 
-## 4. Portabilità dei Dati: Integrazione SMART on FHIR
+## 5. Portabilità dei Dati: Integrazione SMART on FHIR
 Integrare il protocollo globale OAuth 2.0 (tramite `ASWebAuthenticationSession`) e un Client di Rete FHIR dedicato. Questo permetterebbe agli utenti di trasmettere direttamente, e con granularità di permessi, i propri referti transcodificati all'EMR (Electronic Medical Record) del proprio ospedale europeo, dando piena e formale attuazione al Diritto alla Portabilità dei Dati (Art. 20 GDPR).
 
 ---
 
-## 5. Integrazione Apple Intelligence (AppIntents e Siri)
-Sfruttando le nuove capacità semantiche di Siri introdotte in iOS 18.1 (con esecuzione strettamente locale su Apple Silicon), implementare l'interrogazione vocale autonoma tramite il framework `AppIntents`. 
+## 6. Integrazione Apple Intelligence (AppIntents e Siri)
+Sfruttando le nuove capacità semantiche di Siri (con esecuzione strettamente locale su Apple Silicon), implementare l'interrogazione vocale autonoma tramite il framework `AppIntents`. 
 Esempio di query: *"Ehi Siri, chiedi a RosettaHealth se il mio colesterolo e la mia creatinina sono peggiorati rispetto al referto dell'anno scorso"*.
