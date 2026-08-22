@@ -60,6 +60,12 @@ public struct FamilyVaultView: View {
                                             .foregroundColor(.secondary)
                                     }
                                 }
+                                .scrollTransition(.animated.threshold(.visible(0.9))) { content, phase in
+                                    content
+                                        .opacity(phase.isIdentity ? 1 : 0.5)
+                                        .scaleEffect(phase.isIdentity ? 1 : 0.95)
+                                        .rotation3DEffect(.degrees(phase.value * -15), axis: (x: 1, y: 0, z: 0))
+                                }
                             }
                         }
                     }

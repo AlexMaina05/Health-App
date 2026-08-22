@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import HealthKit
 import RosettaHealthCore
+import ActivityKit
 import OSLog
 import UserNotifications
 import SwiftData
@@ -68,7 +69,8 @@ public final class AppViewModel: ObservableObject {
             for file in pendingXMLs {
                 if let xmlData = try? Data(contentsOf: file) {
                     do {
-                        let bundle = try transcoder.transcode(cdaData: xmlData)
+                        let bundle = if #available(iOS 16.1, *) { self.updateLiveActivity(status: "Transcodifica in FHIR...", progress: 0) }
+            try transcoder.transcode(cdaData: xmlData)
                         let patientInfo = extractPatientInfo(bundle: bundle)
                         
                         self.currentBundle = bundle // Conserva l'ultimo bundle per eventuale export
@@ -146,11 +148,15 @@ public final class AppViewModel: ObservableObject {
             if !newObservations.isEmpty { self.extractedObservations.append(contentsOf: newObservations) }
             if wasOCRUsed { self.isOCRExtracted = true }
             
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            self.isSuccess = true
+            self.feedbackTrigger += 1
+            if #available(iOS 16.1, *) { self.endLiveActivity(status: "Completato con successo!") }
             isProcessing = false
             
         } catch {
-            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            self.isSuccess = false
+            self.feedbackTrigger += 1
+            if #available(iOS 16.1, *) { self.endLiveActivity(status: "Errore durante l'analisi.") }
             logger.error("Errore grave durante la lettura del container: \(error.localizedDescription)")
             isProcessing = false
         }
@@ -169,7 +175,8 @@ public final class AppViewModel: ObservableObject {
             
             switch extractionResult {
             case .cdaXML(let xmlData):
-                let bundle = try transcoder.transcode(cdaData: xmlData)
+                let bundle = if #available(iOS 16.1, *) { self.updateLiveActivity(status: "Transcodifica in FHIR...", progress: 0) }
+            try transcoder.transcode(cdaData: xmlData)
                 let patientInfo = extractPatientInfo(bundle: bundle)
                 
                 self.currentBundle = bundle
@@ -239,7 +246,8 @@ public final class AppViewModel: ObservableObject {
             await runClinicalDecisionSupport(for: self.extractedObservations)
         }
         
-        UINotificationFeedbackGenerator().notificationOccurred(self.activeError == nil ? .success : .error)
+        self.isSuccess = (self.activeError == nil)
+        self.feedbackTrigger += 1
         isProcessing = false
     }
     
@@ -321,4 +329,40 @@ public final class AppViewModel: ObservableObject {
         
         return (isOwner, pName, pCF)
     }
+    @available(iOS 16.1, *)
+    private func startLiveActivity(fileName: String) {
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+        
+        let attributes = ParsingAttributes(batchName: "Analisi Referto: \(fileName)")
+        let state = ParsingAttributes.ContentState(processedFiles: 0, totalFiles: 1, statusText: "Decrittazione in corso...")
+        
+        do {
+            let activity = try Activity.request(attributes: attributes, contentState: state, pushType: nil)
+            self.parsingActivity = activity
+        } catch {
+            logger.error("Impossibile avviare Live Activity: \(error)")
+        }
+    }
+    
+    @available(iOS 16.1, *)
+    private func updateLiveActivity(status: String, progress: Int) {
+        guard let activity = self.parsingActivity as? Activity<ParsingAttributes> else { return }
+        let state = ParsingAttributes.ContentState(processedFiles: progress, totalFiles: 1, statusText: status)
+        
+        Task {
+            await activity.update(using: state)
+        }
+    }
+    
+    @available(iOS 16.1, *)
+    private func endLiveActivity(status: String) {
+        guard let activity = self.parsingActivity as? Activity<ParsingAttributes> else { return }
+        let state = ParsingAttributes.ContentState(processedFiles: 1, totalFiles: 1, statusText: status)
+        
+        Task {
+            await activity.end(using: state, dismissalPolicy: .default)
+            self.parsingActivity = nil
+        }
+    }
+
 }

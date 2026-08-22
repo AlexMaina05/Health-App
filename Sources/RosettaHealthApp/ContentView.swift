@@ -70,8 +70,7 @@ public struct ContentView: View {
                                 }
                                 Spacer()
                                 Button(action: {
-                                    let generator = UIImpactFeedbackGenerator(style: .medium)
-                                    generator.impactOccurred()
+                                    // Sensorial feedback is handled natively via SwiftUI
                                     isShowingFileImporter = true 
                                 }) {
                                     Image(systemName: "doc.badge.plus")
@@ -171,6 +170,12 @@ public struct ContentView: View {
                     Section {
                         ForEach(viewModel.extractedObservations, id: \.id) { obs in
                             ObservationRowView(observation: obs)
+                                .scrollTransition(.animated.threshold(.visible(0.9))) { content, phase in
+                                    content
+                                        .opacity(phase.isIdentity ? 1 : 0.5)
+                                        .scaleEffect(phase.isIdentity ? 1 : 0.95)
+                                        .rotation3DEffect(.degrees(phase.value * 10), axis: (x: 1, y: 0, z: 0))
+                                }
                                 .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
                                 .listRowBackground(Color.clear)
                                 .listRowSeparator(.hidden)
@@ -425,7 +430,10 @@ public struct SettingsView: View {
                     }
                 }
             }
-            .onAppear {
+            .sensoryFeedback(trigger: viewModel.feedbackTrigger) { old, new in
+            return viewModel.isSuccess ? .success : .error
+        }
+        .onAppear {
                 birthDate = Date(timeIntervalSince1970: dateOfBirthInterval)
             }
         }

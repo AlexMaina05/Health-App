@@ -64,8 +64,7 @@ struct RosettaWidgetEntryView : View {
     }
 }
 
-@main
-struct RosettaWidget: Widget {
+struct RosettaWidgetMain: Widget {
     let kind: String = "RosettaWidget"
 
     var body: some WidgetConfiguration {
@@ -82,5 +81,15 @@ struct RosettaWidget: Widget {
         .configurationDisplayName("Ultimo Referto")
         .description("Visualizza l'ultimo parametro clinico analizzato da RosettaHealth.")
         .supportedFamilies([.systemSmall, .systemMedium])
+    }
+}
+
+@main
+struct RosettaWidgetBundle: WidgetBundle {
+    var body: some Widget {
+        RosettaWidgetMain()
+        if #available(iOS 16.1, *) {
+            RosettaParsingLiveActivity()
+        }
     }
 }
