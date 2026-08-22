@@ -1,5 +1,3 @@
-﻿<div align="center">
-
 # ⚕️ RosettaHealth 
 **Il ponte on-device tra il Fascicolo Sanitario Elettronico (FSE) e Apple Health.**
 
@@ -9,12 +7,7 @@
 [![Zero Cloud](https://img.shields.io/badge/Architecture-Zero_Cloud-2b2b2b?style=for-the-badge)](#)
 [![License](https://img.shields.io/badge/License-GPL_v3-4CAF50?style=for-the-badge)](#)
 
-<br/>
-
 > **RosettaHealth** non è un semplice lettore PDF; è una *pipeline invisibile e sicura* progettata per restituire ai pazienti il controllo sui propri dati medici. Sviluppata interamente in Swift (nativa), estrae i referti complessi (FSE 2.0) e li traduce in grafici interattivi all'interno di Apple Salute... il tutto senza che un singolo byte abbandoni il tuo iPhone.
-
-<br/>
-</div>
 
 ---
 
@@ -110,11 +103,6 @@ Il motore di mappatura semantica trasla i codici identificativi (LOINC) presenti
 | **Pressione Diastolica**| `8462-4`, `85354-9` | `bloodPressureDiastolic` | mmHg |
 | **Frequenza Cardiaca** | `8867-4` | `heartRate` | bpm |
 
-*(Nota: Molte altre mappature LOINC sono estensibili nativamente modificando il dizionario in `HealthKitBridge.swift`)*
-
-<div align="center">
-  <br>
-  <hr>
-  <p><b>Progettato con ♥️ e SwiftUI per Apple Ecosystem.</b></p>
-  <p><i>Distribuito sotto licenza Open-Source (MIT).</i></p>
-</div>
+---
+**Progettato con ♥️ e SwiftUI per Apple Ecosystem.**  
+*Distribuito sotto licenza Open-Source (MIT).*
