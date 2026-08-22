@@ -317,6 +317,9 @@ public struct SettingsView: View {
     
     @State private var birthDate: Date = Date()
     
+    // Sicurezza
+    @AppStorage("isBiometricLockEnabled") private var isBiometricLockEnabled: Bool = true
+    
     // User Experience / Feature Toggles
     @AppStorage("isCDSActive") private var isCDSActive: Bool = true
     @AppStorage("isOCREnabled") private var isOCREnabled: Bool = true
@@ -343,6 +346,19 @@ public struct SettingsView: View {
                         .disableAutocorrection(true)
                 } footer: {
                     Text("RosettaHealth userà questi dati per garantire che i referti dei tuoi familiari non inquinino i tuoi grafici su Apple Salute.")
+                }
+                
+                Section(header: Text("Sicurezza (Privacy Screen)")) {
+                    Toggle(isOn: $isBiometricLockEnabled) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Sblocco con FaceID / TouchID")
+                                .font(.headline)
+                            Text("Oscura i dati medici nello switcher delle app e richiedi l'autenticazione biometrica al ritorno.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .tint(.green)
                 }
                 
                 Section {

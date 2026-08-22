@@ -4,26 +4,89 @@ import SwiftData
 @available(iOS 17.0, *)
 public struct MainAppView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
+    @AppStorage("isBiometricLockEnabled") private var isBiometricLockEnabled: Bool = true
+    
+    @StateObject private var authManager = BiometricAuthManager()
+    @Environment(\.scenePhase) private var scenePhase
     
     public init() {}
     
     public var body: some View {
-        if hasCompletedOnboarding {
-            TabView {
-                ContentView()
-                    .tabItem {
-                        Label("Dashboard", systemImage: "heart.text.square.fill")
-                    }
-                
-                FamilyVaultView()
-                    .tabItem {
-                        Label("Family Vault", systemImage: "folder.badge.person.crop")
-                    }
+        ZStack {
+            if hasCompletedOnboarding {
+                TabView {
+                    ContentView()
+                        .tabItem {
+                            Label("Dashboard", systemImage: "heart.text.square.fill")
+                        }
+                    
+                    FamilyVaultView()
+                        .tabItem {
+                            Label("Family Vault", systemImage: "folder.badge.person.crop")
+                        }
+                }
+                .modelContainer(for: [VaultDocument.self])
+                // Privacy Screen (Sfuoca l'app sotto il lucchetto)
+                .blur(radius: (isBiometricLockEnabled && !authManager.isUnlocked) ? 15 : 0)
+                .disabled(isBiometricLockEnabled && !authManager.isUnlocked)
+            } else {
+                OnboardingView()
             }
-            // Inietta il contenitore SwiftData globale per il Vault
-            .modelContainer(for: [VaultDocument.self])
-        } else {
-            OnboardingView()
+            
+            // Lock Screen Overlay
+            if hasCompletedOnboarding && isBiometricLockEnabled && !authManager.isUnlocked {
+                VStack(spacing: 24) {
+                    Image(systemName: "faceid")
+                        .font(.system(size: 70))
+                        .foregroundColor(.purple)
+                        .symbolEffect(.pulse)
+                    
+                    Text("RosettaHealth è bloccata")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    Button(action: {
+                        authManager.authenticate()
+                    }) {
+                        Text("Sblocca per continuare")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 250)
+                            .background(Color.purple)
+                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    }
+                    
+                    if let error = authManager.authenticationError {
+                        Text(error)
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.ultraThinMaterial)
+                .ignoresSafeArea()
+            }
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if isBiometricLockEnabled && hasCompletedOnboarding {
+                if newPhase == .inactive || newPhase == .background {
+                    // Blocca l'app appena va in background per attivare il Privacy Screen nello switcher
+                    authManager.lock()
+                } else if newPhase == .active {
+                    // Richiede FaceID al ritorno in foreground
+                    if !authManager.isUnlocked {
+                        authManager.authenticate()
+                    }
+                }
+            }
+        }
+        .onAppear {
+            if isBiometricLockEnabled && hasCompletedOnboarding {
+                authManager.authenticate()
+            }
         }
     }
 }

@@ -80,6 +80,12 @@ L'infrastruttura Apple Health è strettamente personale ("mono-utente"). Dato ch
   - *Se combacia*: Il referto viene iniettato nell'ecosistema Apple HealthKit E salvato localmente nel Vault.
   - *Se non combacia*: L'ingestione in HealthKit viene interrotta chirurgicamente per prevenire corruzione (Anti-Inquinamento). Il referto originale (Bundle FHIR) viene instradato verso un database **SwiftData** crittografato on-device, costruendo di fatto un Fascicolo Sanitario Elettronico (*Family Vault*) multi-utente accessibile da una tab dedicata.
 
+### 4.4 Autenticazione Biometrica e Privacy Screen (GDPR)
+Per innalzare ulteriormente il livello di conformità all'Art. 32 del GDPR (Sicurezza del Trattamento), l'applicativo integra il framework `LocalAuthentication`. 
+- Quando l'app transita in stato `.inactive` o `.background`, il `BiometricAuthManager` genera immediatamente un evento di lock e oscura la vista (`.blur`), proteggendo i dati clinici dal Task Switcher di iOS (Privacy Screen).
+- Al rientro in `.active`, viene forzata la verifica dell'identità tramite **FaceID** o **TouchID** per decrittare lo schermo.
+- *(Nota di compilazione)*: È necessario aggiungere la chiave `NSFaceIDUsageDescription` nell'`Info.plist` del progetto Xcode ospite.
+
 ---
 
 ## 5. Requisiti di Compilazione (Entitlements e Configuration)
