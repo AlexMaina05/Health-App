@@ -1,8 +1,8 @@
 ﻿import SwiftUI
 
 public enum AppTheme: String, CaseIterable, Identifiable {
-    case purple = "Viola (Predefinito)"
-    case blue = "Blu Medico"
+    case blue = "Blu (Predefinito)"
+    case purple = "Viola"
     case teal = "Ottanio"
     case green = "Verde Salute"
     case red = "Rosso Cardio"

@@ -27,7 +27,7 @@ public struct OnboardingView: View {
         VStack(spacing: 0) {
             TabView(selection: $currentPage) {
                 // Pagina 0: Intro
-                tutorialPage(icon: "waveform.path.ecg", color: .purple, title: "I tuoi referti,
+                tutorialPage(icon: "waveform.path.ecg", color: .blue, title: "I tuoi referti,
 finalmente vivi.", description: "Trasforma i noiosi PDF del Fascicolo Sanitario Elettronico in fantastici grafici interattivi su Apple Salute.")
                     .tag(0)
                 
@@ -75,7 +75,7 @@ Privacy Assoluta", description: "Nessun server. I tuoi dati medici sensibili ven
                             .foregroundColor(.white)
                             .padding(.horizontal, 32)
                             .padding(.vertical, 14)
-                            .background(Color.purple)
+                            .background(Color.blue)
                             .clipShape(Capsule())
                     }
                 } else {
@@ -91,7 +91,7 @@ Privacy Assoluta", description: "Nessun server. I tuoi dati medici sensibili ven
                             .foregroundColor(.white)
                             .padding(.horizontal, 32)
                             .padding(.vertical, 14)
-                            .background(isFormValid ? Color.purple : Color.gray)
+                            .background(isFormValid ? Color.blue : Color.gray)
                             .clipShape(Capsule())
                     }
                     .disabled(!isFormValid)

@@ -10,7 +10,7 @@ public struct ContentView: View {
     @StateObject private var viewModel = AppViewModel()
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var modelContext
-    @AppStorage("appThemeName") private var appThemeName: String = AppTheme.purple.rawValue
+    @AppStorage("appThemeName") private var appThemeName: String = AppTheme.blue.rawValue
     
     @State private var isShowingFileImporter = false
     @State private var exportURL: URL?
@@ -20,7 +20,7 @@ public struct ContentView: View {
     public init() {}
     
     private var themeColor: Color {
-        AppTheme(rawValue: appThemeName)?.color ?? .purple
+        AppTheme(rawValue: appThemeName)?.color ?? .blue
     }
 
     public var body: some View {
@@ -97,7 +97,7 @@ public struct ContentView: View {
                     .padding(20)
                     .background {
                         LinearGradient(
-                            colors: [Color.blue, Color.purple.opacity(0.8)],
+                            colors: [Color.blue, Color.blue.opacity(0.8)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
@@ -105,7 +105,7 @@ public struct ContentView: View {
                     .listRowInsets(EdgeInsets()) // Rimuove i margini di default della List per la card
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                .shadow(color: Color.purple.opacity(0.2), radius: 15, x: 0, y: 8)
+                .shadow(color: Color.blue.opacity(0.2), radius: 15, x: 0, y: 8)
                 .padding(.bottom, 8)
                 
                 // MARK: - Premium Processing Indicator

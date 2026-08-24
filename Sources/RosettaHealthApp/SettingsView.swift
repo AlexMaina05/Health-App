@@ -19,7 +19,7 @@ public struct SettingsView: View {
     @AppStorage("isCDSActive") private var isCDSActive: Bool = true
     @AppStorage("isOCREnabled") private var isOCREnabled: Bool = true
     @AppStorage("isProUnlocked") private var isProUnlocked: Bool = false
-    @AppStorage("appThemeName") private var appThemeName: String = AppTheme.purple.rawValue
+    @AppStorage("appThemeName") private var appThemeName: String = AppTheme.blue.rawValue
     @State private var showProAlert = false
     
     public init() {}
@@ -47,7 +47,7 @@ public struct SettingsView: View {
                         }
                     }
                     .pickerStyle(.menu)
-                    .tint(AppTheme(rawValue: appThemeName)?.color ?? .purple)
+                    .tint(AppTheme(rawValue: appThemeName)?.color ?? .blue)
                 }
 
                 Section(header: Text("RosettaHealth PRO"), footer: Text("Sblocca il Family Vault per gestire referti illimitati per tutta la tua famiglia.")) {
@@ -104,7 +104,7 @@ public struct SettingsView: View {
                                 .foregroundColor(.secondary)
                         }
                     }
-                    .tint(.purple)
+                    .tint(.blue)
                     
                     Toggle(isOn: $isOCREnabled) {
                         VStack(alignment: .leading, spacing: 4) {

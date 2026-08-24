@@ -6,7 +6,7 @@ import CoreSpotlight
 public struct MainAppView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
     @AppStorage("isBiometricLockEnabled") private var isBiometricLockEnabled: Bool = true
-    @AppStorage("appThemeName") private var appThemeName: String = AppTheme.purple.rawValue
+    @AppStorage("appThemeName") private var appThemeName: String = AppTheme.blue.rawValue
     
     @StateObject private var authManager = BiometricAuthManager()
     @Environment(\.scenePhase) private var scenePhase
@@ -15,7 +15,7 @@ public struct MainAppView: View {
     public init() {}
     
     private var themeColor: Color {
-        AppTheme(rawValue: appThemeName)?.color ?? .purple
+        AppTheme(rawValue: appThemeName)?.color ?? .blue
     }
     
     public var body: some View {
