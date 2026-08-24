@@ -481,6 +481,7 @@ struct ObservationRowView: View {
     let observation: FHIRObservation
     
     @State private var history: [(date: Date, value: Double)] = []
+    @State private var selectedDate: Date?
     
     // Logica di valutazione Range
     private var isOutOfRange: Bool {
