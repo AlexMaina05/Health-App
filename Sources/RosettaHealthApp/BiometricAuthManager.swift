@@ -39,10 +39,8 @@ public final class BiometricAuthManager: ObservableObject {
             }
         } else {
             // Nessuna protezione impostata sul dispositivo (nessun PIN)
-            self.authenticationError = "Nessun metodo di sblocco configurato sul dispositivo."
-            // Permettiamo l'accesso se il device non ha PIN? Per un'app medica, forse no, 
-            // ma per evitare blocchi lo sblocchiamo loggando l'avviso.
-            self.isUnlocked = true
+            self.authenticationError = "Il dispositivo non ha un codice di sblocco (Passcode). Per motivi di sicurezza (GDPR Art.9), l'accesso ai referti è bloccato. Configura un Passcode nelle impostazioni di iOS."
+            self.isUnlocked = false
         }
     }
     

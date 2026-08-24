@@ -19,6 +19,10 @@ public final class AppViewModel: ObservableObject {
     @Published public var isOCRExtracted = false
     @Published public var isHealthKitAuthorized = false
     
+    @Published public var isSuccess: Bool = false
+    @Published public var feedbackTrigger: Int = 0
+    public var parsingActivity: Any? = nil
+    
     @AppStorage("ownerFiscalCode") public var ownerFiscalCode: String = ""
     @AppStorage("isCDSActive") public var isCDSActive: Bool = true
     @AppStorage("isOCREnabled") public var isOCREnabled: Bool = true

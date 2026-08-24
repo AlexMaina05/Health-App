@@ -438,7 +438,7 @@ public struct SettingsView: View {
                     }
                     .padding(.vertical, 4)
                     
-                    Link(destination: URL(string: "https://alexmaina.dev")!) {
+                    Link(destination: URL(string: "https://alexmaina.dev") ?? URL(fileURLWithPath: "")) {
                         HStack {
                             Image(systemName: "globe")
                             Text("Alessandro Mainardi (Sito Web)")
@@ -448,7 +448,7 @@ public struct SettingsView: View {
                         }
                     }
                     
-                    Link(destination: URL(string: "https://github.com/AlexMaina05")!) {
+                    Link(destination: URL(string: "https://github.com/AlexMaina05") ?? URL(fileURLWithPath: "")) {
                         HStack {
                             Image(systemName: "chevron.left.forwardslash.chevron.right")
                             Text("GitHub (@AlexMaina05)")

@@ -23,6 +23,7 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
     private var currentObsEffectiveTime: String = ""
     private var currentRangeLow: Double?
     private var currentRangeHigh: Double?
+    private var currentElementData: String = ""
     private var currentRangeUnit: String = ""
     private var currentRangeText: String = ""
     
@@ -165,6 +166,10 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
         }
     }
     
+    public func parser(_ parser: XMLParser, foundCharacters string: String) {
+        currentElementData += string
+    }
+
     public func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         if elementName == "observation" && insideObservation {
             if let code = currentObsCode {

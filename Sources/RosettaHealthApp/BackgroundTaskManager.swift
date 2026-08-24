@@ -16,7 +16,7 @@ public final class BackgroundTaskManager {
     
     public func registerTasks(modelContext: ModelContext? = nil) {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: processingTaskIdentifier, using: nil) { task in
-            self.handleProcessingTask(task: task as! BGProcessingTask, modelContext: modelContext)
+            self.handleProcessingTask(task: task as? BGProcessingTask, modelContext: modelContext)
         }
     }
     
