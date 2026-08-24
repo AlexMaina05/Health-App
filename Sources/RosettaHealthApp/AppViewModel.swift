@@ -237,7 +237,19 @@ public final class AppViewModel: ObservableObject {
                 }
                 
                 self.isOCRExtracted = true
-                // self.extractedObservations updated, but ingest disabled
+                self.extractedObservations = metrics.map { metric in
+                    return FHIRObservation(
+                        id: UUID().uuidString,
+                        status: "final",
+                        code: FHIRCodeableConcept(
+                            coding: [FHIRCoding(system: "http://loinc.org", code: metric.loincCode, display: metric.name)],
+                            text: metric.name
+                        ),
+                        effectiveDateTime: ISO8601DateFormatter().string(from: metric.date),
+                        valueQuantity: FHIRQuantity(value: metric.value, unit: metric.unit, system: "http://unitsofmeasure.org", code: metric.unit)
+                    )
+                }
+                // Ingestione disattivata per approvazione manuale (Human-in-the-loop)
             }
         } catch let err as RosettaError {
             self.activeError = err
@@ -329,7 +341,7 @@ public final class AppViewModel: ObservableObject {
         guard let data = try? encoder.encode(bundle) else { return nil }
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("FHIR_Report_\(UUID().uuidString.prefix(8)).json")
         do {
-            try data.write(to: tempURL, options: .completeUntilFirstUserAuthenticationFileProtectionUntilFirstUserAuthentication)
+            try data.write(to: tempURL, options: .completeFileProtectionUntilFirstUserAuthentication)
         } catch {
             return nil
         }

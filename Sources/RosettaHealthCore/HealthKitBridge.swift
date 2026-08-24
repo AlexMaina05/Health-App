@@ -48,11 +48,11 @@ public final class HealthKitBridge {
         
         // MARK: - Elettroliti
         "2951-2": MetricTarget(type: .dietarySodium, defaultUnit: HKUnit.gramUnit(with: .milli)),
-        "2823-3": MetricTarget(type: .dietaryPotassium, defaultUnit: HKUnit.gramUnit(with: .milli)), & Minerali (Mappati su HKDietary)
+        "2823-3": MetricTarget(type: .dietaryPotassium, defaultUnit: HKUnit.gramUnit(with: .milli)),
         
         // MARK: - Vitamine
         "32220-6": MetricTarget(type: .dietaryVitaminC, defaultUnit: HKUnit.gramUnit(with: .milli)),
-        "32309-7": MetricTarget(type: .dietaryVitaminD, defaultUnit: HKUnit.gramUnit(with: .micro)), (Mappate su HKDietary)
+        "32309-7": MetricTarget(type: .dietaryVitaminD, defaultUnit: HKUnit.gramUnit(with: .micro)),
         
         // MARK: - Tossicologia & Altro
         "56478-1": MetricTarget(type: .bloodAlcoholContent, defaultUnit: HKUnit.percent()),
