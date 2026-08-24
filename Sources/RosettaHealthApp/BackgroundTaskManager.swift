@@ -57,9 +57,11 @@ public final class BackgroundTaskManager {
     private func processPendingFilesHeadless(modelContainer: ModelContainer?) async {
         let viewModel = AppViewModel()
         
-        var containerToUse = modelContainer
-        if containerToUse == nil {
-            containerToUse = try? ModelContainer(for: VaultDocument.self)
+        var contextToUse = modelContext
+        if contextToUse == nil {
+            if let container = try? ModelContainer(for: VaultDocument.self) {
+                contextToUse = container.mainContext
+            }
         }
         
         // Silenzia l'output visivo e lancia il parsing

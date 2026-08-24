@@ -91,7 +91,9 @@ struct ObservationRowView: View {
             }
         }
         .padding(16)
-        .liquidGlass(cornerRadius: 20)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .shadow(color: Color.black.opacity(0.08), radius: 12, x: 0, y: 6)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(observation.code.text ?? observation.code.coding.first?.display ?? "Parametro"))
         .accessibilityValue(Text("\(observation.valueQuantity?.value ?? 0) \(observation.valueQuantity?.unit ?? "")"))

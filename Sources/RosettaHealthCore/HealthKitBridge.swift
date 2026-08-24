@@ -2,7 +2,6 @@ import Foundation
 import HealthKit
 
 public final class HealthKitBridge {
-    public static let shared = HealthKitBridge()
     private let healthStore = HKHealthStore()
     
     // MARK: - Mappa Estesa LOINC -> HKQuantityTypeIdentifier & Unità Target

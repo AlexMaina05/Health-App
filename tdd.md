@@ -1,4 +1,4 @@
-﻿---
+---
 layout: default
 title: Technical Design Document
 permalink: /tdd/
@@ -14,7 +14,7 @@ permalink: /tdd/
 
 ---
 
-## ðŸ“– Table of Contents
+## 📖 Table of Contents
 1. [Executive Summary & Problem Statement](#1-executive-summary--problem-statement)
 2. [Architettura IPC & Memory Management](#2-architettura-ipc--memory-management)
 3. [Modelli Dati & Family Vault (SwiftData)](#3-modelli-dati--family-vault-swiftdata)
@@ -31,7 +31,7 @@ permalink: /tdd/
 
 ### 1.1 Context & Problem
 Il Fascicolo Sanitario Elettronico italiano (FSE 2.0) rilascia referti in formato PDF/A-3 contenenti un payload XML strutturato (HL7 CDA R2). L'estrazione e l'integrazione di questi referti (Laboratorio, Radiologia, Visite Specialistiche) all'interno dell'ecosistema Apple Salute richiede elaborazioni complesse. 
-Il vincolo normativo fondamentale Ã¨ la **Privacy (GDPR Art. 9)**: la transcodifica di dati sanitari sensibili deve avvenire al 100% on-device (Zero-Cloud Architecture), senza mai delegare l'elaborazione a server esterni.
+Il vincolo normativo fondamentale è la **Privacy (GDPR Art. 9)**: la transcodifica di dati sanitari sensibili deve avvenire al 100% on-device (Zero-Cloud Architecture), senza mai delegare l'elaborazione a server esterni.
 
 ### 1.2 The RosettaHealth Solution (Hybrid Ingestion Architecture)
 **RosettaHealth** risolve il problema adottando una duplice architettura nativa ("Best of Both Worlds"):
@@ -42,7 +42,7 @@ Il vincolo normativo fondamentale Ã¨ la **Privacy (GDPR Art. 9)**: la transcod
 
 ## 2. Architettura IPC & Memory Management
 
-A causa dei vincoli della Sandbox di iOS e delle policy di *Data Protection* applicate ad `HKHealthStore` a schermo bloccato, l'Estensione di Condivisione (Share Extension) non puÃ² comunicare direttamente con Apple Health. L'architettura implementa un pattern **Coda Offline Producer-Consumer**.
+A causa dei vincoli della Sandbox di iOS e delle policy di *Data Protection* applicate ad `HKHealthStore` a schermo bloccato, l'Estensione di Condivisione (Share Extension) non può comunicare direttamente con Apple Health. L'architettura implementa un pattern **Coda Offline Producer-Consumer**.
 
 ### 2.1 Gestione dei Limiti Jetsam (120MB)
 Le Share Extension su iOS sono soggette a stringenti limiti di memoria (circa 120MB). L'apertura e il rendering nativo di PDF multipagina pesanti causerebbe un immediato *Jetsam Event* (terminazione forzata da parte del SO).
@@ -55,7 +55,7 @@ Per aggirare il problema, la Share Extension **non esegue il parsing**. Si limit
 Il container condiviso (`group.dev.alexmaina.rosettahealth`) gestisce due tipologie di payload:
 
 1. **Corsia Rapida CDA (`PendingCDA_<UUID>.xml`):** Payload XML puro estratto istantaneamente (se embedded nel PDF/A-3).
-2. **Corsia Differita OCR (`PendingPDF_<UUID>.pdf`):** Copia binaria del PDF rasterizzato, depositata in fallback se l'XML Ã¨ assente.
+2. **Corsia Differita OCR (`PendingPDF_<UUID>.pdf`):** Copia binaria del PDF rasterizzato, depositata in fallback se l'XML è assente.
 
 - **Consumer (AppViewModel / BGTaskScheduler)**: L'App principale scansiona il container asincronamente. Terminata l'ingestione, esegue un **cleanup atomico e irreversibile** (implementato tramite blocchi `defer`) per eliminare tracce nel filesystem esposto.
 
@@ -63,10 +63,10 @@ Il container condiviso (`group.dev.alexmaina.rosettahealth`) gestisce due tipolo
 
 ## 3. Modelli Dati & Family Vault (SwiftData)
 
-Apple Health Ã¨ strettamente mono-utente. L'ingestione accidentale del referto di un familiare corromperebbe i trend biomedici del proprietario del dispositivo. L'App implementa il **Family Vault**, un EMR (Electronic Medical Record) crittografato gestito tramite `SwiftData`.
+Apple Health è strettamente mono-utente. L'ingestione accidentale del referto di un familiare corromperebbe i trend biomedici del proprietario del dispositivo. L'App implementa il **Family Vault**, un EMR (Electronic Medical Record) crittografato gestito tramite `SwiftData`.
 
 ### 3.1 SwiftData Schema & Out-of-Line Storage
-Il modello dati principale Ã¨ `VaultDocument`, progettato per supportare attributi BLOB pesanti in storage esterno per non impattare sulle performance delle query (SQLite).
+Il modello dati principale è `VaultDocument`, progettato per supportare attributi BLOB pesanti in storage esterno per non impattare sulle performance delle query (SQLite).
 
 ```swift
 @Model
@@ -104,10 +104,10 @@ In presenza di un *Match Negativo* (referto appartenente a terzi), l'algoritmo v
 L'elaborazione dei documenti clinici non utilizza parser DOM (Document Object Model) che allocherebbero l'intero albero XML in RAM.
 
 ### 4.1 SAX Parsing (Streaming XML)
-Il motore si affida al delegato nativo `XMLParserDelegate` (Simple API for XML). Questo approccio garantisce una complessitÃ  spaziale O(1): il referto FSE (che puÃ² superare i 10MB per cartelle cliniche complesse) viene letto in streaming nodo per nodo, scartando i dati non clinici in tempo reale e annullando il rischio di *Memory Warning* su dispositivi legacy (es. iPhone Xs).
+Il motore si affida al delegato nativo `XMLParserDelegate` (Simple API for XML). Questo approccio garantisce una complessità spaziale O(1): il referto FSE (che può superare i 10MB per cartelle cliniche complesse) viene letto in streaming nodo per nodo, scartando i dati non clinici in tempo reale e annullando il rischio di *Memory Warning* su dispositivi legacy (es. iPhone Xs).
 
-### 4.2 InteroperabilitÃ  Transfrontaliera (IPS)
-Oltre all'estrazione numerica, il motore formatta i JSON finali in architetture `FHIR R4 Bundle`. Per garantire la mobilitÃ  del paziente a livello internazionale, inietta i Profile Identifier del framework **International Patient Summary (IPS)**:
+### 4.2 Interoperabilità Transfrontaliera (IPS)
+Oltre all'estrazione numerica, il motore formatta i JSON finali in architetture `FHIR R4 Bundle`. Per garantire la mobilità del paziente a livello internazionale, inietta i Profile Identifier del framework **International Patient Summary (IPS)**:
 - `http://hl7.org/fhir/uv/ips/StructureDefinition/Bundle-uv-ips`
 Tale iniezione rende l'esportazione valida e compatibile con tutti gli EMR ospedalieri dell'Unione Europea.
 
@@ -126,7 +126,7 @@ Il bridge (`HealthKitBridge.swift`) mappa i codici internazionali LOINC su tipi 
 | **Vitamine** (Vitamina D) | `1649-3` | `.dietaryVitaminD` | `mcg` |
 | **Minerali** (Magnesio) | `19123-9` | `.dietaryMagnesium` | `mg` |
 
-*(Nota: La tabella sovrastante Ã¨ un estratto. L'architettura supporta oltre 30 mappature LOINC native, includendo tossicologia, elettroliti e fitness avanzato come il VO2 Max).*
+*(Nota: La tabella sovrastante è un estratto. L'architettura supporta oltre 30 mappature LOINC native, includendo tossicologia, elettroliti e fitness avanzato come il VO2 Max).*
 
 **Parsing String-Fallback:** Se FHIR restituisce misurazioni composite incapsulate in stringhe (es. `"120/80"`), un parser Regex le scompatta in vettori validi (`[120.0, 80.0]`) e genera due metriche separate.
 
@@ -142,7 +142,7 @@ Se `CGPDFDocument` non individua payload `application/xml`:
 2. Utilizza un motore Regex euristico per individuare pattern clinici (es. `(?i)Colesterolo.*?(\d{3})\s*mg`).
 
 ### 5.2 Audit Trail (Valenza Medico-Legale)
-Per preservare la rigorositÃ  del dato medico, i campioni estratti via OCR vengono generati escludendo il documento CDA in HealthKit e marcati con metadati espliciti `["EXTRACTION_METHOD": "APPLE_VISION_OCR_FALLBACK"]`. L'interfaccia SwiftUI etichetta visivamente questi campioni con un badge viola (Dato Probabilistico).
+Per preservare la rigorosità del dato medico, i campioni estratti via OCR vengono generati escludendo il documento CDA in HealthKit e marcati con metadati espliciti `["EXTRACTION_METHOD": "APPLE_VISION_OCR_FALLBACK"]`. L'interfaccia SwiftUI etichetta visivamente questi campioni con un badge viola (Dato Probabilistico).
 
 ### 5.3 PDF Vector Annotations (PDFKit)
 Per garantire all'utente il controllo visivo, il sistema esegue una complessa trasformazione di coordinate:
@@ -155,16 +155,16 @@ Per garantire all'utente il controllo visivo, il sistema esegue una complessa tr
 ## 6. Ecosistema Avanzato (iOS, watchOS, BGTasks)
 
 ### 6.1 Live Activities & Dynamic Island (ActivityKit)
-Sfruttando il target `RosettaWidget`, l'App innesca una `Live Activity` quando l'utente processa uno o piÃ¹ PDF e porta l'applicazione in background. 
-La `Dynamic Island` si espande mostrando una `ProgressView` in tempo reale sulle operazioni di *Parsing XML* o *OCR Fallback*, migliorando enormemente la visibilitÃ  dei task asincroni del *Rosetta Engine*.
+Sfruttando il target `RosettaWidget`, l'App innesca una `Live Activity` quando l'utente processa uno o più PDF e porta l'applicazione in background. 
+La `Dynamic Island` si espande mostrando una `ProgressView` in tempo reale sulle operazioni di *Parsing XML* o *OCR Fallback*, migliorando enormemente la visibilità dei task asincroni del *Rosetta Engine*.
 
 ### 6.2 Headless Background Fetch (BGTaskScheduler)
 Per consumare decine di PDF accodati, viene registrato un `BGProcessingTask` (richiede l'entitlement `UIBackgroundModes` -> `processing`). 
 - **Headless Context**: L'App innesca un `ModelContainer` puramente slegato dalla UI.
-- L'esecuzione massiva avviene esclusivamente quando l'iPhone Ã¨ inattivo e in carica, azzerando il *battery drain* attivo percepito dall'utente.
+- L'esecuzione massiva avviene esclusivamente quando l'iPhone è inattivo e in carica, azzerando il *battery drain* attivo percepito dall'utente.
 
 ### 6.3 watchOS Companion App (Shared App Group)
-Per le limitazioni energetiche (e l'impossibilitÃ  di leggere HealthKit nativo in background persistente), il target iOS serializza le *ultime misurazioni critiche* in un `UserDefaults(suiteName: "group.dev...")` transitorio.
+Per le limitazioni energetiche (e l'impossibilità di leggere HealthKit nativo in background persistente), il target iOS serializza le *ultime misurazioni critiche* in un `UserDefaults(suiteName: "group.dev...")` transitorio.
 Il target `RosettaWatch` (compilato sotto direttive `#if os(watchOS)`) consuma i dati e aggiorna le sue Complicazioni e `Gauge` interattivi, fornendo alert di Medicina Preventiva direttamente al polso senza risvegliare il SoC dell'iPhone.
 
 ---
@@ -172,7 +172,7 @@ Il target `RosettaWatch` (compilato sotto direttive `#if os(watchOS)`) consuma i
 ## 7. Sicurezza, Crittografia & Compliance (GDPR Art. 9)
 
 ### 7.1 Isolamento Rete (Zero-Cloud)
-Il framework `Foundation.URLSession` Ã¨ assente dalla business logic. Tutte le inferenze LLM/Vision e le computazioni FHIR avvengono localmente. Nessun dato varca il perimetro del dispositivo.
+Il framework `Foundation.URLSession` è assente dalla business logic. Tutte le inferenze LLM/Vision e le computazioni FHIR avvengono localmente. Nessun dato varca il perimetro del dispositivo.
 
 ### 7.2 Crittografia AES-256 e Secure Enclave
 Il gruppo IPC necessita dell'entitlement di crittografia *Data At Rest* a schermo bloccato:
@@ -186,47 +186,47 @@ Questa stringa garantisce che le chiavi crittografiche (AES-256) utilizzate per 
 
 ### 7.3 Privacy Screen e Biometria
 Tramite l'hook sul ciclo di vita `scenePhase`:
-Se l'app transita in stato `.inactive` (Task Switcher aperto), il `BiometricAuthManager` inietta una vista `.blur(radius: 20)` in overlay protettivo. Il ripristino dell'interazione (`.active`) Ã¨ subordinato a un prompt `LocalAuthentication` (FaceID o TouchID).
+Se l'app transita in stato `.inactive` (Task Switcher aperto), il `BiometricAuthManager` inietta una vista `.blur(radius: 20)` in overlay protettivo. Il ripristino dell'interazione (`.active`) è subordinato a un prompt `LocalAuthentication` (FaceID o TouchID).
 
 ---
 
 ## 8. UI/UX & Accessibility (A11y)
 
-Il livello di presentazione Ã¨ costruito in **SwiftUI** rispettando le Apple Human Interface Guidelines (HIG).
+Il livello di presentazione è costruito in **SwiftUI** rispettando le Apple Human Interface Guidelines (HIG).
 
 ### 8.1 Glassmorphism, 3D Scroll Transitions & Sensory Feedback
 - **Scroll Transitions**: I referti all'interno del `FamilyVaultView` e `ContentView` sfruttano il modifier nativo iOS 17 `.scrollTransition`. Al variare dell'offset della ScrollView, il framework interpola dinamicamente `scaleEffect` e `rotation3DEffect`, restituendo un feedback visivo tridimensionale simile allo storico *CoverFlow* di Apple.
 - **Sensory Feedback**: Eliminato il vecchio `UIKit` in favore dell'API puramente dichiarativa `.sensoryFeedback(trigger:)`, innescando feedback aptici coordinati con gli stati della `Live Activity`.
-- **InterattivitÃ  del Vault (Swipe, Search & Refresh)**: L'archivio documentale Ã¨ gestito tramite listati `SwiftUI` moderni. Ãˆ stata implementata una `SearchBar` reattiva, un sistema di `SwipeActions` (edge-leading per la condivisione istantanea e edge-trailing distruttivo con `ConfirmationDialog` nativo) e il gesto **Pull-to-Refresh** (`.refreshable`) per innescare la sincronizzazione manuale del database locale con Apple HealthKit.
-- **Onboarding Contestuale (TipKit)**: Per migliorare la *User Experience*, Ã¨ integrato il framework **TipKit**. Un sistema intelligente a regole valuta l'engagement dell'utente e suggerisce *on-boarding tips* nativi (es. istruzioni per la condivisione dall'App File) direttamente nell'interfaccia, senza interrompere il flusso di lavoro.
-- **Skeleton Loading & Feedback Visivi**: Durante l'estrazione OCR dei referti rasterizzati, l'App sostituisce i classici indicatori di caricamento bloccanti con *Skeleton Screen* animati (`.redacted(reason: .placeholder)` unito a `.symbolEffect(.pulse)`), offrendo un feedback visivo immediato sull'attivitÃ  del Neural Engine.
+- **Interattività del Vault (Swipe, Search & Refresh)**: L'archivio documentale è gestito tramite listati `SwiftUI` moderni. È stata implementata una `SearchBar` reattiva, un sistema di `SwipeActions` (edge-leading per la condivisione istantanea e edge-trailing distruttivo con `ConfirmationDialog` nativo) e il gesto **Pull-to-Refresh** (`.refreshable`) per innescare la sincronizzazione manuale del database locale con Apple HealthKit.
+- **Onboarding Contestuale (TipKit)**: Per migliorare la *User Experience*, è integrato il framework **TipKit**. Un sistema intelligente a regole valuta l'engagement dell'utente e suggerisce *on-boarding tips* nativi (es. istruzioni per la condivisione dall'App File) direttamente nell'interfaccia, senza interrompere il flusso di lavoro.
+- **Skeleton Loading & Feedback Visivi**: Durante l'estrazione OCR dei referti rasterizzati, l'App sostituisce i classici indicatori di caricamento bloccanti con *Skeleton Screen* animati (`.redacted(reason: .placeholder)` unito a `.symbolEffect(.pulse)`), offrendo un feedback visivo immediato sull'attività del Neural Engine.
 - L'interfaccia utilizza `RoundedRectangle` con stile `.continuous` (squircle) e materiali opachi (`.ultraThinMaterial`) per effetti di traslucenza (Glassmorphism). Inoltre, intercetta nativamente i cambi di `scenePhase` per oscurare l'interfaccia con un **Privacy Blur** automatico nell'App Switcher.
-- Le storicitÃ  cliniche sono renderizzate tramite `Swift Charts`. Un task asincrono recupera da HealthKit gli ultimi campioni LOINC e li disegna con un'interpolazione `.catmullRom` per creare sparklines organiche. Tramite `.chartXSelection`, i grafici sono **completamente interattivi (Scrubbing)**, permettendo all'utente di ispezionare il valore esatto di ogni referto toccando la curva.
+- Le storicità cliniche sono renderizzate tramite `Swift Charts`. Un task asincrono recupera da HealthKit gli ultimi campioni LOINC e li disegna con un'interpolazione `.catmullRom` per creare sparklines organiche. Tramite `.chartXSelection`, i grafici sono **completamente interattivi (Scrubbing)**, permettendo all'utente di ispezionare il valore esatto di ogni referto toccando la curva.
 
-### 8.2 AccessibilitÃ  Inclusiva (VoiceOver & Dynamic Type)
-Il codice UI Ã¨ ottimizzato per l'inclusivitÃ :
+### 8.2 Accessibilità Inclusiva (VoiceOver & Dynamic Type)
+Il codice UI è ottimizzato per l'inclusività:
 - Le `ObservationRowView` implementano i modificatori `.accessibilityElement(children: .combine)` e `.accessibilityLabel()`, convertendo dati complessi (es. "LDL 120 mg/dL, in aumento") in una singola frase fluida per VoiceOver.
-- Tutte le viste testuali scalano correttamente secondo le impostazioni di sistema **Dynamic Type**, garantendo leggibilitÃ  per utenti ipovedenti senza rompere il layout a griglia.
+- Tutte le viste testuali scalano correttamente secondo le impostazioni di sistema **Dynamic Type**, garantendo leggibilità per utenti ipovedenti senza rompere il layout a griglia.
 
 ---
 
 
 ### 8.2 Dynamic Theme Engine (Global Tinting)
-La personalizzazione cosmetica dell'app Ã¨ centralizzata tramite l'enumeratore `AppTheme` e propagata attraverso l'albero delle View SwiftUI usando `@AppStorage("appThemeName")`.
+La personalizzazione cosmetica dell'app è centralizzata tramite l'enumeratore `AppTheme` e propagata attraverso l'albero delle View SwiftUI usando `@AppStorage("appThemeName")`.
 Il colore di base (Default: `.blue`) viene applicato globalmente istanziando un modificatore `.tint(themeColor)` al livello radice (`MainAppView.swift`). Se l'utente tenta di selezionare un colore alternativo senza disporre dello sblocco `isProUnlocked`, il motore interrompe l'assegnazione e lancia un alert UI (Up-Sell).
 
 ### 8.3 Tutorial Onboarding (TabView Carousel)
-Il flusso iniziale (`OnboardingView`) non Ã¨ piÃ¹ un semplice modulo statico. Utilizza un `TabView` bindato a un `@State private var currentPage` per scorrere un carosello di sotto-viste descrittive. Il pulsante di conferma finale ("Inizia") Ã¨ vincolato alla compilazione del form anagrafico e al toggle di consenso GDPR (Art. 9).
+Il flusso iniziale (`OnboardingView`) non è più un semplice modulo statico. Utilizza un `TabView` bindato a un `@State private var currentPage` per scorrere un carosello di sotto-viste descrittive. Il pulsante di conferma finale ("Inizia") è vincolato alla compilazione del form anagrafico e al toggle di consenso GDPR (Art. 9).
 
 ## 9. Quality Assurance, Testing & Build (XcodeGen)
 
-Per la certificazione di stabilitÃ  biomedica, il framework core usa una suite di Test (`XCTest`):
+Per la certificazione di stabilità biomedica, il framework core usa una suite di Test (`XCTest`):
 - **Mocking XML & SAX Testing**: Iniezione di payload simulati per verificare la corretta astrazione dei codici LOINC critici da parte dell'`XMLParserDelegate`.
 - **Unit Testing HealthKitBridge**: Verifica che i divisori di frazioni composite (es. "130/80") restituiscano i tuple-type corretti o falliscano in modo controllato.
-- **Edge Cases & Resilience**: Valutazione della tolleranza d'errore se un referto medico Ã¨ malformato (es. privo di intestazione o di *Patient ID*), garantendo che la pipeline fallisca silenziosamente (*Fail Gracefully*) senza generare eccezioni non gestite (crash a runtime).
+- **Edge Cases & Resilience**: Valutazione della tolleranza d'errore se un referto medico è malformato (es. privo di intestazione o di *Patient ID*), garantendo che la pipeline fallisca silenziosamente (*Fail Gracefully*) senza generare eccezioni non gestite (crash a runtime).
 
 
 ## Aggiornamenti Architetturali (iOS 26 & Swift 6)
-- **Performance:** Risolto un memory leak critico implementando HealthKitBridge come Singleton globale.
-- **UI/UX:** Implementato il modificatore custom .liquidGlass() retrocompatibile e poi promosso a API nativa per iOS 26.
-- **Concorrenza:** Migrazione completa a @Observable e introduzione di VaultModelActor per query thread-safe in background.
+- **Performance:** Risolto un memory leak critico implementando `HealthKitBridge` come Singleton globale.
+- **UI/UX:** Implementato il modificatore custom `.liquidGlass()` retrocompatibile e poi promosso a API nativa per iOS 26.
+- **Concorrenza:** Migrazione completa a `@Observable` e introduzione di `VaultModelActor` per query thread-safe in background.
