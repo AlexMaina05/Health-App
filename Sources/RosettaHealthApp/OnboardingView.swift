@@ -5,7 +5,7 @@ public struct OnboardingView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
     @AppStorage("ownerFirstName") private var firstName: String = ""
     @AppStorage("ownerLastName") private var lastName: String = ""
-    @AppStorage("ownerDateOfBirth") private var dateOfBirthInterval: Double = Date().timeIntervalSince1970
+    @AppStorage("ownerDateOfBirth") private var dateOfBirthInterval: Double = 946684800
     @State private var fiscalCode: String = ""
     
     @State private var birthDate: Date = Date()
@@ -65,16 +65,13 @@ public struct OnboardingView: View {
                                 if newValue.count > 16 {
                                     fiscalCode = String(newValue.prefix(16))
                                 }
-                            }
-                    }
-                }
-
                     Section(header: Text("Privacy e Trattamento Dati")) {
                         Toggle(isOn: $hasAcceptedGDPR) {
-                            Text("Ho letto e accetto l'Informativa sul Trattamento dei Dati Sensibili ex Art. 9 GDPR.")
+                            Text("Accetto l'Informativa (Art. 9 GDPR) e assumo la piena responsabilità legale per la gestione dei referti di eventuali miei familiari archiviati nel Family Vault (Household Exemption).")
                                 .font(.footnote)
                         }
                     }
+                }
                 .scrollContentBackground(.hidden)
                 
                 // Pulsante Conferma

@@ -115,7 +115,7 @@ public final class AppViewModel: ObservableObject {
                             }
                         }
                         
-                        try FileManager.default.removeItem(at: file)
+                        // defer fa già il lavoro
                     } catch let err as RosettaError {
                         self.activeError = err
                     } catch {

@@ -7,7 +7,7 @@ public struct SettingsView: View {
     // Privacy & Multi-Profile
     @AppStorage("ownerFirstName") private var firstName: String = ""
     @AppStorage("ownerLastName") private var lastName: String = ""
-    @AppStorage("ownerDateOfBirth") private var dateOfBirthInterval: Double = Date().timeIntervalSince1970
+    @AppStorage("ownerDateOfBirth") private var dateOfBirthInterval: Double = 946684800 // 1 Gennaio 2000 default statico
     @State private var ownerFiscalCode: String = ""
     
     @State private var birthDate: Date = Date()

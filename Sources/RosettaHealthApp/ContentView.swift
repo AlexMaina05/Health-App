@@ -276,7 +276,7 @@ public struct ContentView: View {
                         do {
                             try FileManager.default.copyItem(at: selectedURL, to: safeURL)
                             // Audit GDPR: Forziamo la crittografia esplicita anche sul file temporaneo
-                            try FileManager.default.setAttributes([.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], ofItemAtPath: safeURL.path)
+                            try FileManager.default.setAttributes([.protectionKey: FileProtectionType.complete], ofItemAtPath: safeURL.path)
                             
                             if secured { selectedURL.stopAccessingSecurityScopedResource() }
                             

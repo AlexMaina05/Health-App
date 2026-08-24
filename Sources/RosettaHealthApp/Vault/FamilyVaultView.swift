@@ -78,6 +78,11 @@ public struct FamilyVaultView: View {
                                         .rotation3DEffect(.degrees(phase.value * -15), axis: (x: 1, y: 0, z: 0))
                                 }
                             }
+                            .onDelete { indexSet in
+                                for index in indexSet {
+                                    modelContext.delete(patientDocs[index])
+                                }
+                            }
                         }
                     }
                 }
