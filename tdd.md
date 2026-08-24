@@ -203,7 +203,7 @@ Il codice UI è ottimizzato per l'inclusività:
 
 ---
 
-## 9. Quality Assurance & CI/CD
+## 9. Quality Assurance, Testing & Build (XcodeGen)
 
 Per la certificazione di stabilità biomedica, il framework core usa una suite di Test (`XCTest`):
 - **Mocking XML & SAX Testing**: Iniezione di payload simulati per verificare la corretta astrazione dei codici LOINC critici da parte dell'`XMLParserDelegate`.
