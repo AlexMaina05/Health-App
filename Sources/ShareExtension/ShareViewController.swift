@@ -104,7 +104,7 @@ final class ShareViewController: UIViewController {
                 do {
                     try FileManager.default.copyItem(at: fileURL, to: safeURL)
                     // GDPR Compliance: Forzatura crittografia hardware AES-256
-                    try FileManager.default.setAttributes([.protectionKey: FileProtectionType.complete], ofItemAtPath: safeURL.path)
+                    try FileManager.default.setAttributes([.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], ofItemAtPath: safeURL.path)
                 } catch {
                     self?.extensionContext?.completeRequest(returningItems: nil)
                     return
@@ -129,7 +129,7 @@ final class ShareViewController: UIViewController {
                             let fileName = "PendingPDF_\(UUID().uuidString).pdf"
                             let destURL = groupURL.appendingPathComponent(fileName)
                             try FileManager.default.copyItem(at: safeURL, to: destURL)
-                            try FileManager.default.setAttributes([.protectionKey: FileProtectionType.complete], ofItemAtPath: destURL.path)
+                            try FileManager.default.setAttributes([.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], ofItemAtPath: destURL.path)
                         }
                         
                         await MainActor.run {

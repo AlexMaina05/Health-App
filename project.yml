@@ -1,0 +1,40 @@
+﻿name: RosettaHealth
+options:
+  bundleIdPrefix: dev.alexmaina
+  deploymentTarget:
+    iOS: 17.0
+    watchOS: 10.0
+targets:
+  RosettaHealthApp:
+    type: application
+    platform: iOS
+    deploymentTarget: 17.0
+    sources: [Sources/RosettaHealthApp]
+    dependencies:
+      - target: RosettaHealthCore
+    info:
+      path: Info.plist
+      properties:
+        UIBackgroundModes: [fetch, processing]
+        NSHealthUpdateUsageDescription: "L'app necessita di scrivere i tuoi referti su Apple Salute."
+        NSHealthShareUsageDescription: "L'app legge i tuoi dati vitali per mostrarti i trend."
+
+  RosettaHealthCore:
+    type: framework
+    platform: iOS
+    deploymentTarget: 17.0
+    sources: [Sources/RosettaHealthCore]
+
+  ShareExtension:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: 17.0
+    sources: [Sources/ShareExtension]
+    dependencies:
+      - target: RosettaHealthCore
+    info:
+      path: Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShareViewController"

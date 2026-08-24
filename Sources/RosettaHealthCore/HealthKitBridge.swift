@@ -24,7 +24,9 @@ public final class HealthKitBridge {
         "2345-7":  MetricTarget(type: .bloodGlucose, defaultUnit: HKUnit(from: "mg/dL")), 
         "2339-0":  MetricTarget(type: .bloodGlucose, defaultUnit: HKUnit(from: "mg/dL")),
         
-        // MARK: - Profilo Lipidico
+                // MARK: - Profilo Lipidico
+        "2093-3":  MetricTarget(type: .dietaryCholesterol, defaultUnit: HKUnit.gramUnit(with: .milli)), 
+        "2571-8":  MetricTarget(type: .dietaryFatTotal, defaultUnit: HKUnit.gramUnit(with: .milli)),
         
         // MARK: - Segni Vitali & Cardiologia
         "8867-4":  MetricTarget(type: .heartRate, defaultUnit: HKUnit.count().unitDivided(by: .minute())), 
@@ -44,9 +46,13 @@ public final class HealthKitBridge {
         "8280-0":  MetricTarget(type: .waistCircumference, defaultUnit: HKUnit.meterUnit(with: .centi)), // Circonferenza Vita
         "41982-0": MetricTarget(type: .bodyFatPercentage, defaultUnit: HKUnit.percent()),           // Massa Grassa
         
-        // MARK: - Elettroliti & Minerali (Mappati su HKDietary)
+        // MARK: - Elettroliti
+        "2951-2": MetricTarget(type: .dietarySodium, defaultUnit: HKUnit.gramUnit(with: .milli)),
+        "2823-3": MetricTarget(type: .dietaryPotassium, defaultUnit: HKUnit.gramUnit(with: .milli)), & Minerali (Mappati su HKDietary)
         
-        // MARK: - Vitamine (Mappate su HKDietary)
+        // MARK: - Vitamine
+        "32220-6": MetricTarget(type: .dietaryVitaminC, defaultUnit: HKUnit.gramUnit(with: .milli)),
+        "32309-7": MetricTarget(type: .dietaryVitaminD, defaultUnit: HKUnit.gramUnit(with: .micro)), (Mappate su HKDietary)
         
         // MARK: - Tossicologia & Altro
         "56478-1": MetricTarget(type: .bloodAlcoholContent, defaultUnit: HKUnit.percent()),

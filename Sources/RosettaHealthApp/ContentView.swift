@@ -163,6 +163,21 @@ public struct ContentView: View {
                             Text("Il PDF originale non conteneva dati strutturati. I parametri sottostanti sono stati estratti visivamente tramite Intelligenza Artificiale.")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
+                            Button(action: {
+                                Task { await viewModel.approveAndSaveOCR() }
+                            }) {
+                                HStack {
+                                    Image(systemName: "checkmark.shield")
+                                    Text("Approva e Salva in Salute")
+                                }
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.purple)
+                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            }
+                            .padding(.top, 8)
                         }
                         .padding(.vertical, 8)
                     }
