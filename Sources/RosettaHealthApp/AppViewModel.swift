@@ -314,7 +314,29 @@ public final class AppViewModel: ObservableObject {
             sharedDefaults.set(Date().timeIntervalSince1970, forKey: "widget_lastUpdate")
         }
     }
-        public func exportFHIRJSON() -> URL? {
+        
+    public func approveAndSaveOCR() async {
+        guard isOCRExtracted, !extractedObservations.isEmpty else { return }
+        do {
+            let metrics = extractedObservations.compactMap { obs -> ExtractedMetric? in
+                guard let name = obs.code.text ?? obs.code.coding.first?.display,
+                      let loinc = obs.code.coding.first?.code,
+                      let qty = obs.valueQuantity else { return nil }
+                return ExtractedMetric(name: name, value: qty.value, unit: qty.unit, loincCode: loinc)
+            }
+            let count = try await healthBridge.ingestRawMetrics(metrics: metrics)
+            await MainActor.run {
+                self.syncedSamplesCount += count
+                self.isOCRExtracted = false // Rimuove l'avviso una volta salvati
+            }
+        } catch {
+            await MainActor.run {
+                self.activeError = .pdfCorrupted // Generic error representation
+            }
+        }
+    }
+
+    public func exportFHIRJSON() -> URL? {
         guard let bundle = currentBundle else { return nil }
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted

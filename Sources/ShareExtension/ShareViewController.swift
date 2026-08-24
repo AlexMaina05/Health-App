@@ -59,7 +59,7 @@ final class ShareViewController: UIViewController {
         setupSwiftUIInterface()
         
         // Simula un po' di latenza per mostrare l'animazione premium
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.handleSharedPDF()
         }
     }
@@ -137,7 +137,7 @@ final class ShareViewController: UIViewController {
                             self.viewState.statusText = "Salvato nel Vault"
                             self.viewState.isSuccess = true
                             
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                                 self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
                             }
                         }
@@ -145,7 +145,7 @@ final class ShareViewController: UIViewController {
                         await MainActor.run {
                             self.viewState.statusText = "Errore: \(error.localizedDescription)"
                             self.viewState.isError = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                                 self.extensionContext?.cancelRequest(withError: error)
                             }
                         }
@@ -154,7 +154,7 @@ final class ShareViewController: UIViewController {
                             self.viewState.statusText = "Errore Sconosciuto"
                             self.viewState.isError = true
                             let genericError = NSError(domain: "RosettaHealth", code: -1, userInfo: [NSLocalizedDescriptionKey: error.localizedDescription])
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                                 self.extensionContext?.cancelRequest(withError: genericError)
                             }
                         }
