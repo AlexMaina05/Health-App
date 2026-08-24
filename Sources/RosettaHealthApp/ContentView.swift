@@ -7,7 +7,7 @@ import RosettaHealthCore
 import UniformTypeIdentifiers
 
 public struct ContentView: View {
-    @StateObject private var viewModel = AppViewModel()
+    @State private var viewModel = AppViewModel()
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var modelContext
     @AppStorage("appThemeName") private var appThemeName: String = AppTheme.blue.rawValue
@@ -73,7 +73,7 @@ public struct ContentView: View {
                         
                         if !viewModel.isHealthKitAuthorized {
                             Button(action: {
-                                Task { await viewModel.requestHealthKitAccess(modelContext: modelContext) }
+                                Task { await viewModel.requestHealthKitAccess(modelContainer: modelContext.container) }
                             }) {
                                 Text("Abilita Integrazione")
                                     .font(.headline)
@@ -290,12 +290,12 @@ public struct ContentView: View {
                 }
             }
             .task {
-                await viewModel.syncPendingDocuments(modelContext: modelContext)
+                await viewModel.syncPendingDocuments(modelContainer: modelContext.container)
             }
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .active {
                     Task {
-                        await viewModel.syncPendingDocuments(modelContext: modelContext)
+                        await viewModel.syncPendingDocuments(modelContainer: modelContext.container)
                     }
                 }
             }
@@ -322,7 +322,7 @@ public struct ContentView: View {
                             
                             Task {
                                 defer { try? FileManager.default.removeItem(at: safeURL) }
-                                await viewModel.processPDF(url: safeURL, modelContext: modelContext)
+                                await viewModel.processPDF(url: safeURL, modelContainer: modelContext.container)
                             }
                         } catch {
                             if secured { selectedURL.stopAccessingSecurityScopedResource() }
@@ -367,7 +367,7 @@ public struct ContentView: View {
                     do {
                         try FileManager.default.copyItem(at: fileURL, to: safeURL)
                         Task {
-                            await viewModel.processPDF(url: safeURL, modelContext: modelContext)
+                            await viewModel.processPDF(url: safeURL, modelContainer: modelContext.container)
                             try? FileManager.default.removeItem(at: safeURL)
                         }
                     } catch {

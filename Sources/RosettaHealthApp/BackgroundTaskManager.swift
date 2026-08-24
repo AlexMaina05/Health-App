@@ -14,10 +14,10 @@ public final class BackgroundTaskManager {
     
     private init() {}
     
-    public func registerTasks(modelContext: ModelContext? = nil) {
+    public func registerTasks(modelContainer: ModelContainer? = nil) {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: processingTaskIdentifier, using: nil) { task in
             guard let bgTask = task as? BGProcessingTask else { return }
-            self.handleProcessingTask(task: bgTask, modelContext: modelContext)
+            self.handleProcessingTask(task: bgTask, modelContainer: modelContainer)
         }
     }
     
@@ -34,7 +34,7 @@ public final class BackgroundTaskManager {
         }
     }
     
-    private func handleProcessingTask(task: BGProcessingTask, modelContext: ModelContext?) {
+    private func handleProcessingTask(task: BGProcessingTask, modelContainer: ModelContainer?) {
         // Riprogramma per la prossima volta
         scheduleNextProcessing()
         
@@ -48,24 +48,22 @@ public final class BackgroundTaskManager {
             // Eseguiamo il sync usando l'AppViewModel in modo "headless"
             // Nota: AppViewModel è @MainActor, quindi potremmo dover gestire il context
             // Creiamo un'istanza headless per processare i file
-            await processPendingFilesHeadless(modelContext: modelContext)
+            await processPendingFilesHeadless(modelContainer: modelContainer)
             task.setTaskCompleted(success: true)
         }
     }
     
     @MainActor
-    private func processPendingFilesHeadless(modelContext: ModelContext?) async {
+    private func processPendingFilesHeadless(modelContainer: ModelContainer?) async {
         let viewModel = AppViewModel()
         
-        var contextToUse = modelContext
-        if contextToUse == nil {
-            if let container = try? ModelContainer(for: VaultDocument.self) {
-                contextToUse = container.mainContext
-            }
+        var containerToUse = modelContainer
+        if containerToUse == nil {
+            containerToUse = try? ModelContainer(for: VaultDocument.self)
         }
         
         // Silenzia l'output visivo e lancia il parsing
-        await viewModel.syncPendingDocuments(modelContext: contextToUse)
+        await viewModel.syncPendingDocuments(modelContainer: containerToUse)
         
         // Invia notifica all'utente se ha processato qualcosa
         if viewModel.syncedSamplesCount > 0 || !viewModel.extractedObservations.isEmpty {

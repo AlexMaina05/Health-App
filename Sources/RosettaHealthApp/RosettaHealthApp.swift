@@ -5,7 +5,7 @@ import SwiftUI
 struct RosettaHealthApp: App {
     
     init() {
-        BackgroundTaskManager.shared.registerTasks(modelContext: nil)
+        BackgroundTaskManager.shared.registerTasks(modelContainer: nil)
     }
     
     var body: some Scene {
