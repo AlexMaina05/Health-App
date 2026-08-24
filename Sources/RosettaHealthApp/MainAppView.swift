@@ -29,8 +29,9 @@ public struct MainAppView: View {
                 }
                 .modelContainer(for: [VaultDocument.self])
                 // Privacy Screen (Sfuoca l'app sotto il lucchetto)
-                .blur(radius: (isBiometricLockEnabled && !authManager.isUnlocked) ? 15 : 0)
+                
                 .disabled(isBiometricLockEnabled && !authManager.isUnlocked)
+                .overlay { if isBiometricLockEnabled && !authManager.isUnlocked { Color.black.ignoresSafeArea() } }
             } else {
                 OnboardingView()
             }
