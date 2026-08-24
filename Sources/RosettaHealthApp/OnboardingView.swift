@@ -11,6 +11,9 @@ public struct OnboardingView: View {
     @State private var birthDate: Date = Date()
     @State private var hasAcceptedGDPR: Bool = false
     
+    @State private var currentPage: Int = 0
+    private let totalPages = 4
+    
     public init() {}
     
     private var isFormValid: Bool {
@@ -21,61 +24,61 @@ public struct OnboardingView: View {
     }
     
     public var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                // Header (Hero Section)
-                VStack(spacing: 16) {
-                    Image(systemName: "waveform.path.ecg")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 80, height: 80)
-                        .foregroundColor(.purple)
-                        .padding(.top, 40)
-                    
-                    Text("Benvenuto in\nRosettaHealth")
-                        .font(.system(.largeTitle, design: .rounded))
-                        .fontWeight(.heavy)
-                        .multilineTextAlignment(.center)
-                    
-                    Text("Configura il tuo profilo principale per abilitare la sicurezza medica multi-utente (Family Vault) e l'isolamento dei dati su Apple Salute.")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
-                }
-                .padding(.bottom, 32)
+        VStack(spacing: 0) {
+            TabView(selection: $currentPage) {
+                // Pagina 0: Intro
+                tutorialPage(icon: "waveform.path.ecg", color: .purple, title: "I tuoi referti,
+finalmente vivi.", description: "Trasforma i noiosi PDF del Fascicolo Sanitario Elettronico in fantastici grafici interattivi su Apple Salute.")
+                    .tag(0)
                 
-                // Form
-                Form {
-                    Section(header: Text("Dati Anagrafici")) {
-                        TextField("Nome", text: $firstName)
-                            .textContentType(.givenName)
-                        
-                        TextField("Cognome", text: $lastName)
-                            .textContentType(.familyName)
-                        
-                        DatePicker("Data di Nascita", selection: $birthDate, displayedComponents: .date)
-                    }
-                    
-                    Section(header: Text("Identificativo Sanitario"), footer: Text("Il Codice Fiscale è fondamentale per garantire che i referti dei tuoi familiari non inquinino i tuoi grafici sanitari personali.")) {
-                        TextField("Codice Fiscale (16 caratteri)", text: $fiscalCode)
-                            .autocapitalization(.allCharacters)
-                            .disableAutocorrection(true)
-                            .onChange(of: fiscalCode) { _, newValue in
-                                if newValue.count > 16 {
-                                    fiscalCode = String(newValue.prefix(16))
-                                }
-                    Section(header: Text("Privacy e Trattamento Dati")) {
-                        Toggle(isOn: $hasAcceptedGDPR) {
-                            Text("Accetto l'Informativa (Art. 9 GDPR) e assumo la piena responsabilità legale per la gestione dei referti di eventuali miei familiari archiviati nel Family Vault (Household Exemption).")
-                                .font(.footnote)
-                        }
-                    }
-                }
-                .scrollContentBackground(.hidden)
+                // Pagina 1: Privacy
+                tutorialPage(icon: "lock.shield.fill", color: .green, title: "Zero-Cloud
+Privacy Assoluta", description: "Nessun server. I tuoi dati medici sensibili vengono elaborati esclusivamente sul processore del tuo iPhone nel pieno rispetto del GDPR.")
+                    .tag(1)
                 
-                // Pulsante Conferma
-                VStack {
+                // Pagina 2: Tutorial
+                tutorialPage(icon: "square.and.arrow.up", color: .blue, title: "Come Funziona?", description: "1. Scarica un referto PDF dal tuo FSE
+2. Clicca su Condividi
+3. Seleziona RosettaHealth")
+                    .tag(2)
+                
+                // Pagina 3: Registrazione
+                registrationPage()
+                    .tag(3)
+            }
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+            .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
+            
+            // Bottom Controls
+            HStack {
+                if currentPage > 0 {
+                    Button(action: {
+                        withAnimation { currentPage -= 1 }
+                    }) {
+                        Text("Indietro")
+                            .fontWeight(.semibold)
+                            .foregroundColor(.secondary)
+                            .frame(width: 80, alignment: .leading)
+                    }
+                } else {
+                    Spacer().frame(width: 80) // Placeholder
+                }
+                
+                Spacer()
+                
+                if currentPage < totalPages - 1 {
+                    Button(action: {
+                        withAnimation { currentPage += 1 }
+                    }) {
+                        Text("Avanti")
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 32)
+                            .padding(.vertical, 14)
+                            .background(Color.purple)
+                            .clipShape(Capsule())
+                    }
+                } else {
                     Button(action: {
                         dateOfBirthInterval = birthDate.timeIntervalSince1970
                         withAnimation(.spring()) {
@@ -83,24 +86,102 @@ public struct OnboardingView: View {
                             hasCompletedOnboarding = true
                         }
                     }) {
-                        Text("Inizia a usare RosettaHealth")
-                            .font(.headline)
+                        Text("Inizia")
+                            .fontWeight(.bold)
                             .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
+                            .padding(.horizontal, 32)
+                            .padding(.vertical, 14)
                             .background(isFormValid ? Color.purple : Color.gray)
-                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                            .clipShape(Capsule())
                     }
                     .disabled(!isFormValid)
-                    .padding(.horizontal, 24)
-                    .padding(.bottom, 40)
                 }
-                .background(Color(uiColor: .systemGroupedBackground))
             }
-            .background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
+            .padding(.horizontal, 24)
+            .padding(.top, 16)
+            .padding(.bottom, 32)
+            .background(Color(uiColor: .systemGroupedBackground))
         }
+        .background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
         .onAppear {
             birthDate = Date(timeIntervalSince1970: dateOfBirthInterval)
+        }
+    }
+    
+    @ViewBuilder
+    private func tutorialPage(icon: String, color: Color, title: String, description: String) -> some View {
+        VStack(spacing: 24) {
+            Spacer()
+            Image(systemName: icon)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 100, height: 100)
+                .foregroundColor(color)
+                .padding(.bottom, 16)
+            
+            Text(title)
+                .font(.system(.largeTitle, design: .rounded))
+                .fontWeight(.heavy)
+                .multilineTextAlignment(.center)
+            
+            Text(description)
+                .font(.title3)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+                .lineSpacing(6)
+            Spacer()
+            Spacer()
+        }
+        .padding()
+    }
+    
+    @ViewBuilder
+    private func registrationPage() -> some View {
+        VStack(spacing: 0) {
+            Text("Chi sei?")
+                .font(.system(.largeTitle, design: .rounded))
+                .fontWeight(.heavy)
+                .padding(.top, 40)
+                .padding(.bottom, 8)
+            
+            Text("Configura il tuo profilo per abilitare l'isolamento dei dati su Apple Salute e il Family Vault.")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+                .padding(.bottom, 16)
+            
+            Form {
+                Section(header: Text("Dati Anagrafici")) {
+                    TextField("Nome", text: $firstName)
+                        .textContentType(.givenName)
+                    
+                    TextField("Cognome", text: $lastName)
+                        .textContentType(.familyName)
+                    
+                    DatePicker("Data di Nascita", selection: $birthDate, displayedComponents: .date)
+                }
+                
+                Section(header: Text("Identificativo Sanitario"), footer: Text("Il Codice Fiscale è fondamentale per impedire che i referti dei tuoi familiari (inseriti nel Family Vault) inquinino i tuoi grafici sanitari personali.")) {
+                    TextField("Codice Fiscale (16 caratteri)", text: $fiscalCode)
+                        .autocapitalization(.allCharacters)
+                        .disableAutocorrection(true)
+                        .onChange(of: fiscalCode) { _, newValue in
+                            if newValue.count > 16 {
+                                fiscalCode = String(newValue.prefix(16))
+                            }
+                        }
+                }
+                
+                Section(header: Text("Privacy e GDPR (Art. 9)")) {
+                    Toggle(isOn: $hasAcceptedGDPR) {
+                        Text("Accetto l'Informativa e assumo la piena responsabilità legale per la gestione dei referti di eventuali miei familiari archiviati nel Family Vault (Household Exemption).")
+                            .font(.footnote)
+                    }
+                }
+            }
+            .scrollContentBackground(.hidden)
         }
     }
 }
