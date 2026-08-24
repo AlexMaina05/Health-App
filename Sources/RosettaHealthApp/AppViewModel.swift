@@ -376,7 +376,12 @@ public final class AppViewModel: ObservableObject {
         }
         
         let cleanOwnerCF = ownerFiscalCode.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-        let isOwner = cleanOwnerCF.isEmpty || pCF == cleanOwnerCF
+        let isOwner: Bool
+        if cleanOwnerCF.isEmpty {
+            isOwner = (pCF == "Sconosciuto")
+        } else {
+            isOwner = (pCF == cleanOwnerCF)
+        }
         
         return (isOwner, pName, pCF)
     }
