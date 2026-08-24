@@ -3,7 +3,7 @@ import SwiftData
 import CoreSpotlight
 import OSLog
 
-@available(iOS 17.0, *)
+@available(iOS 26.0, *)
 @ModelActor
 public actor VaultModelActor {
     

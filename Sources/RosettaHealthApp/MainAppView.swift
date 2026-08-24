@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 import CoreSpotlight
 
-@available(iOS 17.0, *)
+@available(iOS 26.0, *)
 public struct MainAppView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
     @AppStorage("isBiometricLockEnabled") private var isBiometricLockEnabled: Bool = true

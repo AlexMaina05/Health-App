@@ -113,7 +113,7 @@ public final class AppViewModel {
                                     pdfData: try? Data(contentsOf: file)
                                 )
                                 context.insert(vaultDoc)
-                                  if #available(iOS 17.0, *) {
+                                  if #available(iOS 26.0, *) {
                                       SpotlightManager.shared.indexDocument(
                                           id: vaultDoc.id.uuidString,
                                           title: vaultDoc.documentTitle,
@@ -231,7 +231,7 @@ public final class AppViewModel {
                             pdfData: try? Data(contentsOf: url)
                         )
                         context.insert(vaultDoc)
-                                  if #available(iOS 17.0, *) {
+                                  if #available(iOS 26.0, *) {
                                       SpotlightManager.shared.indexDocument(
                                           id: vaultDoc.id.uuidString,
                                           title: vaultDoc.documentTitle,

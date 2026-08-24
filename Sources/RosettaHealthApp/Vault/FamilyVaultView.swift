@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 import RosettaHealthCore
 
-@available(iOS 17.0, *)
+@available(iOS 26.0, *)
 public struct FamilyVaultView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \VaultDocument.dateAdded, order: .reverse) private var documents: [VaultDocument]
@@ -105,7 +105,7 @@ public struct FamilyVaultView: View {
     }
 }
 
-@available(iOS 17.0, *)
+@available(iOS 26.0, *)
 struct VaultDocumentDetailView: View {
     let document: VaultDocument
     

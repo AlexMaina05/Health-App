@@ -4,7 +4,7 @@ import OSLog
 import UserNotifications
 import SwiftData
 
-@available(iOS 17.0, *)
+@available(iOS 26.0, *)
 public final class BackgroundTaskManager {
     public static let shared = BackgroundTaskManager()
     private let logger = Logger(subsystem: "dev.alexmaina.rosettahealth", category: "BGTasks")

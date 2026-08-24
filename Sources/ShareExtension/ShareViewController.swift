@@ -4,7 +4,7 @@ import UniformTypeIdentifiers
 import RosettaHealthCore
 
 // MARK: - SwiftUI Custom UI for Share Extension
-@available(iOS 17.0, *)
+@available(iOS 26.0, *)
 class ShareExtensionState: ObservableObject {
     @Published var progress: Double = 0.0
     @Published var statusText: String = "Acquisizione Referto..."
@@ -12,7 +12,7 @@ class ShareExtensionState: ObservableObject {
     @Published var isError: Bool = false
 }
 
-@available(iOS 17.0, *)
+@available(iOS 26.0, *)
 struct ShareExtensionView: View {
     @ObservedObject var state: ShareExtensionState
     
@@ -49,7 +49,7 @@ struct ShareExtensionView: View {
     }
 }
 
-@available(iOS 17.0, *)
+@available(iOS 26.0, *)
 final class ShareViewController: UIViewController {
     
     private let viewState = ShareExtensionState()
