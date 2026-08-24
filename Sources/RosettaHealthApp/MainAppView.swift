@@ -98,7 +98,7 @@ public struct MainAppView: View {
                 selectedTab = 1
                 
                 // Opzionale: passare l'ID a FamilyVaultView per espandere o evidenziare il referto
-                print("Aperto documento da Spotlight.")
+                // Log rimosso per privacy e pulizia
             }
         }
         .onAppear {

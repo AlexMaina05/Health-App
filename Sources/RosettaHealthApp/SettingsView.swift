@@ -8,7 +8,7 @@ public struct SettingsView: View {
     @AppStorage("ownerFirstName") private var firstName: String = ""
     @AppStorage("ownerLastName") private var lastName: String = ""
     @AppStorage("ownerDateOfBirth") private var dateOfBirthInterval: Double = Date().timeIntervalSince1970
-    @AppStorage("ownerFiscalCode") private var ownerFiscalCode: String = ""
+    @State private var ownerFiscalCode: String = ""
     
     @State private var birthDate: Date = Date()
     
@@ -123,6 +123,7 @@ public struct SettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Fine") {
+                        KeychainManager.shared.save(key: "ownerFiscalCode", value: ownerFiscalCode)
                         dismiss()
                     }
                 }
@@ -130,6 +131,7 @@ public struct SettingsView: View {
             .onAppear {
                 try? Tips.configure([.displayFrequency(.immediate), .datastoreLocation(.applicationDefault)])
                 birthDate = Date(timeIntervalSince1970: dateOfBirthInterval)
+                ownerFiscalCode = KeychainManager.shared.read(key: "ownerFiscalCode") ?? ""
             }
         }
     }

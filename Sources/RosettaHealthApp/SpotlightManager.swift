@@ -28,9 +28,9 @@ public final class SpotlightManager {
         
         CSSearchableIndex.default().indexSearchableItems([item]) { error in
             if let error = error {
-                print("Errore indicizzazione Spotlight: \(error.localizedDescription)")
+                // Log rimosso per privacy e pulizia")
             } else {
-                print("Documento \(id) indicizzato con successo in Spotlight.")
+                // Log rimosso per privacy e pulizia indicizzato con successo in Spotlight.")
             }
         }
     }
@@ -39,7 +39,7 @@ public final class SpotlightManager {
     public func deindexDocument(id: String) {
         CSSearchableIndex.default().deleteSearchableItems(withIdentifiers: [id]) { error in
             if let error = error {
-                print("Errore rimozione da Spotlight: \(error.localizedDescription)")
+                // Log rimosso per privacy e pulizia")
             }
         }
     }

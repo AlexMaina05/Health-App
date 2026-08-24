@@ -6,16 +6,18 @@ public struct OnboardingView: View {
     @AppStorage("ownerFirstName") private var firstName: String = ""
     @AppStorage("ownerLastName") private var lastName: String = ""
     @AppStorage("ownerDateOfBirth") private var dateOfBirthInterval: Double = Date().timeIntervalSince1970
-    @AppStorage("ownerFiscalCode") private var fiscalCode: String = ""
+    @State private var fiscalCode: String = ""
     
     @State private var birthDate: Date = Date()
+    @State private var hasAcceptedGDPR: Bool = false
     
     public init() {}
     
     private var isFormValid: Bool {
         !firstName.trimmingCharacters(in: .whitespaces).isEmpty &&
         !lastName.trimmingCharacters(in: .whitespaces).isEmpty &&
-        fiscalCode.trimmingCharacters(in: .whitespaces).count == 16
+        fiscalCode.trimmingCharacters(in: .whitespaces).count == 16 &&
+        hasAcceptedGDPR
     }
     
     public var body: some View {
@@ -66,6 +68,13 @@ public struct OnboardingView: View {
                             }
                     }
                 }
+
+                    Section(header: Text("Privacy e Trattamento Dati")) {
+                        Toggle(isOn: $hasAcceptedGDPR) {
+                            Text("Ho letto e accetto l'Informativa sul Trattamento dei Dati Sensibili ex Art. 9 GDPR.")
+                                .font(.footnote)
+                        }
+                    }
                 .scrollContentBackground(.hidden)
                 
                 // Pulsante Conferma
@@ -73,6 +82,7 @@ public struct OnboardingView: View {
                     Button(action: {
                         dateOfBirthInterval = birthDate.timeIntervalSince1970
                         withAnimation(.spring()) {
+                            KeychainManager.shared.save(key: "ownerFiscalCode", value: fiscalCode)
                             hasCompletedOnboarding = true
                         }
                     }) {

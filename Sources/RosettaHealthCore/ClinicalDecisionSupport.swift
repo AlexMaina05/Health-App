@@ -111,7 +111,7 @@ public actor ClinicalDecisionSupport {
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil) // trigger nullo = immediata
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("Errore nell'invio della notifica CDS: \\(error)")
+                // Log rimosso per privacy e pulizia")
             }
         }
     }

@@ -54,14 +54,14 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
         if observations.isEmpty {
             // Nota: L'utente richiede di non lanciare un fatal error, ma solo gestirlo.
             // Possiamo emettere un print o proseguire, il bundle sarà composto dalla sola Composition.
-            print("Warning: Nessuna misurazione strutturata (Observation) trovata nel referto.")
+            // Log rimosso per privacy e pulizia trovata nel referto.")
         }
         
         let patientId = "patient-fse-subject"
         let patientResource = FHIRPatient(
             id: patientId,
-            identifier: patientFiscalCode != nil ? [FHIRIdentifier(system: "http://hl7.it/sid/codiceFiscale", value: patientFiscalCode!)] : nil,
-            name: [FHIRHumanName(family: patientFamilyName, given: patientGivenName != nil ? [patientGivenName!] : nil)],
+            identifier: patientFiscalCode.map { [FHIRIdentifier(system: "http://hl7.it/sid/codiceFiscale", value: $0)] },
+            name: [FHIRHumanName(family: patientFamilyName, given: patientGivenName.map { [$0] })],
             gender: nil,
             birthDate: nil
         )
@@ -184,8 +184,8 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
             if let code = currentObsCode {
                 var ranges: [FHIRReferenceRange]? = nil
                 if currentRangeLow != nil || currentRangeHigh != nil || !currentRangeText.isEmpty {
-                    let lowQty = currentRangeLow != nil ? FHIRSimpleQuantity(value: currentRangeLow!, unit: currentRangeUnit) : nil
-                    let highQty = currentRangeHigh != nil ? FHIRSimpleQuantity(value: currentRangeHigh!, unit: currentRangeUnit) : nil
+                    let lowQty = currentRangeLow.map { FHIRSimpleQuantity(value: $0, unit: currentRangeUnit) }
+                    let highQty = currentRangeHigh.map { FHIRSimpleQuantity(value: $0, unit: currentRangeUnit) }
                     ranges = [FHIRReferenceRange(low: lowQty, high: highQty, text: currentRangeText.isEmpty ? nil : currentRangeText)]
                 }
                 
