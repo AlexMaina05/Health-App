@@ -6,12 +6,17 @@ import CoreSpotlight
 public struct MainAppView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
     @AppStorage("isBiometricLockEnabled") private var isBiometricLockEnabled: Bool = true
+    @AppStorage("appThemeName") private var appThemeName: String = AppTheme.purple.rawValue
     
     @StateObject private var authManager = BiometricAuthManager()
     @Environment(\.scenePhase) private var scenePhase
     @State private var selectedTab: Int = 0
     
     public init() {}
+    
+    private var themeColor: Color {
+        AppTheme(rawValue: appThemeName)?.color ?? .purple
+    }
     
     public var body: some View {
         ZStack {
@@ -41,7 +46,7 @@ public struct MainAppView: View {
                 VStack(spacing: 24) {
                     Image(systemName: "faceid")
                         .font(.system(size: 70))
-                        .foregroundColor(.purple)
+                        .foregroundColor(themeColor)
                         .symbolEffect(.pulse)
                     
                     Text("RosettaHealth è bloccata")
@@ -56,7 +61,7 @@ public struct MainAppView: View {
                             .foregroundColor(.white)
                             .padding()
                             .frame(width: 250)
-                            .background(Color.purple)
+                            .background(themeColor)
                             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                     }
                     
@@ -101,6 +106,7 @@ public struct MainAppView: View {
                 // Log rimosso per privacy e pulizia
             }
         }
+        .tint(themeColor)
         .onAppear {
             if isBiometricLockEnabled && hasCompletedOnboarding {
                 authManager.authenticate()

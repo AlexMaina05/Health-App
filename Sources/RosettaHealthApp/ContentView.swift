@@ -10,6 +10,7 @@ public struct ContentView: View {
     @StateObject private var viewModel = AppViewModel()
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var modelContext
+    @AppStorage("appThemeName") private var appThemeName: String = AppTheme.purple.rawValue
     
     @State private var isShowingFileImporter = false
     @State private var exportURL: URL?
@@ -17,6 +18,10 @@ public struct ContentView: View {
     @State private var isShowingSettings = false
 
     public init() {}
+    
+    private var themeColor: Color {
+        AppTheme(rawValue: appThemeName)?.color ?? .purple
+    }
 
     public var body: some View {
         NavigationStack {
@@ -154,11 +159,11 @@ public struct ContentView: View {
                         VStack(alignment: .leading, spacing: 10) {
                             HStack {
                                 Image(systemName: "text.viewfinder")
-                                    .foregroundColor(.purple)
+                                    .foregroundColor(themeColor)
                                     .font(.headline)
                                 Text("Scansione Ottica (OCR)")
                                     .font(.headline)
-                                    .foregroundColor(.purple)
+                                    .foregroundColor(themeColor)
                             }
                             Text("Il PDF originale non conteneva dati strutturati. I parametri sottostanti sono stati estratti visivamente tramite Intelligenza Artificiale.")
                                 .font(.caption)
@@ -174,7 +179,7 @@ public struct ContentView: View {
                                 .foregroundColor(.white)
                                 .padding()
                                 .frame(maxWidth: .infinity)
-                                .background(Color.purple)
+                                .background(themeColor)
                                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                             }
                             .padding(.top, 8)

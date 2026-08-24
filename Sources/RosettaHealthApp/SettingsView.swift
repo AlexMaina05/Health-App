@@ -19,12 +19,37 @@ public struct SettingsView: View {
     @AppStorage("isCDSActive") private var isCDSActive: Bool = true
     @AppStorage("isOCREnabled") private var isOCREnabled: Bool = true
     @AppStorage("isProUnlocked") private var isProUnlocked: Bool = false
+    @AppStorage("appThemeName") private var appThemeName: String = AppTheme.purple.rawValue
+    @State private var showProAlert = false
     
     public init() {}
     
     public var body: some View {
         NavigationStack {
             Form {
+                Section(header: Text("Aspetto (Esclusiva PRO)")) {
+                    Picker("Colore Tema", selection: Binding(
+                        get: { appThemeName },
+                        set: { newValue in
+                            if isProUnlocked {
+                                appThemeName = newValue
+                            } else {
+                                showProAlert = true
+                            }
+                        }
+                    )) {
+                        ForEach(AppTheme.allCases) { theme in
+                            HStack {
+                                Circle().fill(theme.color).frame(width: 14, height: 14)
+                                Text(theme.rawValue)
+                            }
+                            .tag(theme.rawValue)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .tint(AppTheme(rawValue: appThemeName)?.color ?? .purple)
+                }
+
                 Section(header: Text("RosettaHealth PRO"), footer: Text("Sblocca il Family Vault per gestire referti illimitati per tutta la tua famiglia.")) {
                     Toggle(isOn: $isProUnlocked) {
                         HStack {
@@ -130,7 +155,14 @@ public struct SettingsView: View {
                         }
                     }
                 }
+            }.alert("RosettaHealth PRO Richiesto", isPresented: $showProAlert) {
+            Button("Sblocca Ora", role: .none) {
+                // Future IAP logic or scroll to pro toggle
             }
+            Button("Annulla", role: .cancel) {}
+        } message: {
+            Text("La personalizzazione del tema è una funzionalità esclusiva della versione PRO. Sbloccala per scegliere il colore che si adatta di più al tuo stile.")
+        }
             .navigationTitle("Impostazioni")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
