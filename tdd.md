@@ -215,6 +215,9 @@ Il codice UI è ottimizzato per l'inclusività:
 La personalizzazione cosmetica dell'app è centralizzata tramite l'enumeratore `AppTheme` e propagata attraverso l'albero delle View SwiftUI usando `@AppStorage("appThemeName")`.
 Il colore di base (Default: `.blue`) viene applicato globalmente istanziando un modificatore `.tint(themeColor)` al livello radice (`MainAppView.swift`). Se l'utente tenta di selezionare un colore alternativo senza disporre dello sblocco `isProUnlocked`, il motore interrompe l'assegnazione e lancia un alert UI (Up-Sell).
 
+### 8.3 Tutorial Onboarding (TabView Carousel)
+Il flusso iniziale (`OnboardingView`) non è più un semplice modulo statico. Utilizza un `TabView` bindato a un `@State private var currentPage` per scorrere un carosello di sotto-viste descrittive. Il pulsante di conferma finale ("Inizia") è vincolato alla compilazione del form anagrafico e al toggle di consenso GDPR (Art. 9).
+
 ## 9. Quality Assurance, Testing & Build (XcodeGen)
 
 Per la certificazione di stabilità biomedica, il framework core usa una suite di Test (`XCTest`):

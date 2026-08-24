@@ -24,6 +24,13 @@
 ### UI/UX & Cosmetica (Theme Engine)
 L'app è stata ingegnerizzata con una palette cromatica predefinita "Blu Medico" per trasmettere fiducia e pulizia clinica. Gli utenti **RosettaHealth PRO** hanno inoltre accesso a un *Theme Engine Globale* che permette di ricolorare dinamicamente l'intera interfaccia (incluso il blocco FaceID) scegliendo tra diverse palette (Ottanio, Verde Salute, Rosso Cardio, ecc.).
 
+### Esperienza di Onboarding (Carousel)
+Per abbattere la frizione dell'importazione manuale, l'app accoglie i nuovi utenti con un tutorial nativo "a scorrimento" (PageTabViewStyle). Questo onboarding educa l'utente al concetto di Zero-Cloud e spiega l'interazione con l'FSE prima di richiedere i consensi GDPR, garantendo un'esperienza fluida e *Apple-like*.
+
+### Inclusività e "Modalità Anonima" (Fail-Safe)
+Cosa succede se l'utente è uno straniero (STP) o non possiede un Codice Fiscale italiano? L'app offre una Modalità Anonima attivabile in fase di registrazione.
+Per mantenere inviolato il firewall dei dati ed evitare che l'utente inquini Apple Salute con i referti dei familiari, il motore attiva un livello di sicurezza secondario: il **Fuzzy Name Matching**. I referti sprovvisti di CF vengono analizzati incrociando stringhe e sottostringhe del nome del proprietario in modo case-insensitive, garantendo l'iniezione solo se l'identità è confermata.
+
 ## 💎 Modello di Business (Freemium)
 
 L'applicazione abbraccia un modello di monetizzazione etico e sostenibile (Zero-Ads, Zero-Data-Selling):
