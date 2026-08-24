@@ -18,12 +18,25 @@ public struct SettingsView: View {
     // User Experience / Feature Toggles
     @AppStorage("isCDSActive") private var isCDSActive: Bool = true
     @AppStorage("isOCREnabled") private var isOCREnabled: Bool = true
+    @AppStorage("isProUnlocked") private var isProUnlocked: Bool = false
     
     public init() {}
     
     public var body: some View {
         NavigationStack {
             Form {
+                Section(header: Text("RosettaHealth PRO"), footer: Text("Sblocca il Family Vault per gestire referti illimitati per tutta la tua famiglia.")) {
+                    Toggle(isOn: $isProUnlocked) {
+                        HStack {
+                            Image(systemName: "star.fill")
+                                .foregroundColor(.yellow)
+                            Text("Sblocca PRO (Family Vault)")
+                                .fontWeight(.semibold)
+                        }
+                    }
+                    .tint(.yellow)
+                }
+
                 Section(header: Text("Dati Anagrafici (Proprietario)")) {
                     TextField("Nome", text: $firstName)
                         .textContentType(.givenName)

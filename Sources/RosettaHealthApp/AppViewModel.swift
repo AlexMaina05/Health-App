@@ -26,6 +26,7 @@ public final class AppViewModel: ObservableObject {
     public var ownerFiscalCode: String { KeychainManager.shared.read(key: "ownerFiscalCode") ?? "" }
     @AppStorage("isCDSActive") public var isCDSActive: Bool = true
     @AppStorage("isOCREnabled") public var isOCREnabled: Bool = true
+    @AppStorage("isProUnlocked") public var isProUnlocked: Bool = false
     
     private let transcoder = RosettaTranscoder()
     private let healthBridge = HealthKitBridge()
@@ -90,6 +91,9 @@ public final class AppViewModel: ObservableObject {
                         }
                         
                         // Vault Locale (SwiftData)
+                        if !patientInfo.isOwner && !isProUnlocked {
+                            throw RosettaError.familyVaultRequiresPro
+                        }
                         if let context = modelContext {
                             let encoder = JSONEncoder()
                             if let jsonData = try? encoder.encode(bundle) {
@@ -201,7 +205,9 @@ public final class AppViewModel: ObservableObject {
                     self.syncedSamplesCount += result.savedCount
                     self.skippedCodes = Array(Set(result.skippedObservations.map { $0.code.text ?? $0.code.coding.first?.display ?? $0.code.coding.first?.code ?? "Parametro Sconosciuto" }))
                 } else {
-                    // Non è il proprietario, scartiamo i dati da Apple Salute ma procediamo al Vault.
+                    guard isProUnlocked else {
+                        throw RosettaError.familyVaultRequiresPro
+                    }
                     logger.notice("Referto di \(patientInfo.name) deviato verso il Family Vault (Bypass HealthKit).")
                 }
                 
