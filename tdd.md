@@ -90,6 +90,13 @@ L'AppViewModel implementa un Security Checkpoint:
 - **Match Positivo**: I dati vengono salvati in Apple Health e nel Vault locale.
 - **Match Negativo (Familiare)**: Intervento di Anti-Inquinamento. Il salvataggio su HealthKit viene abortito (Throw `RosettaError.unmatchedFiscalCode`), e il reperto viene dirottato esclusivamente sul `ModelContext` del Family Vault.
 
+### 3.3 Paywall & Freemium Architecture (Family Vault)
+L'integrazione del modello Freemium si innesta direttamente nel Security Checkpoint.
+In presenza di un *Match Negativo* (referto appartenente a terzi), l'algoritmo verifica il flag di sblocco In-App (`@AppStorage("isProUnlocked")`).
+- Se `true`: Il documento viene archiviato nel `ModelContext` (Family Vault).
+- Se `false`: Viene lanciata l'eccezione `RosettaError.familyVaultRequiresPro`, bloccando l'operazione di persistenza I/O e demandando all'interfaccia UI il compito di mostrare l'offerta di acquisto (Up-Sell).
+
+
 ---
 
 ## 4. Motore di Transcodifica (SAX Parsing & FHIR)

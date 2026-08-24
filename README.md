@@ -19,6 +19,13 @@
 - [Funzionalità Core](#-funzionalità-core)
 - [Ecosistema Avanzato (iOS & watchOS)](#-ecosistema-avanzato-ios--watchos)
 
+
+## 💎 Modello di Business (Freemium)
+
+L'applicazione abbraccia un modello di monetizzazione etico e sostenibile (Zero-Ads, Zero-Data-Selling):
+- **Core Gratuito**: Importazione illimitata di referti personali (Glicemia, Pressione, ecc.) sincronizzati direttamente in Apple Salute.
+- **RosettaHealth PRO (Paywall)**: Sblocca il *Family Vault*, permettendo l'archiviazione di referti appartenenti a terzi (figli, genitori) sul dispositivo. Se un utente free tenta di importare il referto di un familiare, l'App blocca preventivamente l'iniezione (per evitare inquinamento dati) e propone l'acquisto In-App.
+
 ## 🚀 Compilazione & Sviluppo (XcodeGen)
 
 Il progetto utilizza **Swift Package Manager** (SPM) come singola fonte di verità per le dipendenze e **XcodeGen** per generare nativamente l'ambiente di lavoro. L'app non possiede file `.xcodeproj` o `.xcworkspace` tracciati su git per favorire un ambiente di CI/CD pulito.
