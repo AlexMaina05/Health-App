@@ -28,21 +28,21 @@ struct ObservationRowView: View {
                         .fill(isOutOfRange ? Color.red.opacity(0.15) : Color.blue.opacity(0.15))
                         .frame(width: 44, height: 44)
                     Image(systemName: isOutOfRange ? "exclamationmark.triangle.fill" : "waveform.path.ecg")
-                        .foregroundColor(isOutOfRange ? .red : .blue)
+                        .foregroundStyle(isOutOfRange ? .red : .blue)
                 }
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(observation.code.text ?? observation.code.coding.first?.display ?? "Parametro Sconosciuto")
                         .font(.subheadline)
                         .fontWeight(.semibold)
-                        .foregroundColor(.primary)
+                        .foregroundStyle(.primary)
                         .lineLimit(2)
                     
                     if let ranges = observation.referenceRange, let range = ranges.first {
                         if let low = range.low?.value, let high = range.high?.value {
                             Text("Range: \(String(format: "%.1f", low)) - \(String(format: "%.1f", high))")
                                 .font(.caption2)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                         }
                     }
                 }
@@ -53,15 +53,15 @@ struct ObservationRowView: View {
                     if let qty = observation.valueQuantity {
                         Text(String(format: "%.2f", qty.value))
                             .font(.system(.title3, design: .rounded).weight(.bold))
-                            .foregroundColor(isOutOfRange ? .red : .primary)
+                            .foregroundStyle(isOutOfRange ? .red : .primary)
                         Text(qty.unit)
                             .font(.caption2)
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                             .textCase(.uppercase)
                     } else if let str = observation.valueString {
                         Text(str)
                             .font(.subheadline)
-                            .foregroundColor(.primary)
+                            .foregroundStyle(.primary)
                     }
                 }
             }
@@ -105,7 +105,7 @@ struct ObservationRowView: View {
     
     private func loadHistory() async {
         guard let loinc = observation.code.coding.first?.code else { return }
-        let bridge = HealthKitBridge()
+        let bridge = HealthKitBridge.shared
         guard let target = bridge.loincToHKMap[loinc] else { return }
         
         if let samples = try? await bridge.fetchHistoricalSamples(for: target.type, limit: 5) {

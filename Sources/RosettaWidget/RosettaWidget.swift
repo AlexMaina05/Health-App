@@ -38,21 +38,21 @@ struct RosettaWidgetEntryView : View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Image(systemName: "waveform.path.ecg")
-                    .foregroundColor(.blue)
+                    .foregroundStyle(.blue)
                 Text("RosettaHealth")
                     .font(.caption)
                     .fontWeight(.bold)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
             }
             
             Text(entry.metricName)
                 .font(.headline)
-                .foregroundColor(.primary)
+                .foregroundStyle(.primary)
                 .lineLimit(1)
             
             Text(entry.metricValue)
                 .font(.system(.title2, design: .rounded).weight(.bold))
-                .foregroundColor(.primary)
+                .foregroundStyle(.primary)
                 .minimumScaleFactor(0.8)
                 .lineLimit(1)
         }

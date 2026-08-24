@@ -31,15 +31,15 @@ public struct ContentView: View {
                       Section {
                           HStack {
                               Image(systemName: "exclamationmark.triangle.fill")
-                                  .foregroundColor(.yellow)
+                                  .foregroundStyle(.yellow)
                                   .font(.title2)
                               VStack(alignment: .leading, spacing: 4) {
                                   Text("Modalità Anonima Attiva")
                                       .font(.headline)
-                                      .foregroundColor(.yellow)
+                                      .foregroundStyle(.yellow)
                                   Text("Avendo omesso il Codice Fiscale, il firewall è disattivato. Tutti i referti importati verranno salvati in Salute. Usa con cautela.")
                                       .font(.caption)
-                                      .foregroundColor(.secondary)
+                                      .foregroundStyle(.secondary)
                               }
                           }
                           .padding(.vertical, 4)
@@ -56,17 +56,17 @@ public struct ContentView: View {
                                     .frame(width: 60, height: 60)
                                 Image(systemName: viewModel.isHealthKitAuthorized ? "heart.text.square.fill" : "lock.shield.fill")
                                     .font(.system(size: 30))
-                                    .foregroundColor(viewModel.isHealthKitAuthorized ? .white : .red)
+                                    .foregroundStyle(viewModel.isHealthKitAuthorized ? .white : .red)
                                     .symbolEffect(.bounce, options: .nonRepeating, value: viewModel.syncedSamplesCount)
                             }
                             
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(viewModel.isHealthKitAuthorized ? "HealthKit Attivo" : "Autorizzazione")
                                     .font(.headline)
-                                    .foregroundColor(.white)
+                                    .foregroundStyle(.white)
                                 Text("Integrazione nativa FSE")
                                     .font(.subheadline)
-                                    .foregroundColor(.white.opacity(0.8))
+                                    .foregroundStyle(.white.opacity(0.8))
                             }
                             Spacer()
                         }
@@ -77,7 +77,7 @@ public struct ContentView: View {
                             }) {
                                 Text("Abilita Integrazione")
                                     .font(.headline)
-                                    .foregroundColor(.red)
+                                    .foregroundStyle(.red)
                                     .frame(maxWidth: .infinity)
                                     .padding()
                                     .background(Color.white)
@@ -90,10 +90,10 @@ public struct ContentView: View {
                                 VStack(alignment: .leading) {
                                     Text("Parametri Sincronizzati")
                                         .font(.caption)
-                                        .foregroundColor(.white.opacity(0.8))
+                                        .foregroundStyle(.white.opacity(0.8))
                                     Text("\(viewModel.syncedSamplesCount)")
                                         .font(.system(.title, design: .rounded).weight(.bold))
-                                        .foregroundColor(.white)
+                                        .foregroundStyle(.white)
                                         .contentTransition(.numericText()) // Animazione numerica fluida
                                 }
                                 Spacer()
@@ -103,7 +103,7 @@ public struct ContentView: View {
                                 }) {
                                     Image(systemName: "doc.badge.plus")
                                         .font(.system(size: 20, weight: .bold))
-                                        .foregroundColor(.blue)
+                                        .foregroundStyle(.blue)
                                         .padding(16)
                                         .background(Color.white)
                                         .clipShape(Circle())
@@ -139,7 +139,7 @@ public struct ContentView: View {
                             
                             Text("Analisi e decrittazione in corso...")
                                 .font(.headline)
-                                .foregroundColor(.primary)
+                                .foregroundStyle(.primary)
                             
                             ProgressView()
                                 .progressViewStyle(.circular)
@@ -179,15 +179,15 @@ public struct ContentView: View {
                         VStack(alignment: .leading, spacing: 10) {
                             HStack {
                                 Image(systemName: "text.viewfinder")
-                                    .foregroundColor(themeColor)
+                                    .foregroundStyle(themeColor)
                                     .font(.headline)
                                 Text("Scansione Ottica (OCR)")
                                     .font(.headline)
-                                    .foregroundColor(themeColor)
+                                    .foregroundStyle(themeColor)
                             }
                             Text("Il PDF originale non conteneva dati strutturati. I parametri sottostanti sono stati estratti visivamente tramite Intelligenza Artificiale.")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                             Button(action: {
                                 Task { await viewModel.approveAndSaveOCR() }
                             }) {
@@ -196,7 +196,7 @@ public struct ContentView: View {
                                     Text("Approva e Salva in Salute")
                                 }
                                 .font(.headline)
-                                .foregroundColor(.white)
+                                .foregroundStyle(.white)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                                 .background(themeColor)
@@ -255,22 +255,22 @@ public struct ContentView: View {
                     Section {
                         VStack(alignment: .leading, spacing: 12) {
                             Label("Archiviati solo come Documento", systemImage: "info.circle.fill")
-                                .foregroundColor(.blue)
+                                .foregroundStyle(.blue)
                                 .font(.headline)
                             Text("I seguenti esami non possiedono grafici nativi in Salute. Sono stati comunque salvati in maniera invisibile nel referto globale (HKCDADocumentSample):")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                             
                             VStack(alignment: .leading, spacing: 6) {
                                 ForEach(viewModel.skippedCodes, id: \.self) { code in
                                     HStack(spacing: 8) {
                                         Image(systemName: "checkmark.seal.fill")
                                             .font(.caption2)
-                                            .foregroundColor(.blue.opacity(0.7))
+                                            .foregroundStyle(.blue.opacity(0.7))
                                         Text(code)
                                             .font(.caption)
                                             .fontWeight(.medium)
-                                            .foregroundColor(.primary)
+                                            .foregroundStyle(.primary)
                                     }
                                 }
                             }

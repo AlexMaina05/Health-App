@@ -25,14 +25,14 @@ struct ShareExtensionView: View {
                 
                 Image(systemName: state.isError ? "xmark.octagon.fill" : (state.isSuccess ? "checkmark.seal.fill" : "doc.viewfinder.fill"))
                     .font(.system(size: 40))
-                    .foregroundColor(state.isError ? .red : (state.isSuccess ? .green : .purple))
+                    .foregroundStyle(state.isError ? .red : (state.isSuccess ? .green : .purple))
                     .symbolEffect(.bounce, value: state.isSuccess)
                     .symbolEffect(.pulse, isActive: !state.isSuccess && !state.isError)
             }
             
             Text(state.statusText)
                 .font(.headline)
-                .foregroundColor(.primary)
+                .foregroundStyle(.primary)
                 .multilineTextAlignment(.center)
             
             if !state.isSuccess && !state.isError {

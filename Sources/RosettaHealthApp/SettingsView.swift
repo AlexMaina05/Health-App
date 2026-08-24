@@ -54,7 +54,7 @@ public struct SettingsView: View {
                     Toggle(isOn: $isProUnlocked) {
                         HStack {
                             Image(systemName: "star.fill")
-                                .foregroundColor(.yellow)
+                                .foregroundStyle(.yellow)
                             Text("Sblocca PRO (Family Vault)")
                                 .fontWeight(.semibold)
                         }
@@ -88,7 +88,7 @@ public struct SettingsView: View {
                                 .font(.headline)
                             Text("Oscura i dati medici nello switcher delle app e richiedi l'autenticazione biometrica al ritorno.")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                         }
                     }
                     .tint(.green)
@@ -101,7 +101,7 @@ public struct SettingsView: View {
                                 .font(.headline)
                             Text("Ricevi un avviso se i tuoi parametri (es. Colesterolo) mostrano un trend in peggioramento nel tempo.")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                         }
                     }
                     .tint(.blue)
@@ -112,7 +112,7 @@ public struct SettingsView: View {
                                 .font(.headline)
                             Text("Usa l'intelligenza artificiale per recuperare dati da vecchi PDF privi di XML medico (Graceful Degradation).")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                         }
                     }
                     .tint(.blue)
@@ -125,13 +125,13 @@ public struct SettingsView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
                             Image(systemName: "swift")
-                                .foregroundColor(.orange)
+                                .foregroundStyle(.orange)
                             Text("RosettaHealth v3.0")
                                 .font(.headline)
                         }
                         Text("Sviluppata interamente e orgogliosamente in Italia.")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                     }
                     .padding(.vertical, 4)
                     
@@ -141,7 +141,7 @@ public struct SettingsView: View {
                             Text("Alessandro Mainardi (Sito Web)")
                             Spacer()
                             Image(systemName: "arrow.up.right.square")
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                         }
                     }
                     
@@ -151,7 +151,7 @@ public struct SettingsView: View {
                             Text("GitHub (@AlexMaina05)")
                             Spacer()
                             Image(systemName: "arrow.up.right.square")
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                         }
                     }
                 }

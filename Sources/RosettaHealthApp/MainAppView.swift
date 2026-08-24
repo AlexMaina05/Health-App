@@ -46,7 +46,7 @@ public struct MainAppView: View {
                 VStack(spacing: 24) {
                     Image(systemName: "faceid")
                         .font(.system(size: 70))
-                        .foregroundColor(themeColor)
+                        .foregroundStyle(themeColor)
                         .symbolEffect(.pulse)
                     
                     Text("RosettaHealth è bloccata")
@@ -58,7 +58,7 @@ public struct MainAppView: View {
                     }) {
                         Text("Sblocca per continuare")
                             .font(.headline)
-                            .foregroundColor(.white)
+                            .foregroundStyle(.white)
                             .padding()
                             .frame(width: 250)
                             .background(themeColor)
@@ -68,7 +68,7 @@ public struct MainAppView: View {
                     if let error = authManager.authenticationError {
                         Text(error)
                             .font(.caption)
-                            .foregroundColor(.red)
+                            .foregroundStyle(.red)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
                     }

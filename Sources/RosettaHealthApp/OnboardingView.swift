@@ -58,7 +58,7 @@ Privacy Assoluta", description: "Nessun server. I tuoi dati medici sensibili ven
                     }) {
                         Text("Indietro")
                             .fontWeight(.semibold)
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                             .frame(width: 80, alignment: .leading)
                     }
                 } else {
@@ -73,7 +73,7 @@ Privacy Assoluta", description: "Nessun server. I tuoi dati medici sensibili ven
                     }) {
                         Text("Avanti")
                             .fontWeight(.bold)
-                            .foregroundColor(.white)
+                            .foregroundStyle(.white)
                             .padding(.horizontal, 32)
                             .padding(.vertical, 14)
                             .background(Color.blue)
@@ -89,7 +89,7 @@ Privacy Assoluta", description: "Nessun server. I tuoi dati medici sensibili ven
                     }) {
                         Text("Inizia")
                             .fontWeight(.bold)
-                            .foregroundColor(.white)
+                            .foregroundStyle(.white)
                             .padding(.horizontal, 32)
                             .padding(.vertical, 14)
                             .background(isFormValid ? Color.blue : Color.gray)
@@ -117,7 +117,7 @@ Privacy Assoluta", description: "Nessun server. I tuoi dati medici sensibili ven
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
-                .foregroundColor(color)
+                .foregroundStyle(color)
                 .padding(.bottom, 16)
             
             Text(title)
@@ -127,7 +127,7 @@ Privacy Assoluta", description: "Nessun server. I tuoi dati medici sensibili ven
             
             Text(description)
                 .font(.title3)
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
                 .lineSpacing(6)
@@ -148,7 +148,7 @@ Privacy Assoluta", description: "Nessun server. I tuoi dati medici sensibili ven
             
             Text("Configura il tuo profilo per abilitare l'isolamento dei dati su Apple Salute e il Family Vault.")
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
                 .padding(.bottom, 16)

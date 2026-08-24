@@ -11,7 +11,7 @@ struct RosettaParsingLiveActivity: Widget {
             VStack(spacing: 8) {
                 HStack {
                     Image(systemName: "scanner")
-                        .foregroundColor(.purple)
+                        .foregroundStyle(.purple)
                     Text(context.attributes.batchName)
                         .font(.headline)
                     Spacer()
@@ -24,7 +24,7 @@ struct RosettaParsingLiveActivity: Widget {
                 
                 Text(context.state.statusText)
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
             }
             .padding()
         } dynamicIsland: { context in
@@ -32,7 +32,7 @@ struct RosettaParsingLiveActivity: Widget {
                 // Expanded UI
                 DynamicIslandExpandedRegion(.leading) {
                     Image(systemName: "doc.viewfinder")
-                        .foregroundColor(.purple)
+                        .foregroundStyle(.purple)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     Text("\(context.state.processedFiles)/\(context.state.totalFiles)")
@@ -46,12 +46,12 @@ struct RosettaParsingLiveActivity: Widget {
                 }
             } compactLeading: {
                 Image(systemName: "doc.viewfinder")
-                    .foregroundColor(.purple)
+                    .foregroundStyle(.purple)
             } compactTrailing: {
                 Text("\(context.state.processedFiles)/\(context.state.totalFiles)")
             } minimal: {
                 Image(systemName: "doc.viewfinder")
-                    .foregroundColor(.purple)
+                    .foregroundStyle(.purple)
             }
         }
     }

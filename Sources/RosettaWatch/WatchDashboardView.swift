@@ -23,16 +23,16 @@ public struct WatchDashboardView: View {
                     
                     Gauge(value: latestMetricValue, in: 0...200) {
                         Image(systemName: "heart.text.square")
-                            .foregroundColor(.purple)
+                            .foregroundStyle(.purple)
                     } currentValueLabel: {
                         Text("\(latestMetricValue, specifier: "%.0f")")
-                            .foregroundColor(.purple)
+                            .foregroundStyle(.purple)
                     } minimumValueLabel: {
                         Text("0")
-                            .foregroundColor(.green)
+                            .foregroundStyle(.green)
                     } maximumValueLabel: {
                         Text("200")
-                            .foregroundColor(.red)
+                            .foregroundStyle(.red)
                     }
                     .gaugeStyle(.circular)
                     .tint(Gradient(colors: [.green, .yellow, .red]))
@@ -45,7 +45,7 @@ public struct WatchDashboardView: View {
                     
                     Text(latestMetricUnit)
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                     
                     Divider()
                         .padding(.vertical, 4)

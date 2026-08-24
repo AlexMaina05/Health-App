@@ -49,7 +49,7 @@ public struct FamilyVaultView: View {
                                         
                                         Text(String(name.prefix(1)).uppercased())
                                             .font(.headline)
-                                            .foregroundColor(.white)
+                                            .foregroundStyle(.white)
                                     }
                                     .shadow(color: Color.black.opacity(0.1), radius: 3, y: 2)
                                     
@@ -68,7 +68,7 @@ public struct FamilyVaultView: View {
                                         
                                         Text(doc.documentDate, style: .date)
                                             .font(.caption)
-                                            .foregroundColor(.secondary)
+                                            .foregroundStyle(.secondary)
                                     }
                                 }
                                 .scrollTransition(.animated.threshold(.visible(0.9))) { content, phase in
@@ -129,7 +129,7 @@ struct VaultDocumentDetailView: View {
                     
                     if observations.isEmpty {
                         Text("Nessuna osservazione quantitativa trovata.")
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                     } else {
                         ForEach(observations, id: \.id) { obs in
                             VStack(alignment: .leading) {
@@ -140,11 +140,11 @@ struct VaultDocumentDetailView: View {
                                 if let qty = obs.valueQuantity {
                                     Text("\(qty.value, specifier: "%.2f") \(qty.unit)")
                                         .font(.title3)
-                                        .foregroundColor(.purple)
+                                        .foregroundStyle(.purple)
                                 } else if let str = obs.valueString {
                                     Text(str)
                                         .font(.title3)
-                                        .foregroundColor(.purple)
+                                        .foregroundStyle(.purple)
                                 }
                             }
                             .padding(.vertical, 4)
@@ -174,7 +174,7 @@ struct VaultDocumentDetailView: View {
                 #endif
             } else {
                 Text("Errore nella decodifica del Bundle FHIR.")
-                    .foregroundColor(.red)
+                    .foregroundStyle(.red)
             }
         }
         .navigationTitle(document.documentTitle)
