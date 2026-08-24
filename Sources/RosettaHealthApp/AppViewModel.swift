@@ -378,7 +378,13 @@ public final class AppViewModel: ObservableObject {
         let cleanOwnerCF = ownerFiscalCode.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
         let isOwner: Bool
         if cleanOwnerCF.isEmpty {
-            isOwner = (pCF == "Sconosciuto")
+            // Modalità Anonima: Fallback su Name Matching (Fuzzy logic)
+            let ownerFirst = UserDefaults.standard.string(forKey: "ownerFirstName")?.lowercased().trimmingCharacters(in: .whitespaces) ?? ""
+            let ownerLast = UserDefaults.standard.string(forKey: "ownerLastName")?.lowercased().trimmingCharacters(in: .whitespaces) ?? ""
+            let pNameLower = pName.lowercased()
+            
+            let isNameMatch = !ownerFirst.isEmpty && !ownerLast.isEmpty && pNameLower.contains(ownerFirst) && pNameLower.contains(ownerLast)
+            isOwner = (pCF == "Sconosciuto" && isNameMatch)
         } else {
             isOwner = (pCF == cleanOwnerCF)
         }
