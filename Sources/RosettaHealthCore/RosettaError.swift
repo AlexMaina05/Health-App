@@ -54,7 +54,7 @@ public enum RosettaError: LocalizedError, CustomNSError {
         case .authorizationDenied: return "L'utente non ha concesso le autorizzazioni di lettura/scrittura per i dati clinici."
         case .missingSampleType(let identifier): return "Il parametro clinico (\(identifier)) non possiede un corrispettivo in HKQuantityType."
         case .ingestionFailed(let underlying): return "HealthKit ha rifiutato il salvataggio dei campioni: \(underlying)."
-        case .cfMismatch(let expected, let found): return "Il Codice Fiscale estratto (\(found)) non corrisponde a quello del proprietario configurato (\(expected))."
+        case .cfMismatch(let expected, let found): return "Il Codice Fiscale estratto (***) non corrisponde a quello del proprietario configurato (\(expected))."
         case .appGroupContainerUnavailable: return "La sandbox non è riuscita a risolvere il path del Security Application Group identifier."
         case .corruptedPendingFile(let fileName): return "Il file in coda \(fileName) non contiene un Bundle FHIR valido."
         case .diskWriteFailed(let underlying): return "Impossibile serializzare il referto sul container: \(underlying)"

@@ -190,6 +190,11 @@ public struct FHIRReference: Codable {
 public struct FHIRIdentifier: Codable {
     public let system: String
     public let value: String
+    
+    public init(system: String, value: String) {
+        self.system = system
+        self.value = value
+    }
 }
 
 public struct FHIRHumanName: Codable {

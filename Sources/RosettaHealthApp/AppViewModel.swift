@@ -73,8 +73,8 @@ public final class AppViewModel: ObservableObject {
             for file in pendingXMLs {
                 if let xmlData = try? Data(contentsOf: file) {
                     do {
-                        let bundle = if #available(iOS 16.1, *) { self.updateLiveActivity(status: "Transcodifica in FHIR...", progress: 0) }
-            try transcoder.transcode(cdaData: xmlData)
+                        if #available(iOS 16.1, *) { self.updateLiveActivity(status: "Transcodifica in FHIR...", progress: 0) }
+                        let bundle = try transcoder.transcode(cdaData: xmlData)
                         let patientInfo = extractPatientInfo(bundle: bundle)
                         
                         self.currentBundle = bundle // Conserva l'ultimo bundle per eventuale export
@@ -187,8 +187,8 @@ public final class AppViewModel: ObservableObject {
             
             switch extractionResult {
             case .cdaXML(let xmlData):
-                let bundle = if #available(iOS 16.1, *) { self.updateLiveActivity(status: "Transcodifica in FHIR...", progress: 0) }
-            try transcoder.transcode(cdaData: xmlData)
+                if #available(iOS 16.1, *) { self.updateLiveActivity(status: "Transcodifica in FHIR...", progress: 0) }
+                        let bundle = try transcoder.transcode(cdaData: xmlData)
                 let patientInfo = extractPatientInfo(bundle: bundle)
                 
                 self.currentBundle = bundle

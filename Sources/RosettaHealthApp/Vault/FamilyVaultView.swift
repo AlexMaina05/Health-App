@@ -180,5 +180,4 @@ struct VaultDocumentDetailView: View {
 
 
 
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
-}
+
