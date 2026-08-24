@@ -210,6 +210,11 @@ Il codice UI è ottimizzato per l'inclusività:
 
 ---
 
+
+### 8.2 Dynamic Theme Engine (Global Tinting)
+La personalizzazione cosmetica dell'app è centralizzata tramite l'enumeratore `AppTheme` e propagata attraverso l'albero delle View SwiftUI usando `@AppStorage("appThemeName")`.
+Il colore di base (Default: `.blue`) viene applicato globalmente istanziando un modificatore `.tint(themeColor)` al livello radice (`MainAppView.swift`). Se l'utente tenta di selezionare un colore alternativo senza disporre dello sblocco `isProUnlocked`, il motore interrompe l'assegnazione e lancia un alert UI (Up-Sell).
+
 ## 9. Quality Assurance, Testing & Build (XcodeGen)
 
 Per la certificazione di stabilità biomedica, il framework core usa una suite di Test (`XCTest`):

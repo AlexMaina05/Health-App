@@ -20,6 +20,10 @@
 - [Ecosistema Avanzato (iOS & watchOS)](#-ecosistema-avanzato-ios--watchos)
 
 
+
+### UI/UX & Cosmetica (Theme Engine)
+L'app è stata ingegnerizzata con una palette cromatica predefinita "Blu Medico" per trasmettere fiducia e pulizia clinica. Gli utenti **RosettaHealth PRO** hanno inoltre accesso a un *Theme Engine Globale* che permette di ricolorare dinamicamente l'intera interfaccia (incluso il blocco FaceID) scegliendo tra diverse palette (Ottanio, Verde Salute, Rosso Cardio, ecc.).
+
 ## 💎 Modello di Business (Freemium)
 
 L'applicazione abbraccia un modello di monetizzazione etico e sostenibile (Zero-Ads, Zero-Data-Selling):
