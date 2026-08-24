@@ -26,7 +26,27 @@ public struct ContentView: View {
     public var body: some View {
         NavigationStack {
             List {
-                // MARK: - Premium Dashboard Hero
+                                  // MARK: - Anonymous Mode Warning
+                  if viewModel.isAnonymousMode {
+                      Section {
+                          HStack {
+                              Image(systemName: "exclamationmark.triangle.fill")
+                                  .foregroundColor(.yellow)
+                                  .font(.title2)
+                              VStack(alignment: .leading, spacing: 4) {
+                                  Text("Modalità Anonima Attiva")
+                                      .font(.headline)
+                                      .foregroundColor(.yellow)
+                                  Text("Avendo omesso il Codice Fiscale, il firewall è disattivato. Tutti i referti importati verranno salvati in Salute. Usa con cautela.")
+                                      .font(.caption)
+                                      .foregroundColor(.secondary)
+                              }
+                          }
+                          .padding(.vertical, 4)
+                      }
+                  }
+                  
+                  // MARK: - Premium Dashboard Hero
                 Section {
                     VStack(spacing: 20) {
                         HStack(spacing: 16) {

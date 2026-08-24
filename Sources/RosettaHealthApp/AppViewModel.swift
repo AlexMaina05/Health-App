@@ -23,6 +23,10 @@ public final class AppViewModel: ObservableObject {
     @Published public var feedbackTrigger: Int = 0
     public var parsingActivity: Any? = nil
     
+    public var isAnonymousMode: Bool {
+        ownerFiscalCode.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+    
     public var ownerFiscalCode: String { KeychainManager.shared.read(key: "ownerFiscalCode") ?? "" }
     @AppStorage("isCDSActive") public var isCDSActive: Bool = true
     @AppStorage("isOCREnabled") public var isOCREnabled: Bool = true

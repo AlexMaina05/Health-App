@@ -7,6 +7,7 @@ public struct OnboardingView: View {
     @AppStorage("ownerLastName") private var lastName: String = ""
     @AppStorage("ownerDateOfBirth") private var dateOfBirthInterval: Double = 946684800
     @State private var fiscalCode: String = ""
+    @State private var noFiscalCode: Bool = false
     
     @State private var birthDate: Date = Date()
     @State private var hasAcceptedGDPR: Bool = false
@@ -19,7 +20,7 @@ public struct OnboardingView: View {
     private var isFormValid: Bool {
         !firstName.trimmingCharacters(in: .whitespaces).isEmpty &&
         !lastName.trimmingCharacters(in: .whitespaces).isEmpty &&
-        fiscalCode.trimmingCharacters(in: .whitespaces).count == 16 &&
+        (fiscalCode.trimmingCharacters(in: .whitespaces).count == 16 || noFiscalCode) &&
         hasAcceptedGDPR
     }
     
@@ -163,15 +164,28 @@ Privacy Assoluta", description: "Nessun server. I tuoi dati medici sensibili ven
                     DatePicker("Data di Nascita", selection: $birthDate, displayedComponents: .date)
                 }
                 
-                Section(header: Text("Identificativo Sanitario"), footer: Text("Il Codice Fiscale è fondamentale per impedire che i referti dei tuoi familiari (inseriti nel Family Vault) inquinino i tuoi grafici sanitari personali.")) {
-                    TextField("Codice Fiscale (16 caratteri)", text: $fiscalCode)
-                        .autocapitalization(.allCharacters)
-                        .disableAutocorrection(true)
-                        .onChange(of: fiscalCode) { _, newValue in
-                            if newValue.count > 16 {
-                                fiscalCode = String(newValue.prefix(16))
+                                Section(header: Text("Identificativo Sanitario"), footer: Text("Il Codice Fiscale è fondamentale per impedire che i referti dei tuoi familiari (inseriti nel Family Vault) inquinino i tuoi grafici sanitari personali.")) {
+                    if !noFiscalCode {
+                        TextField("Codice Fiscale (16 caratteri)", text: $fiscalCode)
+                            .autocapitalization(.allCharacters)
+                            .disableAutocorrection(true)
+                            .onChange(of: fiscalCode) { _, newValue in
+                                if newValue.count > 16 {
+                                    fiscalCode = String(newValue.prefix(16))
+                                }
                             }
+                    }
+                    
+                    Toggle(isOn: $noFiscalCode.animation()) {
+                        Text("Non possiedo un Codice Fiscale italiano")
+                            .font(.footnote)
+                    }
+                    .onChange(of: noFiscalCode) { _, newValue in
+                        if newValue {
+                            fiscalCode = ""
                         }
+                    }
+                }
                 }
                 
                 Section(header: Text("Privacy e GDPR (Art. 9)")) {
