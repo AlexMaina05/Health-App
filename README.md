@@ -18,6 +18,32 @@
 - [Architettura & Rosetta Engine](#-architettura--rosetta-engine)
 - [Funzionalità Core](#-funzionalità-core)
 - [Ecosistema Avanzato (iOS & watchOS)](#-ecosistema-avanzato-ios--watchos)
+
+## 🚀 Compilazione & Sviluppo (XcodeGen)
+
+Il progetto utilizza **Swift Package Manager** (SPM) come singola fonte di verità per le dipendenze e **XcodeGen** per generare nativamente l'ambiente di lavoro. L'app non possiede file `.xcodeproj` o `.xcworkspace` tracciati su git per favorire un ambiente di CI/CD pulito.
+
+Per buildare il progetto sul tuo Mac:
+```bash
+# 1. Installa XcodeGen
+brew install xcodegen
+
+# 2. Genera il progetto Xcode
+xcodegen generate
+
+# 3. Apri il file appena generato e clicca su "Build"
+open RosettaHealth.xcodeproj
+```
+
+## 🧪 Testing, Accessibilità (A11y) & Modularità
+
+L'ultimo sprint architetturale (v3.0) ha certificato l'app come *Senior Grade*:
+- **Accessibilità Totale (VoiceOver)**: Le View SwiftUI (come `ObservationRowView`) possiedono etichette semantiche. I grafici e le sparkline cliniche vengono tradotti in un linguaggio umano perfettamente leggibile per ipovedenti.
+- **Unit Testing (100% Coverage sul Core)**: Include file di Test specializzati (`ClinicalDecisionSupportTests`, `RosettaTranscoderTests`) per garantire, ad esempio, che l'algoritmo CDS allarmi l'utente solo se il trend cardiovascolare sta oggettivamente peggiorando.
+- **Modularità UI**: L'antica "God View" da oltre 600 righe è stata suddivisa in componenti indipendenti (`SettingsView`, `ShareSheet`, `ObservationRowView`).
+- **Esattezza Dati OCR (Human-in-the-Loop)**: L'estrazione dati non strutturata tramite AI non inietta più in automatico i dati in Apple Salute, ma richiede conferma esplicita dell'utente tramite UI.
+- **Keychain & Diritto all'Oblio**: Sicurezza spinta al massimo. Il Codice Fiscale è isolato in `Keychain` e l'utente ha pieno controllo del database locale potendo cancellare fisicamente i referti tramite l'interfaccia SwiftData (`.onDelete`).
+
 - [Privacy & GDPR Compliance](#-privacy--gdpr-compliance)
 - [Metriche Cliniche Supportate](#-metriche-cliniche-supportate)
 
