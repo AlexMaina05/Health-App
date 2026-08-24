@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import CoreSpotlight
 
 @available(iOS 17.0, *)
 public struct MainAppView: View {
@@ -8,13 +9,14 @@ public struct MainAppView: View {
     
     @StateObject private var authManager = BiometricAuthManager()
     @Environment(\.scenePhase) private var scenePhase
+    @State private var selectedTab: Int = 0
     
     public init() {}
     
     public var body: some View {
         ZStack {
             if hasCompletedOnboarding {
-                TabView {
+                TabView(selection: $selectedTab) {
                     ContentView()
                         .tabItem {
                             Label("Dashboard", systemImage: "heart.text.square.fill")
@@ -86,6 +88,16 @@ public struct MainAppView: View {
                         authManager.authenticate()
                     }
                 }
+            }
+        }
+        .onContinueUserActivity(CSSearchableItemActionType) { userActivity in
+            if let uniqueIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
+                // L'utente ha toccato un referto da Spotlight
+                // Navighiamo al Vault
+                selectedTab = 1
+                
+                // Opzionale: passare l'ID a FamilyVaultView per espandere o evidenziare il referto
+                print("Aperto da Spotlight documento ID: \(uniqueIdentifier)")
             }
         }
         .onAppear {
