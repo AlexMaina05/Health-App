@@ -99,6 +99,7 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
     
     public func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
         currentPath.append(elementName)
+        currentElementData = ""
         
         if elementName == "ClinicalDocument" {
             isClinicalDocument = true
@@ -171,6 +172,14 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
     }
 
     public func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+        let trimmed = currentElementData.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if elementName == "family" && currentPath.contains("patient") {
+            patientFamilyName = trimmed
+        } else if elementName == "given" && currentPath.contains("patient") {
+            patientGivenName = trimmed
+        }
+        
         if elementName == "observation" && insideObservation {
             if let code = currentObsCode {
                 var ranges: [FHIRReferenceRange]? = nil
@@ -214,14 +223,17 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
     private func normalizeCDADate(_ raw: String) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
+        var dateString = raw
         if raw.count >= 14 {
             formatter.dateFormat = "yyyyMMddHHmmss"
+            dateString = String(raw.prefix(14))
         } else if raw.count >= 8 {
             formatter.dateFormat = "yyyyMMdd"
+            dateString = String(raw.prefix(8))
         } else {
             return raw
         }
-        if let d = formatter.date(from: String(raw.prefix(14))) {
+        if let d = formatter.date(from: dateString) {
             return ISO8601DateFormatter().string(from: d)
         }
         return raw

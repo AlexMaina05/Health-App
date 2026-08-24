@@ -71,6 +71,7 @@ public final class AppViewModel: ObservableObject {
             
             // 1. Processa XML Nativi
             for file in pendingXMLs {
+                defer { try? FileManager.default.removeItem(at: file) }
                 if let xmlData = try? Data(contentsOf: file) {
                     do {
                         if #available(iOS 16.1, *) { self.updateLiveActivity(status: "Transcodifica in FHIR...", progress: 0) }

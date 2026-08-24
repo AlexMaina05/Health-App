@@ -91,8 +91,16 @@ public final class VisionOCRExtractor {
         let glicemiaRegex = try? NSRegularExpression(pattern: #"(?i)(?:glicemia|glucosio)\s*[:=]?\s*(\d+(?:[.,]\d+)?)\s*(mg\/dl|mmol\/l)?"#)
         if let match = glicemiaRegex?.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
            let valueRange = Range(match.range(at: 1), in: text),
-           let rawValue = Double(text[valueRange].replacingOccurrences(of: ",", with: ".")) {
-            metrics.append(ExtractedMetric(name: "Glicemia (OCR)", value: rawValue, unit: "mg/dL", loincCode: "15074-8", date: now))
+           let rawValue = Double(String(text[valueRange]).replacingOccurrences(of: ",", with: ".")) {
+            
+            var finalValue = rawValue
+            if match.numberOfRanges > 2, let unitRange = Range(match.range(at: 2), in: text) {
+                let unitStr = String(text[unitRange]).lowercased()
+                if unitStr == "mmol/l" {
+                    finalValue = rawValue * 18.0182
+                }
+            }
+            metrics.append(ExtractedMetric(name: "Glicemia (OCR)", value: finalValue, unit: "mg/dL", loincCode: "15074-8", date: now))
         }
         
         // 2. Colesterolo Totale

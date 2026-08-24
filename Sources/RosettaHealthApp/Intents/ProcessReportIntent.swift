@@ -41,15 +41,15 @@ struct ProcessReportIntent: AppIntent {
             // Tentiamo via XML CDA
             if let xmlData = extractXML(from: data) {
                 let bundle = try transcoder.transcode(cdaData: xmlData)
-                var metrics: [MetricTarget] = []
+                var metrics: [ExtractedMetric] = []
                 for entry in bundle.entry {
                     if case .observation(let obs) = entry.resource,
                        let loinc = obs.code.coding.first?.code,
-                       let type = bridge.mapLOINCToHKTypeIdentifier(loinc: loinc),
+                       let metricTarget = bridge.loincToHKMap[loinc],
                        let qty = obs.valueQuantity {
                         
-                        let date = try parseDate(obs.effectiveTime?.value ?? "") ?? Date()
-                        metrics.append(MetricTarget(hkTypeIdentifier: type, value: qty.value, unit: qty.unit, date: date))
+                        let date = try parseDate(obs.effectiveDateTime ?? "") ?? Date()
+                        metrics.append(ExtractedMetric(name: obs.code.text ?? "Parametro Clinico", value: qty.value, unit: qty.unit, loincCode: loinc, date: date))
                     }
                 }
                 

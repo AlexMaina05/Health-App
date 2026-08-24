@@ -27,10 +27,12 @@ public actor ClinicalDecisionSupport {
         // I campioni da HK sono tipicamente ordinati dal più recente al più vecchio se presi tramite HKSampleQuery (sort: descending)
         // Assicuriamoci dell'ordine cronologico (indice 0 = più vecchio, indice 2 = più recente)
         let chronologicalSamples = samples.sorted(by: { $0.startDate < $1.startDate })
+        let recent = Array(chronologicalSamples.suffix(3))
         
-        let v1 = chronologicalSamples[0].quantity.doubleValue(for: chronologicalSamples[0].quantityType.isCompatible(with: HKUnit(from: "mg/dL")) ? HKUnit(from: "mg/dL") : HKUnit.count()) // Semplificazione unità
-        let v2 = chronologicalSamples[1].quantity.doubleValue(for: chronologicalSamples[0].quantity.is(compatibleWith: HKUnit(from: "mg/dL")) ? HKUnit(from: "mg/dL") : HKUnit.count()) // Correzione sintassi
-        let v3 = chronologicalSamples[2].quantity.doubleValue(for: chronologicalSamples[0].quantity.is(compatibleWith: HKUnit(from: "mg/dL")) ? HKUnit(from: "mg/dL") : HKUnit.count())
+        let unit = recent[0].quantity.is(compatibleWith: HKUnit(from: "mg/dL")) ? HKUnit(from: "mg/dL") : HKUnit.count()
+        let v1 = recent[0].quantity.doubleValue(for: unit)
+        let v2 = recent[1].quantity.doubleValue(for: unit)
+        let v3 = recent[2].quantity.doubleValue(for: unit)
         
         // Sostituisco con una conversione sicura senza hardcode delle unità per l'analisi numerica relativa
         // Prendiamo il valore numerico "puro" a prescindere dall'unità (assumendo che i 3 campioni abbiano la stessa unità)
@@ -40,13 +42,13 @@ public actor ClinicalDecisionSupport {
         switch type {
         case .dietaryCholesterol: // Colesterolo
             let unit = HKUnit(from: "mg/dL")
-            let s1 = chronologicalSamples[0].quantity.doubleValue(for: unit)
-            let s2 = chronologicalSamples[1].quantity.doubleValue(for: unit)
-            let s3 = chronologicalSamples[2].quantity.doubleValue(for: unit)
+            let s1 = recent[0].quantity.doubleValue(for: unit)
+            let s2 = recent[1].quantity.doubleValue(for: unit)
+            let s3 = recent[2].quantity.doubleValue(for: unit)
             
             // Trend in aumento (peggioramento del colesterolo)
             if s3 > s2 && s2 > s1 {
-                let increase = ((s3 - s1) / s1) * 100
+                let increase = s1 != 0 ? ((s3 - s1) / s1) * 100 : 0
                 if increase > 10.0 {
                     return TrendAlert(
                         metricName: "Colesterolo",
@@ -58,12 +60,12 @@ public actor ClinicalDecisionSupport {
             
         case .bloodGlucose: // Glicemia
             let unit = HKUnit(from: "mg/dL")
-            let s1 = chronologicalSamples[0].quantity.doubleValue(for: unit)
-            let s2 = chronologicalSamples[1].quantity.doubleValue(for: unit)
-            let s3 = chronologicalSamples[2].quantity.doubleValue(for: unit)
+            let s1 = recent[0].quantity.doubleValue(for: unit)
+            let s2 = recent[1].quantity.doubleValue(for: unit)
+            let s3 = recent[2].quantity.doubleValue(for: unit)
             
             if s3 > s2 && s2 > s1 {
-                let increase = ((s3 - s1) / s1) * 100
+                let increase = s1 != 0 ? ((s3 - s1) / s1) * 100 : 0
                 if increase > 5.0 && s3 > 100.0 {
                     return TrendAlert(
                         metricName: "Glicemia",
@@ -75,9 +77,9 @@ public actor ClinicalDecisionSupport {
             
         case .bloodPressureSystolic: // Pressione Sistolica (Massima)
             let unit = HKUnit.millimeterOfMercury()
-            let s1 = chronologicalSamples[0].quantity.doubleValue(for: unit)
-            let s2 = chronologicalSamples[1].quantity.doubleValue(for: unit)
-            let s3 = chronologicalSamples[2].quantity.doubleValue(for: unit)
+            let s1 = recent[0].quantity.doubleValue(for: unit)
+            let s2 = recent[1].quantity.doubleValue(for: unit)
+            let s3 = recent[2].quantity.doubleValue(for: unit)
             
             if s3 > s2 && s2 > s1 {
                 if s3 > 130 {
