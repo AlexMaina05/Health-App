@@ -1,12 +1,13 @@
 import Foundation
 import LocalAuthentication
 import SwiftUI
+import Observation
 
 @available(iOS 26.0, *)
 @MainActor
-public final class BiometricAuthManager: ObservableObject {
-    @Published public var isUnlocked: Bool = false
-    @Published public var authenticationError: String? = nil
+public final class BiometricAuthManager {
+    public var isUnlocked: Bool = false
+    public var authenticationError: String? = nil
     
     // Controlla se il dispositivo supporta la biometria
     public var isBiometricAvailable: Bool {

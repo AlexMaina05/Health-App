@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Observation
 import HealthKit
 import RosettaHealthCore
 import ActivityKit
@@ -9,18 +10,18 @@ import SwiftData
 import UIKit
 
 @MainActor
-public final class AppViewModel: ObservableObject {
-    @Published public var isProcessing = false
-    @Published public var activeError: RosettaError?
-    @Published public var currentBundle: FHIRBundle?
-    @Published public var extractedObservations: [FHIRObservation] = []
-    @Published public var syncedSamplesCount: Int = 0
-    @Published public var skippedCodes: [String] = []
-    @Published public var isOCRExtracted = false
-    @Published public var isHealthKitAuthorized = false
+public final class AppViewModel {
+    public var isProcessing = false
+    public var activeError: RosettaError?
+    public var currentBundle: FHIRBundle?
+    public var extractedObservations: [FHIRObservation] = []
+    public var syncedSamplesCount: Int = 0
+    public var skippedCodes: [String] = []
+    public var isOCRExtracted = false
+    public var isHealthKitAuthorized = false
     
-    @Published public var isSuccess: Bool = false
-    @Published public var feedbackTrigger: Int = 0
+    public var isSuccess: Bool = false
+    public var feedbackTrigger: Int = 0
     public var parsingActivity: Any? = nil
     
     public var isAnonymousMode: Bool {

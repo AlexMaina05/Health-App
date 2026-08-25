@@ -7,7 +7,7 @@ import RosettaHealthCore
 import UniformTypeIdentifiers
 
 public struct ContentView: View {
-    @StateObject private var viewModel = AppViewModel()
+    @State private var viewModel = AppViewModel()
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var modelContext
     @AppStorage("appThemeName") private var appThemeName: String = AppTheme.blue.rawValue

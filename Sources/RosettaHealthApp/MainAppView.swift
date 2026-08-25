@@ -8,7 +8,7 @@ public struct MainAppView: View {
     @AppStorage("isBiometricLockEnabled") private var isBiometricLockEnabled: Bool = true
     @AppStorage("appThemeName") private var appThemeName: String = AppTheme.blue.rawValue
     
-    @StateObject private var authManager = BiometricAuthManager()
+    @State private var authManager = BiometricAuthManager()
     @Environment(\.scenePhase) private var scenePhase
     @State private var selectedTab: Int = 0
     
