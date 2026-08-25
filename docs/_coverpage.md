@@ -4,5 +4,5 @@
 
 Inietta i tuoi referti PDF direttamente nell'ecosistema Apple in totale sicurezza. Architettura nativa in **Swift 6** con interfaccia **Liquid Glass**.
 
-[Inizia a Leggere](#/README)
+[Inizia a Leggere](#)
 [Guarda il Codice Sorgente su GitHub](https://github.com/AlexMaina05/Health-App)
