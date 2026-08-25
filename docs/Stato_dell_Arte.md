@@ -1,9 +1,3 @@
----
-layout: default
-title: Analisi dello Stato dell'Arte
-permalink: /stato-dellarte/
----
-
 # Analisi dello Stato dell'Arte: Fascicolo Sanitario Elettronico e Interoperabilità Consumer
 
 Questo documento analizza lo stato attuale dell'infrastruttura sanitaria digitale (con particolare focus sul panorama italiano), l'evoluzione degli standard di interoperabilità clinica e le limitazioni degli attuali ecosistemi consumer. L'analisi contestualizza la necessità architetturale e l'innovazione introdotta dal progetto **RosettaHealth**.
