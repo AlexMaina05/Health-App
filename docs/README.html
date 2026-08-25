@@ -1,130 +1,139 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="dark">
 <head>
   <meta charset="UTF-8">
   <title>README - RosettaHealth</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Fonts and Zero-MD -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: { bg: '#0b0b0f', sidebar: 'rgba(15, 15, 20, 0.75)' } } }
+    }
+  </script>
   <style>
-    :root {
-      --bg-color: #0b0b0f;
-      --sidebar-bg: rgba(15, 15, 20, 0.65);
-      --text-color: #cbd5e1;
-      --accent: #38bdf8;
-    }
-    body {
-      margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg-color); color: var(--text-color); display: flex; height: 100vh; overflow: hidden;
-    }
-    .sidebar {
-      width: 280px; background: var(--sidebar-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-right: 1px solid rgba(255,255,255,0.05); padding: 20px; overflow-y: auto; flex-shrink: 0;
-    }
-    .sidebar h2 {
-      font-size: 1.2rem; margin-bottom: 20px; background: -webkit-linear-gradient(0deg, #a855f7, #38bdf8);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .sidebar ul { list-style: none; padding: 0; margin: 0; }
-    .sidebar li { margin-bottom: 12px; }
-    .sidebar a {
-      color: #94a3b8; text-decoration: none; font-size: 0.95rem; transition: color 0.2s;
-    }
-    .sidebar a:hover, .sidebar a.active { color: var(--accent); }
-    .sidebar-section { margin-top: 25px; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
-    
-    .content {
-      flex-grow: 1; padding: 40px; overflow-y: auto;
-    }
-    .content-inner {
-      max-width: 850px; margin: 0 auto;
-    }
-
-    .hamburger { display: none; }
-    .close-btn { display: none; }
-    @media (max-width: 768px) {
-      .sidebar {
-        position: fixed; top: 0; left: -300px; height: 100vh; z-index: 1000; transition: left 0.3s ease;
-      }
-      .sidebar.open { left: 0; }
-      .content { padding: 15px; }
-      .hamburger {
-        display: block; position: fixed; bottom: 20px; right: 20px; background: linear-gradient(90deg, #8b5cf6, #0ea5e9);
-        color: white; width: 56px; height: 56px; border-radius: 28px; text-align: center; line-height: 56px;
-        font-size: 24px; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.5); cursor: pointer; user-select: none;
-      }
-      .close-btn {
-        display: block; position: absolute; top: 15px; right: 20px; color: #cbd5e1; font-size: 28px; cursor: pointer; user-select: none;
-      }
+    body { background-color: #0b0b0f; color: #cbd5e1; }
+    .glass { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+    .text-gradient { background: -webkit-linear-gradient(0deg, #a855f7, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    /* Animated Mesh Background for Content Area */
+    .mesh-bg {
+      position: absolute; inset: 0; z-index: -1;
+      background: radial-gradient(circle at 10% 50%, rgba(139, 92, 246, 0.08), transparent 40%),
+                  radial-gradient(circle at 90% 20%, rgba(56, 189, 248, 0.08), transparent 40%);
     }
   </style>
 </head>
-<body>
-  <nav class="sidebar" id="sidebar">
-    <div class="close-btn" onclick="document.getElementById('sidebar').classList.remove('open')">×</div>
-    <h2><a href="index.html" style="color: inherit; text-decoration: none;">⚕️ RosettaHealth</a></h2>
+<body class="flex h-screen overflow-hidden bg-bg text-slate-300 antialiased selection:bg-purple-500/30 relative">
+
+  <!-- Mobile Overlay -->
+  <div id="overlay" class="fixed inset-0 bg-black/60 z-40 hidden lg:hidden glass transition-opacity" onclick="toggleSidebar()"></div>
+
+  <!-- Sidebar -->
+  <nav id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-sidebar glass border-r border-white/5 transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-300 ease-out flex flex-col shadow-2xl lg:shadow-none">
     
-    <div class="sidebar-section">Documentazione Core</div>
-    <ul>
-      <li><a href="README.html" id="link-README">Homepage Docs</a></li>
-      <li><a href="GUIDA_UTENTE.html" id="link-GUIDA_UTENTE">Guida Utente</a></li>
-      <li><a href="tdd.html" id="link-tdd">Technical Design (TDD)</a></li>
-    </ul>
+    <div class="p-6 flex items-center justify-between">
+      <a href="index.html" class="text-2xl font-bold text-gradient hover:opacity-80 transition-opacity">⚕️ RosettaHealth</a>
+      <button onclick="toggleSidebar()" class="lg:hidden text-slate-400 hover:text-white transition-colors">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
 
-    <div class="sidebar-section">Analisi e Business</div>
-    <ul>
-      <li><a href="Stato_dell_Arte.html" id="link-Stato_dell_Arte">Stato dell'Arte</a></li>
-            <li><a href="Sviluppi_Futuri.html" id="link-Sviluppi_Futuri">Sviluppi Futuri</a></li>
-    </ul>
+    <div class="flex-1 overflow-y-auto px-6 pb-6 space-y-8">
+      
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Documentazione Core</h3>
+        <ul class="space-y-3">
+          <li><a href="README.html" class="nav-link block text-sm font-medium text-slate-400 hover:text-sky-400 transition-colors" data-id="README">Homepage Docs</a></li>
+          <li><a href="GUIDA_UTENTE.html" class="nav-link block text-sm font-medium text-slate-400 hover:text-sky-400 transition-colors" data-id="GUIDA_UTENTE">Guida Utente</a></li>
+          <li><a href="tdd.html" class="nav-link block text-sm font-medium text-slate-400 hover:text-sky-400 transition-colors" data-id="tdd">Technical Design (TDD)</a></li>
+        </ul>
+      </div>
 
-    <div class="sidebar-section">Compliance e Privacy</div>
-    <ul>
-      <li><a href="DPIA.html" id="link-DPIA">Valutazione GDPR (DPIA)</a></li>
-      <li><a href="INTERNATIONALIZATION.html" id="link-INTERNATIONALIZATION">Internazionalizzazione</a></li>
-    </ul>
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Analisi e Business</h3>
+        <ul class="space-y-3">
+          <li><a href="Stato_dell_Arte.html" class="nav-link block text-sm font-medium text-slate-400 hover:text-sky-400 transition-colors" data-id="Stato_dell_Arte">Stato dell'Arte</a></li>
+          <li><a href="Sviluppi_Futuri.html" class="nav-link block text-sm font-medium text-slate-400 hover:text-sky-400 transition-colors" data-id="Sviluppi_Futuri">Sviluppi Futuri</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Compliance e Privacy</h3>
+        <ul class="space-y-3">
+          <li><a href="DPIA.html" class="nav-link block text-sm font-medium text-slate-400 hover:text-sky-400 transition-colors" data-id="DPIA">Valutazione GDPR (DPIA)</a></li>
+          <li><a href="INTERNATIONALIZATION.html" class="nav-link block text-sm font-medium text-slate-400 hover:text-sky-400 transition-colors" data-id="INTERNATIONALIZATION">Internazionalizzazione</a></li>
+        </ul>
+      </div>
+      
+    </div>
   </nav>
 
-  <main class="content">
-    <div class="content-inner">
-      <zero-md src="markdown/README.md">
-        <template>
-          <style>
-            .markdown-body { background: transparent !important; padding: 0 !important;  color: #cbd5e1 !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important; }
-            .markdown-body h1, .markdown-body h2 { border-bottom: 1px solid rgba(255,255,255,0.1) !important; color: #f1f5f9 !important; }
-            .markdown-body a { color: #38bdf8 !important; }
-            .markdown-body pre { background: rgba(0,0,0,0.4) !important; border-radius: 12px !important; border: 1px solid rgba(255,255,255,0.05); }
-            .markdown-body blockquote { border-left: 4px solid #a855f7 !important; color: #94a3b8 !important; }
-            .markdown-body table tr { background-color: transparent !important; border-top: 1px solid rgba(255,255,255,0.1) !important; }
-            .markdown-body table th, .markdown-body table td { border: 1px solid rgba(255,255,255,0.1) !important; }
-            .markdown-body table tr:nth-child(2n) { background-color: rgba(255,255,255,0.02) !important; }
-        
-    .hamburger { display: none; }
-    .close-btn { display: none; }
-    @media (max-width: 768px) {
-      .sidebar {
-        position: fixed; top: 0; left: -300px; height: 100vh; z-index: 1000; transition: left 0.3s ease;
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col h-screen min-w-0 relative z-0">
+    <div class="mesh-bg"></div>
+    
+    <!-- Mobile Header -->
+    <header class="lg:hidden flex items-center justify-between p-4 border-b border-white/5 bg-sidebar glass z-30 sticky top-0">
+      <div class="text-lg font-bold text-gradient truncate pr-4">README</div>
+      <button onclick="toggleSidebar()" class="p-2 rounded-full bg-sky-500/10 text-sky-400 hover:bg-sky-500/20 transition-colors flex-shrink-0">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+    </header>
+
+    <!-- Markdown Container -->
+    <main class="flex-1 overflow-y-auto p-6 lg:p-12 w-full">
+      <div class="max-w-4xl mx-auto w-full pb-20">
+        <zero-md src="markdown/README.md">
+          <template>
+            <style>
+              .markdown-body { background: transparent !important; color: #cbd5e1 !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; padding: 0 !important; font-size: 16px !important; line-height: 1.6 !important; }
+              .markdown-body h1, .markdown-body h2, .markdown-body h3 { border-bottom: 1px solid rgba(255,255,255,0.1) !important; color: #f8fafc !important; margin-top: 1.5em !important; font-weight: 700 !important; }
+              .markdown-body h1 { font-size: 2.25rem !important; }
+              .markdown-body h2 { font-size: 1.75rem !important; }
+              .markdown-body a { color: #38bdf8 !important; text-decoration: none !important; }
+              .markdown-body a:hover { text-decoration: underline !important; }
+              .markdown-body pre { background: rgba(0,0,0,0.5) !important; border-radius: 12px !important; border: 1px solid rgba(255,255,255,0.05) !important; padding: 16px !important; overflow-x: auto !important; }
+              .markdown-body code { background: rgba(255,255,255,0.1) !important; border-radius: 6px !important; padding: 3px 6px !important; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; font-size: 0.9em !important; }
+              .markdown-body blockquote { border-left: 4px solid #a855f7 !important; color: #94a3b8 !important; background: rgba(255,255,255,0.03) !important; padding: 16px 20px !important; border-radius: 0 12px 12px 0 !important; margin: 1.5em 0 !important; font-style: normal !important; }
+              .markdown-body table { width: 100% !important; display: block !important; overflow-x: auto !important; white-space: nowrap !important; border-collapse: collapse !important; margin: 1.5em 0 !important; }
+              .markdown-body table tr { background-color: transparent !important; border-top: 1px solid rgba(255,255,255,0.1) !important; }
+              .markdown-body table th, .markdown-body table td { border: 1px solid rgba(255,255,255,0.1) !important; padding: 12px 16px !important; }
+              .markdown-body table th { background-color: rgba(255,255,255,0.05) !important; font-weight: 600 !important; }
+              .markdown-body table tr:nth-child(2n) { background-color: rgba(255,255,255,0.02) !important; }
+              .markdown-body img { border-radius: 12px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important; max-width: 100% !important; height: auto !important; margin: 1.5em 0 !important; }
+              .markdown-body ul, .markdown-body ol { padding-left: 1.5em !important; margin-bottom: 1em !important; }
+              .markdown-body li { margin-bottom: 0.5em !important; }
+            </style>
+          </template>
+        </zero-md>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Set Active Link
+    document.querySelectorAll('.nav-link').forEach(link => {
+      if (link.dataset.id === 'README') {
+        link.classList.add('text-sky-400');
+        link.classList.remove('text-slate-400');
       }
-      .sidebar.open { left: 0; }
-      .content { padding: 15px; }
-      .hamburger {
-        display: block; position: fixed; bottom: 20px; right: 20px; background: linear-gradient(90deg, #8b5cf6, #0ea5e9);
-        color: white; width: 56px; height: 56px; border-radius: 28px; text-align: center; line-height: 56px;
-        font-size: 24px; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.5); cursor: pointer; user-select: none;
-      }
-      .close-btn {
-        display: block; position: absolute; top: 15px; right: 20px; color: #cbd5e1; font-size: 28px; cursor: pointer; user-select: none;
+    });
+
+    // Sidebar Toggle Logic for Mobile
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    
+    function toggleSidebar() {
+      const isClosed = sidebar.classList.contains('-translate-x-full');
+      if (isClosed) {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
       }
     }
-  </style>
-        </template>
-      </zero-md>
-    </div>
-  </main>
-  
-  <div class="hamburger" onclick="document.getElementById('sidebar').classList.add('open')">☰</div>
-  <script>
-    // Evidenzia il link attivo nella sidebar
-    document.getElementById('link-README').classList.add('active');
   </script>
 </body>
 </html>
