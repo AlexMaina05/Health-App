@@ -1,10 +1,10 @@
 ﻿- **Documentazione Core**
-  - [Guida Utente](GUIDA_UTENTE.html)
-  - [Technical Design (TDD)](tdd.html)
+  - [Guida Utente](GUIDA_UTENTE)
+  - [Technical Design (TDD)](tdd)
 - **Analisi e Business**
-  - [Stato dell'Arte](Stato_dell_Arte.html)
+  - [Stato dell'Arte](Stato_dell_Arte)
   - [Business Plan](BUSINESS_PLAN.html)
-  - [Sviluppi Futuri](Sviluppi_Futuri.html)
+  - [Sviluppi Futuri](Sviluppi_Futuri)
 - **Compliance e Privacy**
-  - [Valutazione GDPR (DPIA)](DPIA.html)
-  - [Internazionalizzazione](INTERNATIONALIZATION.html)
+  - [Valutazione GDPR (DPIA)](DPIA)
+  - [Internazionalizzazione](INTERNATIONALIZATION)
