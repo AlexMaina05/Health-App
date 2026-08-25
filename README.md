@@ -74,9 +74,9 @@ L'ultimo sprint architetturale (v3.0) ha certificato l'app come *Senior Grade*:
 
 Oltre al presente README, il progetto è corredato da una documentazione accademica e tecnica approfondita, suddivisa in tre documenti chiave:
 
-- 🏛️ [**Analisi dello Stato dell'Arte**](documentazione/Stato_dell_Arte.md): Un'analisi del panorama italiano (FSE 2.0, HL7 CDA) e internazionale (FHIR R4), che evidenzia i limiti di interoperabilità superati da quest'app.
-- ⚙️ [**Technical Design Document (TDD)**](documentazione/tdd.md): Il cuore ingegneristico del progetto. Dettaglia l'architettura Producer-Consumer, lo schema SwiftData, le regex per l'OCR, l'uso della Secure Enclave e molto altro.
-- 🚀 [**Sviluppi Futuri e Roadmap**](documentazione/Sviluppi_Futuri.md): La vision di prodotto per le versioni future (v4.0+), inclusa l'integrazione di Small Language Models locali e cruscotti olistici proprietari.
+- 🏛️ [**Analisi dello Stato dell'Arte**](docs/Stato_dell_Arte.md): Un'analisi del panorama italiano (FSE 2.0, HL7 CDA) e internazionale (FHIR R4), che evidenzia i limiti di interoperabilità superati da quest'app.
+- ⚙️ [**Technical Design Document (TDD)**](docs/tdd.md): Il cuore ingegneristico del progetto. Dettaglia l'architettura Producer-Consumer, lo schema SwiftData, le regex per l'OCR, l'uso della Secure Enclave e molto altro.
+- 🚀 [**Sviluppi Futuri e Roadmap**](docs/Sviluppi_Futuri.md): La vision di prodotto per le versioni future (v4.0+), inclusa l'integrazione di Small Language Models locali e cruscotti olistici proprietari.
 
 ---
 
@@ -105,7 +105,7 @@ Il risultato? Il PDF burocratico diventa istantaneamente un grafico sanitario in
 
 L'infrastruttura di RosettaHealth si basa su una rigorosa architettura **Producer-Consumer** via `App Groups` e un motore di transcodifica avanzato:
 
-> 📚 **Approfondimento**: Per tutti i dettagli su modelli dati, sicurezza IPC e flussi, consulta il [**Technical Design Document (TDD)**](documentazione/tdd.md).
+> 📚 **Approfondimento**: Per tutti i dettagli su modelli dati, sicurezza IPC e flussi, consulta il [**Technical Design Document (TDD)**](docs/tdd.md).
 
 ### Interoperabilità Transfrontaliera (IPS)
 Il *Rosetta Engine* implementa deterministicamente la semantica del **Microsoft FHIR-Converter**. Non si limita a generare codice FHIR R4, ma inietta attivamente i metadati del profilo **International Patient Summary (IPS)**. L'esportazione JSON generata dall'App è formalmente riconosciuta a livello internazionale, consentendo la portabilità clinica transfrontaliera all'interno dell'Unione Europea.
