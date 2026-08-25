@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
@@ -8,23 +8,142 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css">
   <style>
+    /* Variabili Globali Stile Apple */
     :root {
-      --theme-color: #9C27B0;
+      --theme-color: #38BDF8;
       --base-font-size: 16px;
+      --base-font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --sidebar-background: rgba(15, 15, 20, 0.65);
+      --sidebar-width: 320px;
+      --cover-background-color: transparent;
+      --heading-h2-border-style: none;
+      --heading-h1-color: #ffffff;
+      --heading-h2-color: #f1f5f9;
+    }
+
+    /* Sfondo principale Mesh Gradient animato */
+    body {
+      background: radial-gradient(circle at 10% 50%, rgba(139, 92, 246, 0.12), transparent 30%),
+                  radial-gradient(circle at 90% 20%, rgba(56, 189, 248, 0.12), transparent 30%),
+                  #0b0b0f !important;
+      background-attachment: fixed;
+      color: #cbd5e1;
+      font-weight: 400;
+    }
+
+    /* Liquid Glass per la Sidebar */
+    .sidebar {
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3);
+      padding-top: 20px;
+    }
+    
+    .sidebar h1 {
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: -webkit-linear-gradient(0deg, #a855f7, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Formattazione contenuti stondati e moderni */
+    .markdown-section {
+      max-width: 900px;
+    }
+
+    .markdown-section pre {
+      border-radius: 16px !important;
+      background: rgba(0,0,0,0.4) !important;
+      border: 1px solid rgba(255,255,255,0.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .markdown-section img {
+      border-radius: 20px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+      margin: 2rem 0;
+    }
+
+    /* Stile Alert/Blockquote elegante */
+    .markdown-section blockquote {
+      background: linear-gradient(120deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+      border-left: 4px solid #a855f7;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Cover Page (Hero Section) Spettacolare */
+    .cover {
+      background: linear-gradient(135deg, #0b0b0f 0%, #151025 50%, #0a1320 100%) !important;
+    }
+
+    .cover h1 {
+      font-size: 4.5rem !important;
+      font-weight: 800 !important;
+      letter-spacing: -2px;
+      background: -webkit-linear-gradient(45deg, #a855f7, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .cover blockquote {
+      font-size: 1.5rem;
+      color: #94a3b8;
+      border: none;
+      background: none;
+      box-shadow: none;
+      font-weight: 300;
+    }
+
+    /* Pulsanti Cover Page (Call to Action) */
+    .cover .btn {
+      border-radius: 100px !important;
+      padding: 12px 32px !important;
+      font-size: 1.1rem !important;
+      font-weight: 600 !important;
+      border: 1px solid rgba(255,255,255,0.1) !important;
+      background: rgba(255,255,255,0.03) !important;
+      color: #f8fafc !important;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .cover .btn:first-child {
+      background: linear-gradient(90deg, #8b5cf6, #0ea5e9) !important;
+      border: none !important;
+      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+    }
+
+    .cover .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(139, 92, 246, 0.4);
+    }
+    
+    /* Titoli interni sfumati */
+    .markdown-section h2 {
+      margin-top: 3rem;
     }
   </style>
 </head>
 <body>
-  <div id="app">Caricamento in corso...</div>
+  <div id="app">Costruzione interfaccia Liquid Glass...</div>
   <script>
-    window. = {
+    window.$docsify = {
       name: 'RosettaHealth',
       repo: 'https://github.com/AlexMaina05/Health-App',
       loadSidebar: true,
+      coverpage: true,
+      onlyCover: false,
       subMaxLevel: 3,
       auto2top: true,
       search: 'auto',
-      themeColor: '#9C27B0'
+      themeColor: '#38BDF8',
+      formatUpdated: '{DD}/{MM}/{YYYY} {HH}:{mm}'
     }
   </script>
   <!-- Docsify v4 -->
