@@ -150,18 +150,18 @@
   <!-- Docsify v4 -->
   <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
   <script>
-    // Smooth scroll for the coverpage button
+    // Smooth scroll for the coverpage button (senza inquinare l'URL)
     document.addEventListener('click', function(e) {
       const target = e.target.closest('.cover .btn');
-      // If it's the first button (not the GitHub link which opens externally)
       if (target && !target.href.includes('github.com')) {
         e.preventDefault();
+        e.stopPropagation(); // Blocca il router interno di Docsify
         window.scrollTo({
           top: window.innerHeight,
           behavior: 'smooth'
         });
       }
-    });
+    }, true); // capture phase per anticipare Docsify
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
