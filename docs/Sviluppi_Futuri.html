@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Sviluppi Futuri - RosettaHealth</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Fonts and Zero-MD -->
+  <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"></script>
+  <style>
+    :root {
+      --bg-color: #0b0b0f;
+      --sidebar-bg: rgba(15, 15, 20, 0.65);
+      --text-color: #cbd5e1;
+      --accent: #38bdf8;
+    }
+    body {
+      margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-color); color: var(--text-color); display: flex; height: 100vh; overflow: hidden;
+    }
+    .sidebar {
+      width: 280px; background: var(--sidebar-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255,255,255,0.05); padding: 20px; overflow-y: auto; flex-shrink: 0;
+    }
+    .sidebar h2 {
+      font-size: 1.2rem; margin-bottom: 20px; background: -webkit-linear-gradient(0deg, #a855f7, #38bdf8);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li { margin-bottom: 12px; }
+    .sidebar a {
+      color: #94a3b8; text-decoration: none; font-size: 0.95rem; transition: color 0.2s;
+    }
+    .sidebar a:hover, .sidebar a.active { color: var(--accent); }
+    .sidebar-section { margin-top: 25px; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+    
+    .content {
+      flex-grow: 1; padding: 40px; overflow-y: auto;
+    }
+    .content-inner {
+      max-width: 850px; margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <h2><a href="index.html" style="color: inherit; text-decoration: none;">⚕️ RosettaHealth</a></h2>
+    
+    <div class="sidebar-section">Documentazione Core</div>
+    <ul>
+      <li><a href="README.html" id="link-README">Homepage Docs</a></li>
+      <li><a href="GUIDA_UTENTE.html" id="link-GUIDA_UTENTE">Guida Utente</a></li>
+      <li><a href="tdd.html" id="link-tdd">Technical Design (TDD)</a></li>
+    </ul>
+
+    <div class="sidebar-section">Analisi e Business</div>
+    <ul>
+      <li><a href="Stato_dell_Arte.html" id="link-Stato_dell_Arte">Stato dell'Arte</a></li>
+      <li><a href="BUSINESS_PLAN.html" id="link-BUSINESS_PLAN">Business Plan</a></li>
+      <li><a href="Sviluppi_Futuri.html" id="link-Sviluppi_Futuri">Sviluppi Futuri</a></li>
+    </ul>
+
+    <div class="sidebar-section">Compliance e Privacy</div>
+    <ul>
+      <li><a href="DPIA.html" id="link-DPIA">Valutazione GDPR (DPIA)</a></li>
+      <li><a href="INTERNATIONALIZATION.html" id="link-INTERNATIONALIZATION">Internazionalizzazione</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <div class="content-inner">
+      <zero-md src="markdown/Sviluppi_Futuri.md">
+        <template>
+          <style>
+            .markdown-body { background: transparent !important; color: #cbd5e1 !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important; }
+            .markdown-body h1, .markdown-body h2 { border-bottom: 1px solid rgba(255,255,255,0.1) !important; color: #f1f5f9 !important; }
+            .markdown-body a { color: #38bdf8 !important; }
+            .markdown-body pre { background: rgba(0,0,0,0.4) !important; border-radius: 12px !important; border: 1px solid rgba(255,255,255,0.05); }
+            .markdown-body blockquote { border-left: 4px solid #a855f7 !important; color: #94a3b8 !important; }
+            .markdown-body table tr { background-color: transparent !important; border-top: 1px solid rgba(255,255,255,0.1) !important; }
+            .markdown-body table th, .markdown-body table td { border: 1px solid rgba(255,255,255,0.1) !important; }
+            .markdown-body table tr:nth-child(2n) { background-color: rgba(255,255,255,0.02) !important; }
+          </style>
+        </template>
+      </zero-md>
+    </div>
+  </main>
+  
+  <script>
+    // Evidenzia il link attivo nella sidebar
+    document.getElementById('link-Sviluppi_Futuri').classList.add('active');
+  </script>
+</body>
+</html>

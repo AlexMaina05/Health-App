@@ -15,16 +15,16 @@ RosettaHealth è una *pipeline invisibile e sicura* sviluppata interamente in Sw
 Utilizza la barra laterale per navigare tra i vari capitoli del progetto:
 
 ### Documentazione Core
-* 📘 **[Guida Utente](GUIDA_UTENTE.md)**: Manuale per l'utilizzo dell'app da parte dei pazienti, inclusa la configurazione del Vault e di iCloud.
-* 🛠️ **[Technical Design Document](tdd.md)**: Dettagli architetturali (SwiftData, OCR, HealthKit, ModelActor, Liquid Glass).
+* 📘 **[Guida Utente](GUIDA_UTENTE.html)**: Manuale per l'utilizzo dell'app da parte dei pazienti, inclusa la configurazione del Vault e di iCloud.
+* 🛠️ **[Technical Design Document](tdd.html)**: Dettagli architetturali (SwiftData, OCR, HealthKit, ModelActor, Liquid Glass).
 
 ### Analisi e Strategia
-* 📊 **[Business Plan](BUSINESS_PLAN.md)**: Analisi di mercato e modello di monetizzazione Freemium.
-* 🔮 **[Sviluppi Futuri](Sviluppi_Futuri.md)**: Vision per le versioni 4.0+ (Cruscotti Olistici, LLM Locali).
-* 🔬 **[Stato dell'Arte](Stato_dell_Arte.md)**: Contesto accademico e tecnologico.
+* 📊 **[Business Plan](BUSINESS_PLAN.html)**: Analisi di mercato e modello di monetizzazione Freemium.
+* 🔮 **[Sviluppi Futuri](Sviluppi_Futuri.html)**: Vision per le versioni 4.0+ (Cruscotti Olistici, LLM Locali).
+* 🔬 **[Stato dell'Arte](Stato_dell_Arte.html)**: Contesto accademico e tecnologico.
 
 ### Sicurezza e Compliance
-* 🔒 **[Privacy & DPIA](DPIA.md)**: Valutazione di impatto sulla protezione dei dati, crittografia Secure Enclave e GDPR.
-* 🌍 **[Internazionalizzazione](INTERNATIONALIZATION.md)**: Standard europei (IPS) supportati.
+* 🔒 **[Privacy & DPIA](DPIA.html)**: Valutazione di impatto sulla protezione dei dati, crittografia Secure Enclave e GDPR.
+* 🌍 **[Internazionalizzazione](INTERNATIONALIZATION.html)**: Standard europei (IPS) supportati.
 
 > 💡 **Nota:** Se stai cercando il codice sorgente o le istruzioni di compilazione, visita il [Repository GitHub principale](https://github.com/AlexMaina05/Health-App).
