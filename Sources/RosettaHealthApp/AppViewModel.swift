@@ -32,6 +32,7 @@ public final class AppViewModel {
     @AppStorage("isCDSActive") public var isCDSActive: Bool = true
     @AppStorage("isOCREnabled") public var isOCREnabled: Bool = true
     @AppStorage("isProUnlocked") public var isProUnlocked: Bool = false
+    @AppStorage("isCloudSyncEnabled") public var isCloudSyncEnabled: Bool = false
     
     private let transcoder = RosettaTranscoder()
     private let healthBridge = HealthKitBridge()

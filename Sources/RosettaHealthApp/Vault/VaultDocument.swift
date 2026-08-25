@@ -7,19 +7,19 @@ import SwiftData
 @available(iOS 26.0, *)
 @Model
 public final class VaultDocument {
-    @Attribute(.unique) public var id: UUID
-    public var dateAdded: Date
+    public var id: UUID = UUID()
+    public var dateAdded: Date = Date()
     
     // Anagrafica Paziente
-    public var patientName: String
-    public var fiscalCode: String
+    public var patientName: String = ""
+    public var fiscalCode: String = ""
     
     // Contenuto Clinico
-    public var documentTitle: String
-    public var documentDate: Date
+    public var documentTitle: String = ""
+    public var documentDate: Date = Date()
     
     // Il Bundle FHIR transcodificato (salvato come JSON Data grezzo per flessibilità)
-    @Attribute(.externalStorage) public var fhirBundleJSON: Data
+    @Attribute(.externalStorage) public var fhirBundleJSON: Data = Data()
     
     // Il PDF Originale per le annotazioni vettoriali
     @Attribute(.externalStorage) public var pdfData: Data?

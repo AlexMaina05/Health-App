@@ -12,7 +12,17 @@ public struct MainAppView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var selectedTab: Int = 0
     
-    public init() {}
+    private let container: ModelContainer
+    
+    public init() {
+        let syncEnabled = UserDefaults.standard.bool(forKey: "isCloudSyncEnabled")
+        let config = ModelConfiguration(cloudKitDatabase: syncEnabled ? .automatic : .none)
+        do {
+            container = try ModelContainer(for: VaultDocument.self, configurations: config)
+        } catch {
+            fatalError("Impossibile caricare il database: \(error)")
+        }
+    }
     
     private var themeColor: Color {
         AppTheme(rawValue: appThemeName)?.color ?? .blue
@@ -32,7 +42,7 @@ public struct MainAppView: View {
                             Label("Family Vault", systemImage: "folder.badge.person.crop")
                         }
                 }
-                .modelContainer(for: [VaultDocument.self])
+                .modelContainer(container)
                 // Privacy Screen (Sfuoca l'app sotto il lucchetto)
                 
                 .disabled(isBiometricLockEnabled && !authManager.isUnlocked)

@@ -19,6 +19,7 @@ public struct SettingsView: View {
     @AppStorage("isCDSActive") private var isCDSActive: Bool = true
     @AppStorage("isOCREnabled") private var isOCREnabled: Bool = true
     @AppStorage("isProUnlocked") private var isProUnlocked: Bool = false
+    @AppStorage("isCloudSyncEnabled") private var isCloudSyncEnabled: Bool = false
     @AppStorage("appThemeName") private var appThemeName: String = AppTheme.blue.rawValue
     @State private var showProAlert = false
     

@@ -230,3 +230,9 @@ Per la certificazione di stabilità biomedica, il framework core usa una suite d
 - **Performance:** Risolto un memory leak critico implementando `HealthKitBridge` come Singleton globale.
 - **UI/UX:** Implementato il modificatore custom `.liquidGlass()` retrocompatibile e poi promosso a API nativa per iOS 26.
 - **Concorrenza:** Migrazione completa a `@Observable` e introduzione di `VaultModelActor` per query thread-safe in background.
+
+### 7.4 Backup iCloud e CloudKit (Opt-In)
+Il *Family Vault* supporta la sincronizzazione opzionale tramite il **CloudKit Private Database** di Apple.
+- **Architettura a Doppio Container:** In base alla variabile `isCloudSyncEnabled` in `UserDefaults`, `RosettaHealthApp.swift` inizializza `ModelConfiguration` con `cloudKitDatabase: .automatic` oppure `.none`.
+- **GDPR Compliance:** Dato che sfrutta il database privato dell'utente associato al suo Apple ID, l'infrastruttura CloudKit rimane invisibile agli sviluppatori e crittografata end-to-end. Il passaggio invalida il termine "Zero-Cloud" mutandolo in "Zero-Server-Terzi".
+- **Limiti di SwiftData:** Per supportare CloudKit, il vincolo di unicità (`@Attribute(.unique)`) su `VaultDocument.id` è stato rimosso in favore degli identificativi nativi di CloudKit, e tutti gli attributi del modello hanno ora valori di default espliciti.

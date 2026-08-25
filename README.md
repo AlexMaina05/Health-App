@@ -13,6 +13,7 @@
 
 ## 📖 Indice
 - [Documentazione di Progetto](#-documentazione-di-progetto)
+- [Guida Utente](#-guida-utente)
 - [Il Problema & La Soluzione](#-il-problema--la-soluzione)
 - [Come Funziona (User Journey)](#-come-funziona-user-journey)
 - [Architettura & Rosetta Engine](#-architettura--rosetta-engine)
