@@ -146,8 +146,23 @@
       formatUpdated: '{DD}/{MM}/{YYYY} {HH}:{mm}'
     }
   </script>
+
   <!-- Docsify v4 -->
   <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script>
+    // Smooth scroll for the coverpage button
+    document.addEventListener('click', function(e) {
+      const target = e.target.closest('a[href="#down"]');
+      if (target) {
+        e.preventDefault();
+        window.scrollTo({
+          top: window.innerHeight,
+          behavior: 'smooth'
+        });
+      }
+    });
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
 </body>
