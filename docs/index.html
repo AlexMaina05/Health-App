@@ -152,8 +152,9 @@
   <script>
     // Smooth scroll for the coverpage button
     document.addEventListener('click', function(e) {
-      const target = e.target.closest('a[href="#down"]');
-      if (target) {
+      const target = e.target.closest('.cover .btn');
+      // If it's the first button (not the GitHub link which opens externally)
+      if (target && !target.href.includes('github.com')) {
         e.preventDefault();
         window.scrollTo({
           top: window.innerHeight,
