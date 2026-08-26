@@ -16,17 +16,14 @@ Questo permetterà di sfruttare i display di grandi dimensioni: la sidebar later
 
 ---
 
-## 3. Intelligenza Artificiale Generativa Locale (Small Language Models)
-L'attuale motore OCR utilizza euristiche e regex. L'integrazione di SLM (Small Language Models come Llama 3 8B o Mistral) nativi tramite il framework **MLX** o **CoreML** permetterebbe di processare testi narrativi medici complessi (es. "Il paziente presenta un lieve soffio sistolico e una frazione di eiezione del 55%"), strutturandoli in risorse FHIR elaborate interamente sul Neural Engine dell'iPad/iPhone, garantendo l'Assenza di Rete.
-
 ---
 
-## 4. Estensione Ontologica Globale (SNOMED CT)
+## 3. Estensione Ontologica Globale (SNOMED CT)
 Espandere l'attuale mappatura LOINC statica con un database vettoriale locale (es. SQLite/CoreData) contenente l'ontologia completa **SNOMED CT** e **ICD-10**. Questo permetterebbe di convertire in codice strutturato non solo le misurazioni vitali, ma anche patologie, farmaci prescritti e allergie per una mappatura clinica totale.
 
 ---
 
-## 5. Portabilità dei Dati: Integrazione SMART on FHIR
+## 4. Portabilità dei Dati: Integrazione SMART on FHIR
 Integrare il protocollo globale OAuth 2.0 (tramite `ASWebAuthenticationSession`) e un Client di Rete FHIR dedicato. Questo permetterebbe agli utenti di trasmettere direttamente, e con granularità di permessi, i propri referti transcodificati all'EMR (Electronic Medical Record) del proprio ospedale europeo, dando piena e formale attuazione al Diritto alla Portabilità dei Dati (Art. 20 GDPR).
 
 ---
