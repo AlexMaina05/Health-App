@@ -27,3 +27,8 @@ Espandere l'attuale mappatura LOINC statica con un database vettoriale locale (e
 ## 6. Integrazione Apple Intelligence (AppIntents e Siri)
 Sfruttando le nuove capacità semantiche di Siri (con esecuzione strettamente locale su Apple Silicon), implementare l'interrogazione vocale autonoma tramite il framework `AppIntents`. 
 Esempio di query: *"Ehi Siri, chiedi a RosettaHealth se il mio colesterolo e la mia creatinina sono peggiorati rispetto al referto dell'anno scorso"*.
+
+---
+
+## 4. Porting Android (Kotlin / Jetpack Compose)
+In ottica di espansione del mercato, è prevista una versione per ecosistema Android. L'app nascerà inizialmente come versione "castrata" (esclusivamente come visualizzatore sicuro locale dei referti FSE e decodificatore XML/FHIR), per poi evolversi introducendo (eventualmente come tier Premium) la sincronizzazione con **Google Health Connect** (l'equivalente Android di Apple HealthKit). L'architettura manterrà il paradigma Zero-Cloud, processando i dati interamente sul dispositivo locale.
