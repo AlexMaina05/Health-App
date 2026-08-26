@@ -23,10 +23,6 @@ Espandere l'attuale mappatura LOINC statica con un database vettoriale locale (e
 
 ---
 
-## 4. Portabilità dei Dati: Integrazione SMART on FHIR
-Integrare il protocollo globale OAuth 2.0 (tramite `ASWebAuthenticationSession`) e un Client di Rete FHIR dedicato. Questo permetterebbe agli utenti di trasmettere direttamente, e con granularità di permessi, i propri referti transcodificati all'EMR (Electronic Medical Record) del proprio ospedale europeo, dando piena e formale attuazione al Diritto alla Portabilità dei Dati (Art. 20 GDPR).
-
----
 
 ## 6. Integrazione Apple Intelligence (AppIntents e Siri)
 Sfruttando le nuove capacità semantiche di Siri (con esecuzione strettamente locale su Apple Silicon), implementare l'interrogazione vocale autonoma tramite il framework `AppIntents`. 
