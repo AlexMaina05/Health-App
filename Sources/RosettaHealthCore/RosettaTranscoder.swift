@@ -151,7 +151,7 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
         
         if elementName == "value" {
             let type = attributeDict["xsi:type"] ?? ""
-            if type == "PQ", let valStr = attributeDict["value"], let dVal = Double(valStr) {
+            if (type == "PQ" || type == "REAL" || type == "INT"), let valStr = attributeDict["value"], let dVal = Double(valStr) {
                 let unit = attributeDict["unit"] ?? "1"
                 currentObsValue = FHIRQuantity(value: dVal, unit: unit, code: unit)
             } else if type == "ST" || type == "TX" {
