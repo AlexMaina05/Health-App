@@ -1,4 +1,4 @@
-﻿import SwiftUI
+import SwiftUI
 import SwiftData
 import Charts
 import RosettaHealthCore
@@ -9,7 +9,6 @@ public struct ClinicalDashboardView: View {
     
     @Query private var allDocuments: [VaultDocument]
     
-    // Filtriamo i documenti del paziente
     private var patientDocuments: [VaultDocument] {
         allDocuments.filter { $0.fiscalCode == fiscalCode }.sorted { $0.documentDate < $1.documentDate }
     }
@@ -18,81 +17,92 @@ public struct ClinicalDashboardView: View {
         self.fiscalCode = fiscalCode
     }
     
-    // Estrae una specifica misurazione (es. LOINC code) da un documento
-    private func extractMetric(from document: VaultDocument, loincCode: String, keywords: [String] = []) -> Double? {
-        guard let data = document.fhirBundleJSON,
-              let bundle = try? JSONDecoder().decode(FHIRBundle.self, from: data) else { return nil }
-        
-        for entry in bundle.entry {
-            if case .observation(let obs) = entry.resource {
-                let hasCode = obs.code.coding.contains { $0.code == loincCode }
-                
-                // Mappatura ontologica fallback per codici ospedalieri regionali (FSE)
-                let display = (obs.code.text ?? obs.code.coding.first?.display ?? "").lowercased()
-                let hasKeyword = keywords.contains { display.contains($0.lowercased()) }
-                
-                if (hasCode || hasKeyword), let value = obs.valueQuantity?.value {
-                    return value
-                }
-            }
-        }
-        return nil
-    }
-    
-    // Generiamo i dati per i grafici
     private struct ChartDataPoint: Identifiable {
         let id = UUID()
         let date: Date
         let value: Double
     }
     
-    private func getTrend(loincCode: String, keywords: [String] = []) -> [ChartDataPoint] {
-        patientDocuments.compactMap { doc in
-            if let val = extractMetric(from: doc, loincCode: loincCode, keywords: keywords) {
-                return ChartDataPoint(date: doc.documentDate, value: val)
+    private var dynamicTrends: [(title: String, unit: String, data: [ChartDataPoint])] {
+        var groups: [String: (title: String, unit: String, data: [ChartDataPoint])] = [:]
+        
+        for doc in patientDocuments {
+            guard let data = doc.fhirBundleJSON,
+                  let bundle = try? JSONDecoder().decode(FHIRBundle.self, from: data) else { continue }
+            
+            for entry in bundle.entry {
+                if case .observation(let obs) = entry.resource, let qty = obs.valueQuantity {
+                    let code = obs.code.coding.first?.code ?? "unknown"
+                    let rawDisplay = obs.code.text ?? obs.code.coding.first?.display ?? "Misurazione"
+                    
+                    var cleanTitle = rawDisplay
+                        .replacingOccurrences(of: " - sangue", with: "", options: .caseInsensitive)
+                        .replacingOccurrences(of: "Catalogo Unico SOLE - ", with: "")
+                    
+                    // Pulizia base per titolo
+                    if let firstDash = cleanTitle.firstIndex(of: "-") {
+                        cleanTitle = String(cleanTitle[..<firstDash]).trimmingCharacters(in: .whitespaces)
+                    }
+                    
+                    let point = ChartDataPoint(date: doc.documentDate, value: qty.value)
+                    
+                    if groups[code] != nil {
+                        // Evita duplicati nella stessa data (es. stesso referto caricato due volte)
+                        if !groups[code]!.data.contains(where: { Calendar.current.isDate($0.date, inSameDayAs: doc.documentDate) }) {
+                            groups[code]!.data.append(point)
+                        }
+                    } else {
+                        groups[code] = (title: cleanTitle.capitalized, unit: qty.unit, data: [point])
+                    }
+                }
             }
-            return nil
         }
+        
+        return groups.values
+            .filter { !$0.data.isEmpty }
+            .sorted { 
+                if $0.data.count != $1.data.count { return $0.data.count > $1.data.count }
+                return $0.title < $1.title 
+            }
     }
     
     public var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
-                Text("Trend Clinici")
+            LazyVStack(spacing: 24) {
+                Text("Trend Clinici Dinamici")
                     .font(.title2)
                     .fontWeight(.bold)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
                 
-                // Emoglobina Glicata (LOINC 4548-4)
-                let hba1cTrend = getTrend(loincCode: "4548-4", keywords: ["glicata", "hba1c"])
-                if !hba1cTrend.isEmpty {
-                    metricChart(title: "Emoglobina Glicata (HbA1c)", data: hba1cTrend, color: .purple, unit: "%")
-                }
+                let trends = dynamicTrends
                 
-                // Colesterolo Totale (LOINC 2093-3)
-                let cholTrend = getTrend(loincCode: "2093-3", keywords: ["colesterolo"])
-                if !cholTrend.isEmpty {
-                    metricChart(title: "Colesterolo Totale", data: cholTrend, color: .orange, unit: "mg/dL")
-                }
-                
-                // Glicemia a digiuno (LOINC 14771-0)
-                let glucoseTrend = getTrend(loincCode: "14771-0", keywords: ["glicemia", "glucosio"])
-                if !glucoseTrend.isEmpty {
-                    metricChart(title: "Glicemia a digiuno", data: glucoseTrend, color: .blue, unit: "mg/dL")
-                }
-                
-                if hba1cTrend.isEmpty && cholTrend.isEmpty && glucoseTrend.isEmpty {
+                if trends.isEmpty {
                     ContentUnavailableView(
                         "Dati Insufficienti",
                         systemImage: "chart.xyaxis.line",
-                        description: Text("Nessun parametro clinico tracciabile nei referti di questo paziente.")
+                        description: Text("Nessun parametro clinico quantitativo tracciabile nei referti.")
                     )
+                } else {
+                    // Limito a 100 per sicurezza prestazioni, anche se LazyVStack gestisce bene
+                    ForEach(Array(trends.enumerated()), id: \.offset) { index, trend in
+                        metricChart(
+                            title: trend.title,
+                            data: trend.data,
+                            color: chartColor(for: index),
+                            unit: trend.unit
+                        )
+                    }
                 }
             }
             .padding(.vertical)
         }
         .background(Color(uiColor: .systemGroupedBackground))
+    }
+    
+    private func chartColor(for index: Int) -> Color {
+        let colors: [Color] = [.purple, .blue, .orange, .green, .pink, .teal, .indigo, .mint, .cyan]
+        return colors[index % colors.count]
     }
     
     @ViewBuilder
@@ -130,7 +140,7 @@ public struct ClinicalDashboardView: View {
             }
             .frame(height: 200)
             .chartScrollableAxes(.horizontal)
-            .chartXVisibleDomain(length: 3600 * 24 * 180) // 6 mesi visibili di default
+            .chartXVisibleDomain(length: 3600 * 24 * 365) // 1 anno visibile di default
         }
         .padding()
         .background(Color(uiColor: .secondarySystemGroupedBackground))
