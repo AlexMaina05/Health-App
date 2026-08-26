@@ -136,6 +136,16 @@ struct VaultDocumentDetailView: View {
                     }
                     
                     if let bundle = fhirBundle {
+                        let composition = bundle.entry.compactMap { if case .composition(let c) = $0.resource { return c } else { return nil } }.first
+                        if let narrative = composition?.text?.div, !narrative.isEmpty {
+                            Section("Referto Testuale") {
+                                Text(narrative)
+                                    .font(.body)
+                                    .foregroundStyle(.primary)
+                                    .padding(.vertical, 4)
+                            }
+                        }
+                        
                         Section("Misurazioni Cliniche (Referto)") {
                             let observations = bundle.entry.compactMap { if case .observation(let o) = $0.resource { return o } else { return nil } }
                             if observations.isEmpty {

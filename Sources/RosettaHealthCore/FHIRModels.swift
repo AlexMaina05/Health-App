@@ -113,6 +113,16 @@ public struct FHIRPatient: Codable {
     }
 }
 
+
+public struct FHIRNarrative: Codable {
+    public let status: String
+    public let div: String
+    public init(status: String = "generated", div: String) {
+        self.status = status
+        self.div = div
+    }
+}
+
 public struct FHIRComposition: Codable {
     public let resourceType: String = "Composition"
     public let id: String
@@ -122,8 +132,9 @@ public struct FHIRComposition: Codable {
     public let subject: FHIRReference
     public let date: String
     public let title: String
+    public let text: FHIRNarrative?
     
-    public init(id: String, type: FHIRCodeableConcept, subject: FHIRReference, date: String, title: String) {
+    public init(id: String, type: FHIRCodeableConcept, subject: FHIRReference, date: String, title: String, text: FHIRNarrative? = nil) {
         self.id = id
         // Iniezione Profilo IPS
         self.meta = FHIRMeta(profile: ["http://hl7.org/fhir/uv/ips/StructureDefinition/Composition-uv-ips"])
@@ -131,6 +142,7 @@ public struct FHIRComposition: Codable {
         self.subject = subject
         self.date = date
         self.title = title
+        self.text = text
     }
 }
 

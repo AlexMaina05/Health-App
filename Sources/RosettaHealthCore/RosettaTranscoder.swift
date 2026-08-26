@@ -25,10 +25,13 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
     private var currentRangeHigh: Double?
     private var currentElementData: String = ""
     private var currentRangeUnit: String = ""
+    private var currentRangeUnit: String = ""
     private var currentRangeText: String = ""
+    private var accumulatedNarrativeText: String = ""
     
     public func transcode(cdaData: Data) throws -> FHIRBundle {
         self.observations.removeAll()
+        self.accumulatedNarrativeText = ""
         self.currentPath.removeAll()
         self.isClinicalDocument = false
         self.parseError = nil
@@ -169,6 +172,14 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
     
     public func parser(_ parser: XMLParser, foundCharacters string: String) {
         currentElementData += string
+        
+        // Se siamo dentro una sezione narrativa, accumuliamo il testo pulito
+        if currentPath.contains("section") && currentPath.contains("text") {
+            let cleanStr = string.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !cleanStr.isEmpty {
+                accumulatedNarrativeText += cleanStr + " "
+            }
+        }
     }
 
     public func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
