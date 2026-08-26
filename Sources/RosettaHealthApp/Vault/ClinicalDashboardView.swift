@@ -19,14 +19,19 @@ public struct ClinicalDashboardView: View {
     }
     
     // Estrae una specifica misurazione (es. LOINC code) da un documento
-    private func extractMetric(from document: VaultDocument, loincCode: String) -> Double? {
+    private func extractMetric(from document: VaultDocument, loincCode: String, keywords: [String] = []) -> Double? {
         guard let data = document.fhirBundleJSON,
               let bundle = try? JSONDecoder().decode(FHIRBundle.self, from: data) else { return nil }
         
         for entry in bundle.entry {
             if case .observation(let obs) = entry.resource {
                 let hasCode = obs.code.coding.contains { $0.code == loincCode }
-                if hasCode, let value = obs.valueQuantity?.value {
+                
+                // Mappatura ontologica fallback per codici ospedalieri regionali (FSE)
+                let display = (obs.code.text ?? obs.code.coding.first?.display ?? "").lowercased()
+                let hasKeyword = keywords.contains { display.contains($0.lowercased()) }
+                
+                if (hasCode || hasKeyword), let value = obs.valueQuantity?.value {
                     return value
                 }
             }
@@ -41,9 +46,9 @@ public struct ClinicalDashboardView: View {
         let value: Double
     }
     
-    private func getTrend(loincCode: String) -> [ChartDataPoint] {
+    private func getTrend(loincCode: String, keywords: [String] = []) -> [ChartDataPoint] {
         patientDocuments.compactMap { doc in
-            if let val = extractMetric(from: doc, loincCode: loincCode) {
+            if let val = extractMetric(from: doc, loincCode: loincCode, keywords: keywords) {
                 return ChartDataPoint(date: doc.documentDate, value: val)
             }
             return nil
@@ -60,19 +65,19 @@ public struct ClinicalDashboardView: View {
                     .padding(.horizontal)
                 
                 // Emoglobina Glicata (LOINC 4548-4)
-                let hba1cTrend = getTrend(loincCode: "4548-4")
+                let hba1cTrend = getTrend(loincCode: "4548-4", keywords: ["glicata", "hba1c"])
                 if !hba1cTrend.isEmpty {
                     metricChart(title: "Emoglobina Glicata (HbA1c)", data: hba1cTrend, color: .purple, unit: "%")
                 }
                 
                 // Colesterolo Totale (LOINC 2093-3)
-                let cholTrend = getTrend(loincCode: "2093-3")
+                let cholTrend = getTrend(loincCode: "2093-3", keywords: ["colesterolo"])
                 if !cholTrend.isEmpty {
                     metricChart(title: "Colesterolo Totale", data: cholTrend, color: .orange, unit: "mg/dL")
                 }
                 
                 // Glicemia a digiuno (LOINC 14771-0)
-                let glucoseTrend = getTrend(loincCode: "14771-0")
+                let glucoseTrend = getTrend(loincCode: "14771-0", keywords: ["glicemia", "glucosio"])
                 if !glucoseTrend.isEmpty {
                     metricChart(title: "Glicemia a digiuno", data: glucoseTrend, color: .blue, unit: "mg/dL")
                 }
