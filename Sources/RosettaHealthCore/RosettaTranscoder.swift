@@ -38,6 +38,7 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
         
         self.parser = XMLParser(data: cdaData)
         self.parser?.delegate = self
+        self.parser?.shouldResolveExternalEntities = false // Protezione critica contro attacchi XXE e XML Bombs (Billion Laughs)
         
         guard let p = self.parser, p.parse() else {
             if let err = parseError {
