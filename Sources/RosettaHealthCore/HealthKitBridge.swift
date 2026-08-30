@@ -152,6 +152,20 @@ public final class HealthKitBridge {
         public let skippedObservations: [FHIRObservation]
     }
     
+    private func isValidPhysiologically(value: Double, for type: HKQuantityTypeIdentifier) -> Bool {
+        switch type {
+        case .bloodGlucose: return value >= 10 && value <= 1500 // mg/dL estremi compatibili con la vita
+        case .bloodPressureSystolic: return value >= 40 && value <= 350
+        case .bloodPressureDiastolic: return value >= 20 && value <= 200
+        case .heartRate: return value >= 10 && value <= 300
+        case .oxygenSaturation: return value >= 0.1 && value <= 1.0 // 10% - 100%
+        case .bodyTemperature: return value >= 20 && value <= 45 // Celsius
+        case .bodyMass: return value >= 1 && value <= 600 // kg
+        case .height: return value >= 0.3 && value <= 3.0 // metri
+        default: return true // Pass-through per altri
+        }
+    }
+
     public func ingestQuantities(fhirBundle: FHIRBundle) async throws -> IngestionResult {
         var samplesToSave: [HKQuantitySample] = []
         var skipped: [FHIRObservation] = []
