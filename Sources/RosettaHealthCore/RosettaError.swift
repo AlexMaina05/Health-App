@@ -14,6 +14,7 @@ public enum RosettaError: LocalizedError, CustomNSError {
     // HealthKit Errors
     case healthKitUnavailable
     case authorizationDenied
+    case healthKitDatabaseLocked
     case missingSampleType(identifier: String)
     case ingestionFailed(underlying: String)
     case cfMismatch(expected: String, found: String)
@@ -34,6 +35,7 @@ public enum RosettaError: LocalizedError, CustomNSError {
         case .emptyObservations: return "Nessuna misurazione rilevata."
         case .healthKitUnavailable: return "HealthKit non disponibile."
         case .authorizationDenied: return "Accesso ad Apple Salute negato."
+        case .healthKitDatabaseLocked: return "Dispositivo bloccato."
         case .missingSampleType: return "Parametro non mappabile su Salute."
         case .ingestionFailed: return "Fallimento salvataggio su Salute."
         case .cfMismatch: return "Referto appartenente a terzi."
@@ -54,6 +56,7 @@ public enum RosettaError: LocalizedError, CustomNSError {
         case .emptyObservations: return "Il referto è composto esclusivamente da testo narrativo senza dati clinici strutturati."
         case .healthKitUnavailable: return "Il dispositivo corrente non supporta l'integrazione con Apple Salute."
         case .authorizationDenied: return "L'utente non ha concesso le autorizzazioni di lettura/scrittura per i dati clinici."
+        case .healthKitDatabaseLocked: return "Il database di Apple Salute è crittografato a livello hardware finché l'iPhone non viene sbloccato."
         case .missingSampleType(let identifier): return "Il parametro clinico (\(identifier)) non possiede un corrispettivo in HKQuantityType."
         case .ingestionFailed(let underlying): return "HealthKit ha rifiutato il salvataggio dei campioni: \(underlying)."
         case .cfMismatch(let expected, let found): return "Il Codice Fiscale estratto (***) non corrisponde a quello del proprietario configurato (\(expected))."
@@ -74,6 +77,8 @@ public enum RosettaError: LocalizedError, CustomNSError {
             return "Assicurati di eseguire l'app su un iPhone con l'App Salute installata (non compatibile con iPad senza iPadOS 17)."
         case .authorizationDenied:
             return "Apri l'app Salute > Condivisione > App > RosettaHealth e abilita tutti i permessi."
+        case .healthKitDatabaseLocked:
+            return "L'importazione è stata sospesa. Verrà ripresa automaticamente quando sbloccherai il telefono col FaceID."
         case .missingSampleType, .ingestionFailed:
             return "Controlla lo stato dei sensori e dei permessi."
         case .cfMismatch:
