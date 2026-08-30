@@ -220,7 +220,7 @@ struct PDFViewerWrapper: View {
         .onAppear {
             let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).pdf")
             do {
-                try pdfData.write(to: url)
+                try pdfData.write(to: url, options: [.atomic, .completeFileProtection])
                 tempURL = url
             } catch {
                 activeError = "Impossibile caricare il PDF: \(error.localizedDescription)"
