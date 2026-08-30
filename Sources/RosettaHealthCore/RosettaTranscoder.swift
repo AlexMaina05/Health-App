@@ -108,6 +108,10 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
             isClinicalDocument = true
         }
         
+        if elementName == "id" && currentPath == ["ClinicalDocument", "id"] {
+            documentId = attributeDict["extension"] ?? attributeDict["root"]
+        }
+        
         // 1. Patient Fiscal Code
         if elementName == "id" && currentPath.contains("patientRole") {
             if attributeDict["root"] == "2.16.840.1.113883.2.9.4.3.2" || attributeDict["root"] == "2.16.840.1.113883.2.9.2.130.4.1" {
