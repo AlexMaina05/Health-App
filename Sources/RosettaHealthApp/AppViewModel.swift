@@ -40,7 +40,23 @@ public final class AppViewModel {
     
     public let appGroupIdentifier = "group.dev.alexmaina.rosettahealth"
     
-    public init() {}
+    public init() {
+        cleanupTemporaryFiles()
+    }
+    
+    /// Garbage Collector attivo: svuota la cartella temporanea all'avvio dell'app 
+    /// per prevenire accumulo di spazio in caso di crash precedenti.
+    private func cleanupTemporaryFiles() {
+        let tempDir = FileManager.default.temporaryDirectory
+        do {
+            let files = try FileManager.default.contentsOfDirectory(at: tempDir, includingPropertiesForKeys: nil)
+            for file in files where file.pathExtension == "pdf" {
+                try FileManager.default.removeItem(at: file)
+            }
+        } catch {
+            print("Errore durante la pulizia dei file temporanei: \(error)")
+        }
+    }
     
     public func requestHealthKitAccess(modelContext: ModelContext? = nil) async {
         do {
