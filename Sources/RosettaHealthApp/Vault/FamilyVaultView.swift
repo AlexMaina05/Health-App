@@ -223,7 +223,8 @@ struct PDFViewerWrapper: View {
                 try pdfData.write(to: url)
                 tempURL = url
             } catch {
-                print("Errore scrittura PDF: \(error)")
+                activeError = "Impossibile caricare il PDF: \(error.localizedDescription)"
+                showError = true
             }
         }
     }
