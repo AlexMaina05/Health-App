@@ -23,47 +23,57 @@ public struct ClinicalDashboardView: View {
         let value: Double
     }
     
-    private var dynamicTrends: [(title: String, unit: String, data: [ChartDataPoint])] {
-        var groups: [String: (title: String, unit: String, data: [ChartDataPoint])] = [:]
-        
-        for doc in patientDocuments {
-            guard let data = doc.fhirBundleJSON,
-                  let bundle = try? JSONDecoder().decode(FHIRBundle.self, from: data) else { continue }
+    @State private var dynamicTrends: [(title: String, unit: String, data: [ChartDataPoint])] = []
+    @State private var isLoading = true
+    
+    private func loadTrends() async {
+        // Esegue il parsing JSON pesantemente CPU-bound su un background thread
+        let docs = patientDocuments
+        let trends = await Task.detached { () -> [(title: String, unit: String, data: [ChartDataPoint])] in
+            var groups: [String: (title: String, unit: String, data: [ChartDataPoint])] = [:]
             
-            for entry in bundle.entry {
-                if case .observation(let obs) = entry.resource, let qty = obs.valueQuantity {
-                    let code = obs.code.coding.first?.code ?? "unknown"
-                    let rawDisplay = obs.code.text ?? obs.code.coding.first?.display ?? "Misurazione"
-                    
-                    var cleanTitle = rawDisplay
-                        .replacingOccurrences(of: " - sangue", with: "", options: .caseInsensitive)
-                        .replacingOccurrences(of: "Catalogo Unico SOLE - ", with: "")
-                    
-                    // Pulizia base per titolo
-                    if let firstDash = cleanTitle.firstIndex(of: "-") {
-                        cleanTitle = String(cleanTitle[..<firstDash]).trimmingCharacters(in: .whitespaces)
-                    }
-                    
-                    let point = ChartDataPoint(date: doc.documentDate, value: qty.value)
-                    
-                    if groups[code] != nil {
-                        // Evita duplicati nella stessa data (es. stesso referto caricato due volte)
-                        if !groups[code]!.data.contains(where: { Calendar.current.isDate($0.date, inSameDayAs: doc.documentDate) }) {
-                            groups[code]!.data.append(point)
+            for doc in docs {
+                guard let data = doc.fhirBundleJSON,
+                      let bundle = try? JSONDecoder().decode(FHIRBundle.self, from: data) else { continue }
+                
+                for entry in bundle.entry {
+                    if case .observation(let obs) = entry.resource, let qty = obs.valueQuantity {
+                        let code = obs.code.coding.first?.code ?? "unknown"
+                        let rawDisplay = obs.code.text ?? obs.code.coding.first?.display ?? "Misurazione"
+                        
+                        var cleanTitle = rawDisplay
+                            .replacingOccurrences(of: " - sangue", with: "", options: .caseInsensitive)
+                            .replacingOccurrences(of: "Catalogo Unico SOLE - ", with: "")
+                        
+                        if let firstDash = cleanTitle.firstIndex(of: "-") {
+                            cleanTitle = String(cleanTitle[..<firstDash]).trimmingCharacters(in: .whitespaces)
                         }
-                    } else {
-                        groups[code] = (title: cleanTitle.capitalized, unit: qty.unit, data: [point])
+                        
+                        let point = ChartDataPoint(date: doc.documentDate, value: qty.value)
+                        
+                        if groups[code] != nil {
+                            if !groups[code]!.data.contains(where: { Calendar.current.isDate($0.date, inSameDayAs: doc.documentDate) }) {
+                                groups[code]!.data.append(point)
+                            }
+                        } else {
+                            groups[code] = (title: cleanTitle.capitalized, unit: qty.unit, data: [point])
+                        }
                     }
                 }
             }
-        }
+            
+            return groups.values
+                .filter { !$0.data.isEmpty }
+                .sorted { 
+                    if $0.data.count != $1.data.count { return $0.data.count > $1.data.count }
+                    return $0.title < $1.title 
+                }
+        }.value
         
-        return groups.values
-            .filter { !$0.data.isEmpty }
-            .sorted { 
-                if $0.data.count != $1.data.count { return $0.data.count > $1.data.count }
-                return $0.title < $1.title 
-            }
+        await MainActor.run {
+            self.dynamicTrends = trends
+            self.isLoading = false
+        }
     }
     
     public var body: some View {
@@ -77,7 +87,10 @@ public struct ClinicalDashboardView: View {
                 
                 let trends = dynamicTrends
                 
-                if trends.isEmpty {
+                if isLoading {
+                    ProgressView("Analisi serie storiche...")
+                        .padding()
+                } else if trends.isEmpty {
                     ContentUnavailableView(
                         "Dati Insufficienti",
                         systemImage: "chart.xyaxis.line",
@@ -98,6 +111,9 @@ public struct ClinicalDashboardView: View {
             .padding(.vertical)
         }
         .background(Color(uiColor: .systemGroupedBackground))
+        .task {
+            await loadTrends()
+        }
     }
     
     private func chartColor(for index: Int) -> Color {
