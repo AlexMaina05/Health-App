@@ -59,7 +59,51 @@
       background: rgba(255,255,255,0.1); transform: translateY(-4px);
     }
     
+
+    .waitlist-form {
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .flex-form {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      max-width: 500px;
+      justify-content: center;
+    }
+    .email-input {
+      flex: 1;
+      padding: 16px 24px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05);
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .email-input::placeholder {
+      color: #64748b;
+    }
+    .email-input:focus {
+      border-color: #a855f7;
+      background: rgba(255,255,255,0.1);
+    }
+    .submit-btn {
+      cursor: pointer;
+    }
+    .waitlist-subtext {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-bottom: 0;
+      max-width: 100%;
+    }
+    
     @media (max-width: 768px) {
+      .flex-form { flex-direction: column; }
       h1 { font-size: 3rem; }
       p { font-size: 1.25rem; }
       .buttons { flex-direction: column; width: 100%; gap: 16px; }
@@ -72,9 +116,17 @@
   <div class="container">
     <h1 class="text-gradient drop-shadow-lg">⚕️ RosettaHealth</h1>
     <p>Il ponte Zero-Cloud tra il tuo Fascicolo Sanitario e Apple Salute. Inietta i referti PDF nell'ecosistema Apple in totale sicurezza.</p>
-    <div class="buttons">
-      <a href="README" class="btn btn-primary">Inizia a Leggere</a>
-      <a href="https://github.com/AlexMaina05/Health-App" class="btn btn-secondary glass">Guarda su GitHub</a>
+    
+    <div class="waitlist-form">
+      <form action="mailto:tuamail@esempio.com" method="POST" enctype="text/plain" class="flex-form">
+        <input type="email" name="email" placeholder="Inserisci la tua email..." required class="email-input glass">
+        <button type="submit" class="btn btn-primary submit-btn">Mettiti in Lista d'Attesa</button>
+      </form>
+      <p class="waitlist-subtext">Nessun server, nessuna AI nel Cloud. Lascia la mail per accedere alla closed-beta di iOS/Android.</p>
+    </div>
+    
+    <div class="buttons" style="margin-top: 32px;">
+      <a href="README" class="btn btn-secondary glass" style="font-size: 0.9rem; padding: 10px 24px;">Leggi la Documentazione (Tesi)</a>
     </div>
   </div>
 </body>
