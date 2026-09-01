@@ -17,7 +17,8 @@ targets:
       properties:
         UIBackgroundModes: [fetch, processing]
         NSHealthUpdateUsageDescription: "L'app necessita di scrivere i tuoi referti su Apple Salute."
-        NSHealthShareUsageDescription: "L'app legge i tuoi dati vitali per mostrarti i trend."
+        NSHealthShareUsageDescription: "L'app necessita di accedere ad Apple Salute per la sincronizzazione."
+        NSFaceIDUsageDescription: "L'app utilizza Face ID per sbloccare in sicurezza il tuo Vault Medico."
 
   RosettaHealthCore:
     type: framework
