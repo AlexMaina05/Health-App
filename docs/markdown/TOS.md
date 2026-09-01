@@ -26,3 +26,6 @@ L'utente accetta di utilizzare l'App esclusivamente per scopi personali e non co
 
 ## 5. Diritto Applicabile
 Questi Termini sono regolati dalla legislazione italiana ed europea.
+
+## 6. Contatti
+Per comunicazioni legali, scrivi a: **maina@alexmaina.dev**

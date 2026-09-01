@@ -27,4 +27,4 @@ RosettaHealth non incorpora SDK di tracciamento o analytics di terze parti (es. 
 Qualora venissero introdotte modifiche a questa politica, verrai informato tramite un aggiornamento dell'App. Continuando a utilizzare l'App, accetti la policy aggiornata.
 
 ## 6. Contatti
-In caso di dubbi sulla privacy o sull'elaborazione dei dati, puoi contattare lo sviluppatore all'indirizzo email associato all'App Store.
+In caso di dubbi sulla privacy o sull'elaborazione dei dati, puoi contattare lo sviluppatore all'indirizzo email: **maina@alexmaina.dev**.
