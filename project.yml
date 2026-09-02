@@ -1,6 +1,6 @@
 ﻿name: RosettaHealth
 options:
-  xcodeVersion: 15.0
+  xcodeVersion: "16.0"
   bundleIdPrefix: dev.alexmaina
   deploymentTarget:
     iOS: 17.0
