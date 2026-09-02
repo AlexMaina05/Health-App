@@ -110,7 +110,7 @@ public final class HealthKitBridge {
             "RosettaHealth_Engine": "v3.0 (HL7 CDA -> FHIR R4)"
         ]
         
-        let cdaSample = HKCDADocumentSample(
+        let cdaSample = try HKCDADocumentSample(
             data: xmlData,
             start: documentDate,
             end: documentDate,
