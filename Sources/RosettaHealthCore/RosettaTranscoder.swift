@@ -219,18 +219,17 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
     
     public func parser(_ parser: XMLParser, foundCharacters string: String) {
         currentElementData += string
-        
-        // Se siamo dentro una sezione narrativa, accumuliamo il testo pulito
-        if currentPath.contains("section") && currentPath.contains("text") {
-            let cleanStr = string.trimmingCharacters(in: .whitespacesAndNewlines)
-            if !cleanStr.isEmpty {
-                accumulatedNarrativeText += cleanStr + " "
-            }
-        }
     }
 
     public func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         let trimmed = currentElementData.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if elementName == "text" && currentPath.contains("section") {
+            let cleanStr = currentElementData.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }.joined(separator: " ")
+            if !cleanStr.isEmpty {
+                accumulatedNarrativeText += cleanStr + " "
+            }
+        }
         
         if elementName == "title" && currentPath == ["ClinicalDocument", "title"] {
             if !trimmed.isEmpty {
