@@ -1,4 +1,4 @@
-﻿import XCTest
+import XCTest
 import HealthKit
 @testable import RosettaHealthCore
 
@@ -6,7 +6,7 @@ final class ClinicalDecisionSupportTests: XCTestCase {
     
     func testCholesterolWorseningTrend() async throws {
         let cds = ClinicalDecisionSupport()
-        let unit = HKUnit(from: "mg/dL")
+        let unit = HKUnit.gramUnit(with: .milli)
         let type = HKQuantityType.quantityType(forIdentifier: .dietaryCholesterol)!
         
         let now = Date()
@@ -23,7 +23,7 @@ final class ClinicalDecisionSupportTests: XCTestCase {
     
     func testCholesterolImprovingTrend() async throws {
         let cds = ClinicalDecisionSupport()
-        let unit = HKUnit(from: "mg/dL")
+        let unit = HKUnit.gramUnit(with: .milli)
         let type = HKQuantityType.quantityType(forIdentifier: .dietaryCholesterol)!
         
         let now = Date()

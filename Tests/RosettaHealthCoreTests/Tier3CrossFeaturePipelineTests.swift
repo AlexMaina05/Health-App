@@ -1,4 +1,4 @@
-﻿import XCTest
+import XCTest
 import HealthKit
 import SwiftData
 @testable import RosettaHealthCore
@@ -37,7 +37,7 @@ final class Tier3CrossFeaturePipelineTests: XCTestCase {
         
         var generatedSamples: [HKQuantitySample] = []
         let type = HKQuantityType.quantityType(forIdentifier: .dietaryCholesterol)!
-        let unit = HKUnit(from: "mg/dL")
+        let unit = HKUnit.gramUnit(with: .milli)
         let formatter = ISO8601DateFormatter()
         
         for (i, val) in cholesterolValues.enumerated() {
@@ -112,7 +112,7 @@ final class Tier3CrossFeaturePipelineTests: XCTestCase {
     func testTranscoderHealthKitCDSStableImprovingNoAlert() async throws {
         // 3 improving cholesterol records (220 -> 190 -> 160 mg/dL)
         let type = HKQuantityType.quantityType(forIdentifier: .dietaryCholesterol)!
-        let unit = HKUnit(from: "mg/dL")
+        let unit = HKUnit.gramUnit(with: .milli)
         let now = Date()
         
         let s1 = HKQuantitySample(type: type, quantity: HKQuantity(unit: unit, doubleValue: 220), start: now.addingTimeInterval(-86400 * 60), end: now.addingTimeInterval(-86400 * 60))
