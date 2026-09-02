@@ -39,3 +39,10 @@ targets:
         NSExtension:
           NSExtensionPointIdentifier: com.apple.share-services
           NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShareViewController"
+  RosettaHealthCoreTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: 17.0
+    sources: [Tests/RosettaHealthCoreTests]
+    dependencies:
+      - target: RosettaHealthCore
