@@ -52,6 +52,6 @@ final class ValidationGateTests: XCTestCase {
             valueQuantity: qty,
             valueString: valueString
         )
-        return FHIRBundle(timestamp: ISO8601DateFormatter().string(from: Date()), entry: [FHIRBundleEntry(resource: .observation(obs))])
+        return FHIRBundle(timestamp: ISO8601DateFormatter().string(from: Date()), entry: [FHIRBundleEntry(fullUrl: nil, resource: .observation(obs))])
     }
 }

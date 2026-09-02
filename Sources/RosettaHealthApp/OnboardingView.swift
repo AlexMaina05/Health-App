@@ -1,6 +1,6 @@
 import SwiftUI
 
-@available(iOS 26.0, *)
+@available(iOS 17.0, *)
 public struct OnboardingView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
     @AppStorage("ownerFirstName") private var firstName: String = ""
@@ -185,7 +185,6 @@ Privacy Assoluta", description: "Nessun server. I tuoi dati medici sensibili ven
                             fiscalCode = ""
                         }
                     }
-                }
                 }
                 
                 Section(header: Text("Privacy e GDPR (Art. 9)")) {

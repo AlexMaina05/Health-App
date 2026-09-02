@@ -22,7 +22,12 @@ final class RosettaTranscoderTests2: XCTestCase {
         let transcoder = RosettaTranscoder()
         let bundle = try transcoder.transcode(cdaData: xmlString.data(using: .utf8)!)
         
-        guard case .observation(let obs) = bundle.entry.first?.resource else {
+        let obsEntries = bundle.entry.compactMap { entry -> FHIRObservation? in
+            if case .observation(let obs) = entry.resource { return obs }
+            return nil
+        }
+        
+        guard let obs = obsEntries.first else {
             XCTFail("Nessuna osservazione trovata")
             return
         }

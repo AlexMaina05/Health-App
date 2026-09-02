@@ -1,8 +1,8 @@
-﻿import SwiftUI
+import SwiftUI
 import SwiftData
 import RosettaHealthCore
 
-@available(iOS 26.0, *)
+@available(iOS 17.0, *)
 public struct FamilyVaultView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \VaultDocument.dateAdded, order: .reverse) private var documents: [VaultDocument]
@@ -95,7 +95,7 @@ public struct FamilyVaultView: View {
     }
 }
 
-@available(iOS 26.0, *)
+@available(iOS 17.0, *)
 struct VaultDocumentDetailView: View {
     let document: VaultDocument
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -199,12 +199,14 @@ struct VaultDocumentDetailView: View {
     }
 }
 
-@available(iOS 26.0, *)
+@available(iOS 17.0, *)
 struct PDFViewerWrapper: View {
     let pdfData: Data
     let searchTerms: [String]
     
     @State private var tempURL: URL?
+    @State private var activeError: String? = nil
+    @State private var showError: Bool = false
     
     var body: some View {
         Group {
@@ -217,6 +219,11 @@ struct PDFViewerWrapper: View {
                 ProgressView()
             }
         }
+        .alert("Errore", isPresented: $showError, actions: {
+            Button("OK", role: .cancel) {}
+        }, message: {
+            Text(activeError ?? "Errore sconosciuto.")
+        })
         .onAppear {
             let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).pdf")
             do {

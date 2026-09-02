@@ -4,7 +4,7 @@ import SwiftData
 /// Modello Dati Locale (SwiftData) per l'archiviazione dei referti familiari.
 /// I dati sono memorizzati esclusivamente in locale sul dispositivo (Zero-Cloud)
 /// e crittografati nativamente dal Secure Enclave tramite passcode iOS.
-@available(iOS 26.0, *)
+@available(iOS 17.0, *)
 @Model
 public final class VaultDocument {
     public var id: UUID = UUID()

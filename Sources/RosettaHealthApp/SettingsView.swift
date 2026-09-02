@@ -1,4 +1,4 @@
-﻿import SwiftUI
+import SwiftUI
 import TipKit
 
 public struct SettingsView: View {
@@ -19,7 +19,6 @@ public struct SettingsView: View {
     @AppStorage("isCDSActive") private var isCDSActive: Bool = true
     @AppStorage("isOCREnabled") private var isOCREnabled: Bool = true
     @AppStorage("isProUnlocked") private var isProUnlocked: Bool = false
-    @AppStorage("isCloudSyncEnabled") private var isCloudSyncEnabled: Bool = false
     @AppStorage("appThemeName") private var appThemeName: String = AppTheme.blue.rawValue
     @State private var showProAlert = false
     
@@ -93,6 +92,31 @@ public struct SettingsView: View {
                         }
                     }
                     .tint(.green)
+                }
+
+                Section(header: Text("Privacy e Sovranità dei Dati (GDPR Art. 9)"), footer: Text("RosettaHealth rispetta la politica Zero-Cloud. L'elaborazione e la memorizzazione avvengono al 100% in locale su questo dispositivo in conformità all'Articolo 9 del GDPR. Nessun dato clinico o biometrico viene trasmesso su cloud o server esterni.")) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "lock.shield.fill")
+                            .font(.title2)
+                            .foregroundStyle(.green)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Archiviazione 100% On-Device")
+                                .font(.headline)
+                            Text("Database SwiftData locale isolato")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Text("Zero-Cloud")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.green.opacity(0.15))
+                            .foregroundStyle(.green)
+                            .clipShape(Capsule())
+                    }
+                    .padding(.vertical, 2)
                 }
                 
                 Section {

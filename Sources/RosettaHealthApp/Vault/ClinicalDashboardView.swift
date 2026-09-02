@@ -3,7 +3,7 @@ import SwiftData
 import Charts
 import RosettaHealthCore
 
-@available(iOS 26.0, *)
+@available(iOS 17.0, *)
 public struct ClinicalDashboardView: View {
     let fiscalCode: String
     
@@ -17,24 +17,29 @@ public struct ClinicalDashboardView: View {
         self.fiscalCode = fiscalCode
     }
     
-    private struct ChartDataPoint: Identifiable {
+    private struct ChartDataPoint: Identifiable, Sendable {
         let id = UUID()
         let date: Date
         let value: Double
+    }
+    
+    private struct DocumentDTO: Sendable {
+        let documentDate: Date
+        let fhirBundleJSON: Data
     }
     
     @State private var dynamicTrends: [(title: String, unit: String, data: [ChartDataPoint])] = []
     @State private var isLoading = true
     
     private func loadTrends() async {
-        // Esegue il parsing JSON pesantemente CPU-bound su un background thread
-        let docs = patientDocuments
+        // Map @Model documents to Sendable DTOs on MainActor before passing to detached background task
+        let docDTOs = patientDocuments.map { DocumentDTO(documentDate: $0.documentDate, fhirBundleJSON: $0.fhirBundleJSON) }
+        
         let trends = await Task.detached { () -> [(title: String, unit: String, data: [ChartDataPoint])] in
             var groups: [String: (title: String, unit: String, data: [ChartDataPoint])] = [:]
             
-            for doc in docs {
-                guard let data = doc.fhirBundleJSON,
-                      let bundle = try? JSONDecoder().decode(FHIRBundle.self, from: data) else { continue }
+            for doc in docDTOs {
+                guard let bundle = try? JSONDecoder().decode(FHIRBundle.self, from: doc.fhirBundleJSON) else { continue }
                 
                 for entry in bundle.entry {
                     if case .observation(let obs) = entry.resource, let qty = obs.valueQuantity {
@@ -70,10 +75,8 @@ public struct ClinicalDashboardView: View {
                 }
         }.value
         
-        await MainActor.run {
-            self.dynamicTrends = trends
-            self.isLoading = false
-        }
+        self.dynamicTrends = trends
+        self.isLoading = false
     }
     
     public var body: some View {

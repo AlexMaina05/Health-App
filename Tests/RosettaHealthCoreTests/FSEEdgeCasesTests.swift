@@ -30,8 +30,22 @@ final class FSEEdgeCasesTests: XCTestCase {
         """
         let transcoder = RosettaTranscoder()
         let bundle = try transcoder.transcode(cdaData: xmlString.data(using: .utf8)!)
-        XCTAssertEqual(bundle.entry.count, 0)
-        // Check if composition exists with text... currently our models don't expose narrative text easily in tests, but we assume no crash.
+        
+        let compositionEntries = bundle.entry.compactMap { entry -> FHIRComposition? in
+            if case .composition(let c) = entry.resource { return c }
+            return nil
+        }
+        
+        XCTAssertFalse(compositionEntries.isEmpty, "Composition resource should be present")
+        let composition = compositionEntries.first
+        XCTAssertNotNil(composition?.text, "Narrative text should be populated in composition")
+        XCTAssertTrue(composition?.text?.div.contains("Il paziente presenta un quadro clinico stabile.") == true, "Narrative text div content mismatch")
+        
+        let observationEntries = bundle.entry.compactMap { entry -> FHIRObservation? in
+            if case .observation(let o) = entry.resource { return o }
+            return nil
+        }
+        XCTAssertEqual(observationEntries.count, 0, "No observations should be generated from narrative only XML")
     }
     
     func testBillionLaughsXXEMitigation() {

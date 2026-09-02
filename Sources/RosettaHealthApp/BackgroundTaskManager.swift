@@ -4,7 +4,7 @@ import OSLog
 import UserNotifications
 import SwiftData
 
-@available(iOS 26.0, *)
+@available(iOS 17.0, *)
 public final class BackgroundTaskManager {
     public static let shared = BackgroundTaskManager()
     private let logger = Logger(subsystem: "dev.alexmaina.rosettahealth", category: "BGTasks")
@@ -57,11 +57,9 @@ public final class BackgroundTaskManager {
     private func processPendingFilesHeadless(modelContainer: ModelContainer?) async {
         let viewModel = AppViewModel()
         
-        var contextToUse = modelContext
-        if contextToUse == nil {
-            if let container = try? ModelContainer(for: VaultDocument.self) {
-                contextToUse = container.mainContext
-            }
+        var containerToUse = modelContainer
+        if containerToUse == nil {
+            containerToUse = try? ModelContainer(for: VaultDocument.self)
         }
         
         // Silenzia l'output visivo e lancia il parsing

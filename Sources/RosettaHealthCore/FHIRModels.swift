@@ -28,10 +28,10 @@ public struct FHIRBundle: Codable {
 }
 
 public struct FHIRBundleEntry: Codable {
-    public let fullUrl: String
+    public let fullUrl: String?
     public let resource: FHIRResource
     
-    public init(fullUrl: String, resource: FHIRResource) {
+    public init(fullUrl: String? = nil, resource: FHIRResource) {
         self.fullUrl = fullUrl
         self.resource = resource
     }

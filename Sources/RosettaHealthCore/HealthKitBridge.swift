@@ -2,6 +2,7 @@ import Foundation
 import HealthKit
 
 public final class HealthKitBridge {
+    public static let shared = HealthKitBridge()
     private let healthStore = HKHealthStore()
     
     // MARK: - Mappa Estesa LOINC -> HKQuantityTypeIdentifier & Unità Target
@@ -24,7 +25,7 @@ public final class HealthKitBridge {
         "2345-7":  MetricTarget(type: .bloodGlucose, defaultUnit: HKUnit(from: "mg/dL")), 
         "2339-0":  MetricTarget(type: .bloodGlucose, defaultUnit: HKUnit(from: "mg/dL")),
         
-                // MARK: - Profilo Lipidico
+        // MARK: - Profilo Lipidico
         "2093-3":  MetricTarget(type: .dietaryCholesterol, defaultUnit: HKUnit.gramUnit(with: .milli)), 
         "2571-8":  MetricTarget(type: .dietaryFatTotal, defaultUnit: HKUnit.gramUnit(with: .milli)),
         
@@ -32,6 +33,8 @@ public final class HealthKitBridge {
         "8867-4":  MetricTarget(type: .heartRate, defaultUnit: HKUnit.count().unitDivided(by: .minute())), 
         "8480-6":  MetricTarget(type: .bloodPressureSystolic, defaultUnit: HKUnit.millimeterOfMercury()),  
         "8462-4":  MetricTarget(type: .bloodPressureDiastolic, defaultUnit: HKUnit.millimeterOfMercury()), 
+        "85354-9": MetricTarget(type: .bloodPressureSystolic, defaultUnit: HKUnit.millimeterOfMercury()),
+        "55284-4": MetricTarget(type: .bloodPressureSystolic, defaultUnit: HKUnit.millimeterOfMercury()),
         "2708-6":  MetricTarget(type: .oxygenSaturation, defaultUnit: HKUnit.percent()),                    
         "59408-5": MetricTarget(type: .oxygenSaturation, defaultUnit: HKUnit.percent()),                    
         "9279-1":  MetricTarget(type: .respiratoryRate, defaultUnit: HKUnit.count().unitDivided(by: .minute())), 
@@ -97,8 +100,9 @@ public final class HealthKitBridge {
             throw RosettaError.missingSampleType(identifier: "HKDocumentTypeIdentifier.CDA")
         }
         
+        let docHash = String(format: "%08x", xmlData.hashValue)
         let metadata: [String: Any] = [
-            HKMetadataKeySyncIdentifier: "FSE-\(UUID().uuidString)",
+            HKMetadataKeySyncIdentifier: "FSE-DOC-\(docHash)",
             HKMetadataKeySyncVersion: 1,
             "DocumentTitle": title,
             "RosettaHealth_Signature": "✅ Transcodificato e validato in locale (Zero-Cloud)",
@@ -150,6 +154,11 @@ public final class HealthKitBridge {
     public struct IngestionResult {
         public let savedCount: Int
         public let skippedObservations: [FHIRObservation]
+        
+        public init(savedCount: Int, skippedObservations: [FHIRObservation]) {
+            self.savedCount = savedCount
+            self.skippedObservations = skippedObservations
+        }
     }
     
     private func isValidPhysiologically(value: Double, for type: HKQuantityTypeIdentifier) -> Bool {
@@ -158,7 +167,7 @@ public final class HealthKitBridge {
         case .bloodPressureSystolic: return value >= 40 && value <= 350
         case .bloodPressureDiastolic: return value >= 20 && value <= 200
         case .heartRate: return value >= 10 && value <= 300
-        case .oxygenSaturation: return value >= 0.1 && value <= 1.0 // 10% - 100%
+        case .oxygenSaturation: return (value >= 0.1 && value <= 1.0) || (value >= 10.0 && value <= 100.0) // 10% - 100%
         case .bodyTemperature: return value >= 20 && value <= 45 // Celsius
         case .bodyMass: return value >= 1 && value <= 600 // kg
         case .height: return value >= 0.3 && value <= 3.0 // metri
@@ -206,8 +215,15 @@ public final class HealthKitBridge {
                     continue
                 }
                 
+                // Physiological Validation Gate
+                guard isValidPhysiologically(value: rawValue, for: metric.type) else {
+                    skipped.append(obs)
+                    continue
+                }
+                
                 let date = isoFormatter.date(from: obs.effectiveDateTime) ?? Date()
                 let hkQuantity = HKQuantity(unit: metric.defaultUnit, doubleValue: rawValue)
+                let syncIdentifier = "FSE-\(fhirBundle.id)-\(coding.code)-\(obs.effectiveDateTime)"
                 let sample = HKQuantitySample(
                     type: sampleType,
                     quantity: hkQuantity,
@@ -215,7 +231,8 @@ public final class HealthKitBridge {
                     end: date,
                     metadata: [
                         HKMetadataKeyExternalUUID: obs.id,
-                        HKMetadataKeySyncIdentifier: "FSE-\(obs.id)",
+                        HKMetadataKeySyncIdentifier: syncIdentifier,
+                        HKMetadataKeySyncVersion: 1,
                         "LOINC_CODE": coding.code,
                         "ORIGINAL_NAME": obs.code.text ?? coding.display ?? "Esame",
                         "RosettaHealth_Signature": "✅ Estratto e validato in locale da FSE",
@@ -247,11 +264,17 @@ public final class HealthKitBridge {
                 continue
             }
             
+            guard isValidPhysiologically(value: metric.value, for: metricTarget.type) else {
+                continue
+            }
+            
             let hkQuantity = HKQuantity(unit: metricTarget.defaultUnit, doubleValue: metric.value)
+            let syncIdentifier = "OCR-VISION-\(metric.loincCode)-\(Int(metric.date.timeIntervalSince1970))-\(metric.value)"
             
             // Provenance metadata come richiesto per Graceful Degradation
             let metadata: [String: Any] = [
-                HKMetadataKeySyncIdentifier: "OCR-VISION-\(UUID().uuidString)",
+                HKMetadataKeySyncIdentifier: syncIdentifier,
+                HKMetadataKeySyncVersion: 1,
                 HKMetadataKeyExternalUUID: UUID().uuidString,
                 "EXTRACTION_METHOD": "APPLE_VISION_OCR_FALLBACK",
                 "CONFIDENCE_LEVEL": "HEURISTIC_REGEX",

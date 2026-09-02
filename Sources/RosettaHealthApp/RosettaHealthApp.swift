@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-@available(iOS 26.0, *)
+@available(iOS 17.0, *)
 struct RosettaHealthApp: App {
     
     init() {

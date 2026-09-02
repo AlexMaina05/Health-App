@@ -3,7 +3,7 @@ import CoreSpotlight
 import UniformTypeIdentifiers
 import UIKit
 
-@available(iOS 26.0, *)
+@available(iOS 17.0, *)
 public final class SpotlightManager {
     public static let shared = SpotlightManager()
     private let domainIdentifier = "com.rosettahealth.vault"

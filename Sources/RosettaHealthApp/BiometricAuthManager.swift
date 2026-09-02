@@ -3,7 +3,8 @@ import LocalAuthentication
 import SwiftUI
 import Observation
 
-@available(iOS 26.0, *)
+@available(iOS 17.0, *)
+@Observable
 @MainActor
 public final class BiometricAuthManager {
     public var isUnlocked: Bool = false

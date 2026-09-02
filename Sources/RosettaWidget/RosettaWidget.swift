@@ -69,7 +69,7 @@ struct RosettaWidgetMain: Widget {
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            if #available(iOS 26.0, *) {
+            if #available(iOS 17.0, *) {
                 RosettaWidgetEntryView(entry: entry)
                     .containerBackground(.fill.tertiary, for: .widget)
             } else {

@@ -29,19 +29,16 @@ public actor ClinicalDecisionSupport {
         let chronologicalSamples = samples.sorted(by: { $0.startDate < $1.startDate })
         let recent = Array(chronologicalSamples.suffix(3))
         
-        let unit = recent[0].quantity.is(compatibleWith: HKUnit(from: "mg/dL")) ? HKUnit(from: "mg/dL") : HKUnit.count()
-        let v1 = recent[0].quantity.doubleValue(for: unit)
-        let v2 = recent[1].quantity.doubleValue(for: unit)
-        let v3 = recent[2].quantity.doubleValue(for: unit)
-        
-        // Sostituisco con una conversione sicura senza hardcode delle unità per l'analisi numerica relativa
-        // Prendiamo il valore numerico "puro" a prescindere dall'unità (assumendo che i 3 campioni abbiano la stessa unità)
-        // Poiché non possiamo estrarre un double senza conoscere l'unità esatta, useremo un'euristica:
-        // Se è Colesterolo, usiamo mg/dL.
-        
         switch type {
         case .dietaryCholesterol: // Colesterolo
-            let unit = HKUnit(from: "mg/dL")
+            let unit: HKUnit
+            if recent[0].quantity.is(compatibleWith: HKUnit.gramUnit(with: .milli)) {
+                unit = HKUnit.gramUnit(with: .milli)
+            } else if recent[0].quantity.is(compatibleWith: HKUnit(from: "mg/dL")) {
+                unit = HKUnit(from: "mg/dL")
+            } else {
+                unit = HKUnit.gramUnit(with: .milli)
+            }
             let s1 = recent[0].quantity.doubleValue(for: unit)
             let s2 = recent[1].quantity.doubleValue(for: unit)
             let s3 = recent[2].quantity.doubleValue(for: unit)

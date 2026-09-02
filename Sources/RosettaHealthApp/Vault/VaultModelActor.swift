@@ -1,9 +1,9 @@
-﻿import Foundation
+import Foundation
 import SwiftData
 import CoreSpotlight
 import OSLog
 
-@available(iOS 26.0, *)
+@available(iOS 17.0, *)
 @ModelActor
 public actor VaultModelActor {
     

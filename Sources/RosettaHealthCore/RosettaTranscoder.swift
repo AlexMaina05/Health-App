@@ -6,6 +6,7 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
     
     // Extracted Entities
     private var isClinicalDocument = false
+    private var documentId: String?
     private var patientFiscalCode: String?
     private var patientFamilyName: String?
     private var patientGivenName: String?
@@ -25,7 +26,6 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
     private var currentRangeHigh: Double?
     private var currentElementData: String = ""
     private var currentRangeUnit: String = ""
-    private var currentRangeUnit: String = ""
     private var currentRangeText: String = ""
     private var accumulatedNarrativeText: String = ""
     
@@ -34,6 +34,12 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
         self.accumulatedNarrativeText = ""
         self.currentPath.removeAll()
         self.isClinicalDocument = false
+        self.documentId = nil
+        self.patientFiscalCode = nil
+        self.patientFamilyName = nil
+        self.patientGivenName = nil
+        self.docTitle = "Referto Sanitario FSE"
+        self.docDate = ""
         self.parseError = nil
         
         self.parser = XMLParser(data: cdaData)
@@ -70,12 +76,16 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
             birthDate: nil
         )
         
+        let narrativeText = accumulatedNarrativeText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let compositionNarrative: FHIRNarrative? = narrativeText.isEmpty ? nil : FHIRNarrative(div: narrativeText)
+        
         let compositionResource = FHIRComposition(
             id: UUID().uuidString,
             type: FHIRCodeableConcept(coding: [FHIRCoding(system: "http://loinc.org", code: "11502-2", display: "Laboratory report")]),
             subject: FHIRReference(reference: "Patient/\(patientId)", display: "\(patientFamilyName ?? "") \(patientGivenName ?? "")".trimmingCharacters(in: .whitespaces)),
             date: docDate.isEmpty ? ISO8601DateFormatter().string(from: Date()) : docDate,
-            title: docTitle
+            title: docTitle,
+            text: compositionNarrative
         )
         
         var bundleEntries: [FHIRBundleEntry] = [
@@ -88,7 +98,7 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
         }
         
         return FHIRBundle(
-            id: UUID().uuidString,
+            id: documentId ?? UUID().uuidString,
             type: "document",
             timestamp: ISO8601DateFormatter().string(from: Date()),
             entry: bundleEntries
@@ -147,6 +157,8 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
                 let display = attributeDict["displayName"]
                 let systemUri = mapOIDToSystem(codeSystem)
                 currentObsCode = FHIRCodeableConcept(coding: [FHIRCoding(system: systemUri, code: code, display: display)], text: display)
+            } else if let display = attributeDict["displayName"] {
+                currentObsCode = FHIRCodeableConcept(coding: [], text: display)
             }
         }
         
@@ -156,21 +168,51 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
         
         if elementName == "value" {
             let type = attributeDict["xsi:type"] ?? ""
-            if (type == "PQ" || type == "REAL" || type == "INT"), let valStr = attributeDict["value"], let dVal = Double(valStr) {
-                let unit = attributeDict["unit"] ?? "1"
-                currentObsValue = FHIRQuantity(value: dVal, unit: unit, code: unit)
+            if type == "PQ" || type == "REAL" || type == "INT" {
+                if let rawValStr = attributeDict["value"] {
+                    let normalized = rawValStr.replacingOccurrences(of: ",", with: ".")
+                    let unit = attributeDict["unit"] ?? ""
+                    if let dVal = Double(normalized) {
+                        let quantityUnit = unit.isEmpty ? "1" : unit
+                        currentObsValue = FHIRQuantity(value: dVal, unit: quantityUnit, code: quantityUnit)
+                    } else {
+                        // Fallback: preserve unparsed measurement string with unit
+                        if !unit.isEmpty && unit != "1" {
+                            currentObsValueString = "\(rawValStr) \(unit)"
+                        } else {
+                            currentObsValueString = rawValStr
+                        }
+                    }
+                }
             } else if type == "ST" || type == "TX" {
                 currentObsValueString = attributeDict["value"]
+            } else {
+                if let rawValStr = attributeDict["value"] {
+                    let normalized = rawValStr.replacingOccurrences(of: ",", with: ".")
+                    let unit = attributeDict["unit"] ?? ""
+                    if let dVal = Double(normalized) {
+                        let quantityUnit = unit.isEmpty ? "1" : unit
+                        currentObsValue = FHIRQuantity(value: dVal, unit: quantityUnit, code: quantityUnit)
+                    } else {
+                        if !unit.isEmpty && unit != "1" {
+                            currentObsValueString = "\(rawValStr) \(unit)"
+                        } else {
+                            currentObsValueString = rawValStr
+                        }
+                    }
+                }
             }
         }
         
-        if elementName == "low", let valStr = attributeDict["value"], let dVal = Double(valStr) {
-            currentRangeLow = dVal
+        if elementName == "low", let valStr = attributeDict["value"] {
+            let normalized = valStr.replacingOccurrences(of: ",", with: ".")
+            currentRangeLow = Double(normalized)
             currentRangeUnit = attributeDict["unit"] ?? ""
         }
         
-        if elementName == "high", let valStr = attributeDict["value"], let dVal = Double(valStr) {
-            currentRangeHigh = dVal
+        if elementName == "high", let valStr = attributeDict["value"] {
+            let normalized = valStr.replacingOccurrences(of: ",", with: ".")
+            currentRangeHigh = Double(normalized)
             if currentRangeUnit.isEmpty { currentRangeUnit = attributeDict["unit"] ?? "" }
         }
     }
@@ -196,28 +238,52 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
             patientGivenName = trimmed
         }
         
-        if elementName == "observation" && insideObservation {
-            if let code = currentObsCode {
-                var ranges: [FHIRReferenceRange]? = nil
-                if currentRangeLow != nil || currentRangeHigh != nil || !currentRangeText.isEmpty {
-                    let lowQty = currentRangeLow.map { FHIRSimpleQuantity(value: $0, unit: currentRangeUnit) }
-                    let highQty = currentRangeHigh.map { FHIRSimpleQuantity(value: $0, unit: currentRangeUnit) }
-                    ranges = [FHIRReferenceRange(low: lowQty, high: highQty, text: currentRangeText.isEmpty ? nil : currentRangeText)]
-                }
-                
-                let obs = FHIRObservation(
-                    id: UUID().uuidString,
-                    status: "final",
-                    category: [FHIRCodeableConcept(coding: [FHIRCoding(system: "http://terminology.hl7.org/CodeSystem/observation-category", code: "laboratory", display: "Laboratory")])],
-                    code: code,
-                    subject: FHIRReference(reference: "Patient/patient-fse-subject", display: "Intestatario FSE"),
-                    effectiveDateTime: currentObsEffectiveTime.isEmpty ? ISO8601DateFormatter().string(from: Date()) : currentObsEffectiveTime,
-                    valueQuantity: currentObsValue,
-                    valueString: currentObsValueString,
-                    referenceRange: ranges
-                )
-                observations.append(obs)
+        if elementName == "originalText" && currentPath.contains("code") {
+            if currentObsCode == nil && !trimmed.isEmpty {
+                currentObsCode = FHIRCodeableConcept(coding: [], text: trimmed)
             }
+        }
+        
+        if elementName == "code" && insideObservation {
+            if currentObsCode == nil && !trimmed.isEmpty {
+                currentObsCode = FHIRCodeableConcept(coding: [], text: trimmed)
+            }
+        }
+        
+        if elementName == "value" && insideObservation {
+            if currentObsValue == nil && (currentObsValueString == nil || currentObsValueString?.isEmpty == true) {
+                if !trimmed.isEmpty {
+                    let normalized = trimmed.replacingOccurrences(of: ",", with: ".")
+                    if let dVal = Double(normalized) {
+                        currentObsValue = FHIRQuantity(value: dVal, unit: "1", code: "1")
+                    } else {
+                        currentObsValueString = trimmed
+                    }
+                }
+            }
+        }
+        
+        if elementName == "observation" && insideObservation {
+            let code = currentObsCode ?? FHIRCodeableConcept(coding: [], text: "Observation")
+            var ranges: [FHIRReferenceRange]? = nil
+            if currentRangeLow != nil || currentRangeHigh != nil || !currentRangeText.isEmpty {
+                let lowQty = currentRangeLow.map { FHIRSimpleQuantity(value: $0, unit: currentRangeUnit) }
+                let highQty = currentRangeHigh.map { FHIRSimpleQuantity(value: $0, unit: currentRangeUnit) }
+                ranges = [FHIRReferenceRange(low: lowQty, high: highQty, text: currentRangeText.isEmpty ? nil : currentRangeText)]
+            }
+            
+            let obs = FHIRObservation(
+                id: UUID().uuidString,
+                status: "final",
+                category: [FHIRCodeableConcept(coding: [FHIRCoding(system: "http://terminology.hl7.org/CodeSystem/observation-category", code: "laboratory", display: "Laboratory")])],
+                code: code,
+                subject: FHIRReference(reference: "Patient/patient-fse-subject", display: "Intestatario FSE"),
+                effectiveDateTime: currentObsEffectiveTime.isEmpty ? (docDate.isEmpty ? ISO8601DateFormatter().string(from: Date()) : docDate) : currentObsEffectiveTime,
+                valueQuantity: currentObsValue,
+                valueString: currentObsValueString,
+                referenceRange: ranges
+            )
+            observations.append(obs)
             insideObservation = false
         }
         

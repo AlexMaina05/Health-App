@@ -9,6 +9,8 @@ import UserNotifications
 import SwiftData
 import UIKit
 
+@available(iOS 17.0, *)
+@Observable
 @MainActor
 public final class AppViewModel {
     public var isProcessing = false
@@ -29,10 +31,9 @@ public final class AppViewModel {
     }
     
     public var ownerFiscalCode: String { KeychainManager.shared.read(key: "ownerFiscalCode") ?? "" }
-    @AppStorage("isCDSActive") public var isCDSActive: Bool = true
-    @AppStorage("isOCREnabled") public var isOCREnabled: Bool = true
-    @AppStorage("isProUnlocked") public var isProUnlocked: Bool = false
-    @AppStorage("isCloudSyncEnabled") public var isCloudSyncEnabled: Bool = false
+    @ObservationIgnored @AppStorage("isCDSActive") public var isCDSActive: Bool = true
+    @ObservationIgnored @AppStorage("isOCREnabled") public var isOCREnabled: Bool = true
+    @ObservationIgnored @AppStorage("isProUnlocked") public var isProUnlocked: Bool = false
     
     private let transcoder = RosettaTranscoder()
     private let healthBridge = HealthKitBridge()
@@ -54,11 +55,11 @@ public final class AppViewModel {
                 try FileManager.default.removeItem(at: file)
             }
         } catch {
-            print("Errore durante la pulizia dei file temporanei: \(error)")
+            logger.error("Errore durante la pulizia dei file temporanei: \(error.localizedDescription)")
         }
     }
     
-    public func requestHealthKitAccess(modelContext: ModelContext? = nil) async {
+    public func requestHealthKitAccess(modelContainer: ModelContainer? = nil, modelContext: ModelContext? = nil) async {
         do {
             try await healthBridge.requestAuthorization()
             self.isHealthKitAuthorized = true
@@ -67,7 +68,8 @@ public final class AppViewModel {
             let center = UNUserNotificationCenter.current()
             _ = try? await center.requestAuthorization(options: [.alert, .sound, .badge])
             
-            await syncPendingDocuments(modelContext: modelContext)
+            let contextToUse = modelContext ?? modelContainer?.mainContext
+            await syncPendingDocuments(modelContainer: modelContainer, modelContext: contextToUse)
         } catch let error as RosettaError {
             self.activeError = error
         } catch {
@@ -75,7 +77,7 @@ public final class AppViewModel {
         }
     }
     
-    public func syncPendingDocuments(modelContext: ModelContext? = nil) async {
+    public func syncPendingDocuments(modelContainer: ModelContainer? = nil, modelContext: ModelContext? = nil) async {
         guard let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupIdentifier) else { return }
         
         do {
@@ -91,10 +93,10 @@ public final class AppViewModel {
             var newSkipped: [String] = []
             var newObservations: [FHIRObservation] = []
             var wasOCRUsed = false
+            let contextToUse = modelContext ?? modelContainer?.mainContext
             
             // 1. Processa XML Nativi
             for file in pendingXMLs {
-                defer { try? FileManager.default.removeItem(at: file) }
                 if let xmlData = try? Data(contentsOf: file) {
                     do {
                         if #available(iOS 16.1, *) { self.updateLiveActivity(status: "Transcodifica in FHIR...", progress: 0) }
@@ -116,7 +118,7 @@ public final class AppViewModel {
                         if !patientInfo.isOwner && !isProUnlocked {
                             throw RosettaError.familyVaultRequiresPro
                         }
-                        if let context = modelContext {
+                        if let context = contextToUse {
                             let encoder = JSONEncoder()
                             if let jsonData = try? encoder.encode(bundle) {
                                 let title = bundle.type == "document" ? "Fascicolo Sanitario" : "Referto"
@@ -129,19 +131,20 @@ public final class AppViewModel {
                                     pdfData: try? Data(contentsOf: file)
                                 )
                                 context.insert(vaultDoc)
-                                  if #available(iOS 26.0, *) {
-                                      SpotlightManager.shared.indexDocument(
-                                          id: vaultDoc.id.uuidString,
-                                          title: vaultDoc.documentTitle,
-                                          patientName: vaultDoc.patientName,
-                                          date: vaultDoc.dateAdded
-                                      )
-                                  }
+                                if #available(iOS 17.0, *) {
+                                    SpotlightManager.shared.indexDocument(
+                                        id: vaultDoc.id.uuidString,
+                                        title: vaultDoc.documentTitle,
+                                        patientName: vaultDoc.patientName,
+                                        date: vaultDoc.dateAdded
+                                    )
+                                }
                                 try? context.save()
                             }
                         }
                         
-                        // defer fa già il lavoro
+                        // Rimuovi il file solo se processato con successo (evita data loss su errore)
+                        try? FileManager.default.removeItem(at: file)
                     } catch let err as RosettaError {
                         self.activeError = err
                     } catch {
@@ -174,10 +177,10 @@ public final class AppViewModel {
                         newObservations.append(contentsOf: mappedObs)
                         // OCR Ingestion disattivata per GDPR
                     }
+                    try? FileManager.default.removeItem(at: file)
                 } catch {
                     logger.error("Errore fallback OCR su file condiviso: \(error.localizedDescription)")
                 }
-                try? FileManager.default.removeItem(at: file)
             }
             
             // Aggiornamento finale cumulativo della UI
@@ -185,6 +188,8 @@ public final class AppViewModel {
             if !newSkipped.isEmpty { self.skippedCodes.append(contentsOf: Array(Set(newSkipped))) }
             if !newObservations.isEmpty { self.extractedObservations.append(contentsOf: newObservations) }
             if wasOCRUsed { self.isOCRExtracted = true }
+            
+            updateWidgetData()
             
             self.isSuccess = true
             self.feedbackTrigger += 1
@@ -200,7 +205,7 @@ public final class AppViewModel {
         }
     }
     
-    public func processPDF(url: URL, modelContainer: Any? = nil) async {
+    public func processPDF(url: URL, modelContainer: ModelContainer? = nil, modelContext: ModelContext? = nil) async {
         isProcessing = true
         activeError = nil
         skippedCodes.removeAll()
@@ -214,7 +219,7 @@ public final class AppViewModel {
             switch extractionResult {
             case .cdaXML(let xmlData):
                 if #available(iOS 16.1, *) { self.updateLiveActivity(status: "Transcodifica in FHIR...", progress: 0) }
-                        let bundle = try transcoder.transcode(cdaData: xmlData)
+                let bundle = try transcoder.transcode(cdaData: xmlData)
                 let patientInfo = extractPatientInfo(bundle: bundle)
                 
                 self.currentBundle = bundle
@@ -230,11 +235,12 @@ public final class AppViewModel {
                     guard isProUnlocked else {
                         throw RosettaError.familyVaultRequiresPro
                     }
-                    logger.notice("Referto di \(patientInfo.name) deviato verso il Family Vault (Bypass HealthKit).")
+                    logger.notice("Referto di \(patientInfo.name, privacy: .private) deviato verso il Family Vault (Bypass HealthKit).")
                 }
                 
                 // 2. Salvataggio nel Vault Locale (SwiftData)
-                if let context = modelContext as? SwiftData.ModelContext {
+                let contextToUse = modelContext ?? modelContainer?.mainContext
+                if let context = contextToUse {
                     let encoder = JSONEncoder()
                     if let jsonData = try? encoder.encode(bundle) {
                         let title = bundle.type == "document" ? "Fascicolo Sanitario" : "Referto"
@@ -247,14 +253,14 @@ public final class AppViewModel {
                             pdfData: try? Data(contentsOf: url)
                         )
                         context.insert(vaultDoc)
-                                  if #available(iOS 26.0, *) {
-                                      SpotlightManager.shared.indexDocument(
-                                          id: vaultDoc.id.uuidString,
-                                          title: vaultDoc.documentTitle,
-                                          patientName: vaultDoc.patientName,
-                                          date: vaultDoc.dateAdded
-                                      )
-                                  }
+                        if #available(iOS 17.0, *) {
+                            SpotlightManager.shared.indexDocument(
+                                id: vaultDoc.id.uuidString,
+                                title: vaultDoc.documentTitle,
+                                patientName: vaultDoc.patientName,
+                                date: vaultDoc.dateAdded
+                            )
+                        }
                         try? context.save()
                     }
                 }
@@ -285,7 +291,7 @@ public final class AppViewModel {
             self.activeError = .malformedXML(underlying: error.localizedDescription)
         }
         
-        // Aggiorna i dati per il Widget (Lock Screen / Home Screen)
+        // Aggiorna i dati per il Widget (Lock Screen / Home Screen) e Watch
         updateWidgetData()
         
         // Esegue il modulo di Medicina Preventiva (CDS) in background
@@ -316,12 +322,12 @@ public final class AppViewModel {
                     await cds.dispatchNotification(for: alert)
                 }
             } catch {
-                logger.error("Errore CDS per \\(hkType.rawValue): \\(error.localizedDescription)")
+                logger.error("Errore CDS per \(hkType.rawValue): \(error.localizedDescription)")
             }
         }
     }
     
-    /// Salva un riepilogo delle metriche correnti nell'App Group per essere lette dal Widget
+    /// Salva un riepilogo delle metriche correnti nell'App Group per essere lette dal Widget e Watch
     private func updateWidgetData() {
         guard let sharedDefaults = UserDefaults(suiteName: "group.dev.alexmaina.rosettahealth") else { return }
         
@@ -329,15 +335,25 @@ public final class AppViewModel {
         if let highlight = extractedObservations.first {
             let metricName = highlight.code.text ?? highlight.code.coding.first?.display ?? "Parametro"
             var metricValue = "N/D"
+            var doubleValue: Double = 0.0
+            var unitStr = ""
             if let qty = highlight.valueQuantity {
                 metricValue = "\(qty.value) \(qty.unit)"
+                doubleValue = qty.value
+                unitStr = qty.unit
             } else if let str = highlight.valueString {
                 metricValue = str
             }
             
+            // Widget Keys
             sharedDefaults.set(metricName, forKey: "widget_metricName")
             sharedDefaults.set(metricValue, forKey: "widget_metricValue")
             sharedDefaults.set(Date().timeIntervalSince1970, forKey: "widget_lastUpdate")
+            
+            // WatchOS Keys (D19)
+            sharedDefaults.set(doubleValue, forKey: "latestMetricValue")
+            sharedDefaults.set(metricName, forKey: "latestMetricName")
+            sharedDefaults.set(unitStr, forKey: "latestMetricUnit")
         }
     }
         
@@ -409,6 +425,7 @@ public final class AppViewModel {
         
         return (isOwner, pName, pCF)
     }
+    
     @available(iOS 16.1, *)
     private func startLiveActivity(fileName: String) {
         guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }

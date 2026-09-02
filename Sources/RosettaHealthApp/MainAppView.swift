@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 import CoreSpotlight
 
-@available(iOS 26.0, *)
+@available(iOS 17.0, *)
 public struct MainAppView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
     @AppStorage("isBiometricLockEnabled") private var isBiometricLockEnabled: Bool = true
@@ -15,8 +15,7 @@ public struct MainAppView: View {
     private let container: ModelContainer
     
     public init() {
-        let syncEnabled = UserDefaults.standard.bool(forKey: "isCloudSyncEnabled")
-        let config = ModelConfiguration(cloudKitDatabase: syncEnabled ? .automatic : .none)
+        let config = ModelConfiguration(cloudKitDatabase: .none)
         do {
             container = try ModelContainer(for: VaultDocument.self, configurations: config)
         } catch {
