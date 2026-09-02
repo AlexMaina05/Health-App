@@ -49,7 +49,7 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
         guard let p = self.parser, p.parse() else {
             if let err = parseError {
                 throw RosettaError.malformedXML(underlying: err.localizedDescription)
-            } else if let pErr = p.parserError {
+            } else if let pErr = self.parser?.parserError {
                 throw RosettaError.malformedXML(underlying: pErr.localizedDescription)
             } else {
                 throw RosettaError.malformedXML(underlying: "Errore sconosciuto nel parsing SAX.")
