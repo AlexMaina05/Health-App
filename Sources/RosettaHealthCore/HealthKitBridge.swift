@@ -96,7 +96,7 @@ public final class HealthKitBridge {
     
     // MARK: - Ingestione Documento CDA (Referto Completo)
     public func ingestCDADocument(xmlData: Data, documentDate: Date = Date(), title: String = "Referto Sanitario FSE") async throws -> HKCDADocumentSample {
-        guard let documentType = cdaType else {
+        guard cdaType != nil else {
             throw RosettaError.missingSampleType(identifier: "HKDocumentTypeIdentifier.CDA")
         }
         

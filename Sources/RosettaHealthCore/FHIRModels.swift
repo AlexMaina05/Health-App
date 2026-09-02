@@ -8,7 +8,7 @@ public struct FHIRMeta: Codable {
 }
 
 public struct FHIRBundle: Codable {
-    public let resourceType: String = "Bundle"
+    public var resourceType: String = "Bundle"
     public let id: String
     public let meta: FHIRMeta?
     public let identifier: FHIRIdentifier?
@@ -66,7 +66,7 @@ public enum FHIRResource: Codable {
 }
 
 public struct FHIRObservation: Codable {
-    public let resourceType: String = "Observation"
+    public var resourceType: String = "Observation"
     public let id: String
     public let meta: FHIRMeta?
     public let status: String
@@ -94,7 +94,7 @@ public struct FHIRObservation: Codable {
 }
 
 public struct FHIRPatient: Codable {
-    public let resourceType: String = "Patient"
+    public var resourceType: String = "Patient"
     public let id: String
     public let meta: FHIRMeta?
     public let identifier: [FHIRIdentifier]?
@@ -124,10 +124,10 @@ public struct FHIRNarrative: Codable {
 }
 
 public struct FHIRComposition: Codable {
-    public let resourceType: String = "Composition"
+    public var resourceType: String = "Composition"
     public let id: String
     public let meta: FHIRMeta?
-    public let status: String = "final"
+    public var status: String = "final"
     public let type: FHIRCodeableConcept
     public let subject: FHIRReference
     public let date: String

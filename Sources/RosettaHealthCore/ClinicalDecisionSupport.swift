@@ -107,7 +107,7 @@ public actor ClinicalDecisionSupport {
         
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil) // trigger nullo = immediata
         UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
+            if error != nil {
                 // Log rimosso per privacy e pulizia")
             }
         }

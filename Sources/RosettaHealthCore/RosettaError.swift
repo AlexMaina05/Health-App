@@ -59,7 +59,7 @@ public enum RosettaError: LocalizedError, CustomNSError {
         case .healthKitDatabaseLocked: return "Il database di Apple Salute è crittografato a livello hardware finché l'iPhone non viene sbloccato."
         case .missingSampleType(let identifier): return "Il parametro clinico (\(identifier)) non possiede un corrispettivo in HKQuantityType."
         case .ingestionFailed(let underlying): return "HealthKit ha rifiutato il salvataggio dei campioni: \(underlying)."
-        case .cfMismatch(let expected, let found): return "Il Codice Fiscale estratto (***) non corrisponde a quello del proprietario configurato (\(expected))."
+        case .cfMismatch(let expected, _): return "Il Codice Fiscale estratto (***) non corrisponde a quello del proprietario configurato (\(expected))."
         case .familyVaultRequiresPro: return "L'archiviazione di referti appartenenti a familiari o terzi (Family Vault) è una funzionalità esclusiva di RosettaHealth PRO."
         case .appGroupContainerUnavailable: return "La sandbox non è riuscita a risolvere il path del Security Application Group identifier."
         case .corruptedPendingFile(let fileName): return "Il file in coda \(fileName) non contiene un Bundle FHIR valido."
