@@ -171,5 +171,5 @@ Il motore di mappatura semantica trasla i codici identificativi (LOINC) presenti
 *Distribuito sotto licenza GNU General Public License v3.0 (GPLv3) con App Store Exception.*
 
 ## 📜 Note Legali
-- [Privacy Policy](https://alexmaina.dev/Health-App/docs/markdown/PRIVACY_POLICY.md)
-- [Termini di Servizio e Disclaimer Medico](https://alexmaina.dev/Health-App/docs/markdown/TOS.md)
+- [Privacy Policy](https://alexmaina.dev/Health-App/docs/PRIVACY_POLICY.md)
+- [Termini di Servizio e Disclaimer Medico](https://alexmaina.dev/Health-App/docs/TOS.md)
