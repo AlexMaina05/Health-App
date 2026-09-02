@@ -1,4 +1,4 @@
-﻿import XCTest
+import XCTest
 import HealthKit
 @testable import RosettaHealthCore
 
@@ -87,8 +87,10 @@ final class Tier2BoundaryCornerTests: XCTestCase {
         ]>
         <ClinicalDocument>&lol3;</ClinicalDocument>
         """
-        // shouldResolveExternalEntities = false prevents denial of service / memory explosion
-        XCTAssertNoThrow(try transcoder.transcode(cdaData: xxeAttackXML.data(using: .utf8)!))
+        // shouldResolveExternalEntities = false prevents denial of service / memory explosion by throwing an error
+        XCTAssertThrowsError(try transcoder.transcode(cdaData: xxeAttackXML.data(using: .utf8)!)) { error in
+            XCTAssertTrue(error is RosettaError)
+        }
     }
     
     // MARK: - 2. Exact Physiological Threshold Boundaries (Min/Max & Off-by-One)

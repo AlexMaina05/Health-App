@@ -232,6 +232,12 @@ public final class RosettaTranscoder: NSObject, XMLParserDelegate {
     public func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         let trimmed = currentElementData.trimmingCharacters(in: .whitespacesAndNewlines)
         
+        if elementName == "title" && currentPath == ["ClinicalDocument", "title"] {
+            if !trimmed.isEmpty {
+                docTitle = trimmed
+            }
+        }
+        
         if elementName == "family" && currentPath.contains("patient") {
             patientFamilyName = trimmed
         } else if elementName == "given" && currentPath.contains("patient") {
