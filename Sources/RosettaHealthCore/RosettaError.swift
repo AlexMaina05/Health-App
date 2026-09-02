@@ -83,6 +83,8 @@ public enum RosettaError: LocalizedError, CustomNSError {
             return "Controlla lo stato dei sensori e dei permessi."
         case .cfMismatch:
             return "Per evitare inquinamento di Apple Salute, il salvataggio automatico è stato bloccato."
+        case .familyVaultRequiresPro:
+            return "Abbonati a RosettaHealth PRO per sbloccare la gestione multi-paziente."
         case .appGroupContainerUnavailable, .corruptedPendingFile, .diskWriteFailed:
             return "Verifica che gli App Groups Entitlements siano configurati correttamente nel progetto Xcode."
         }
