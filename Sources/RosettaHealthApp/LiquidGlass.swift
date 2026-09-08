@@ -2,8 +2,11 @@ import SwiftUI
 
 public extension View {
     @ViewBuilder
-    func liquidGlass(cornerRadius: CGFloat = 16) -> some View {
-        self
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+    func liquidGlass(cornerRadius: CGFloat? = nil) -> some View {
+        if let radius = cornerRadius {
+            self.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: radius, style: .continuous))
+        } else {
+            self.background(.ultraThinMaterial, in: ContainerRelativeShape())
+        }
     }
 }
