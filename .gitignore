@@ -65,3 +65,7 @@ BUSINESS_PLAN.md
 cda.xml
 # Android Porting Documentation (Private)
 /android/
+
+# Ignore Android port folder (moved to separate repo)
+android/
+
