@@ -36,3 +36,26 @@ jobs:
           -scheme RosettaHealthCoreTests \
           -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.2'
 
+    - name: Build Unsigned App (for Sideloading)
+      run: |
+        xcodebuild -project RosettaHealth.xcodeproj \
+        -scheme RosettaHealthApp \
+        -configuration Release \
+        -sdk iphoneos \
+        CODE_SIGN_IDENTITY="" \
+        CODE_SIGNING_REQUIRED=NO \
+        CODE_SIGNING_ALLOWED=NO \
+        clean build \
+        CONFIGURATION_BUILD_DIR="$(pwd)/build"
+
+    - name: Create IPA Package
+      run: |
+        mkdir Payload
+        mv build/RosettaHealthApp.app Payload/
+        zip -r RosettaHealthApp.ipa Payload
+
+    - name: Upload IPA Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: RosettaHealthApp-Unsigned
+        path: RosettaHealthApp.ipa
