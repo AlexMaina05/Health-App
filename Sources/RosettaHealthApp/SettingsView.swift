@@ -48,7 +48,7 @@ public struct SettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Fine") {
-                        KeychainManager.shared.save(key: "ownerFiscalCode", value: ownerFiscalCode)
+                        _ = KeychainManager.shared.save(key: "ownerFiscalCode", value: ownerFiscalCode)
                         dismiss()
                     }
                 }

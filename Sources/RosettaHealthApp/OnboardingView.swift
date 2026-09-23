@@ -79,7 +79,7 @@ public struct OnboardingView: View {
                     Button(action: {
                         dateOfBirthInterval = birthDate.timeIntervalSince1970
                         withAnimation(.spring()) {
-                            KeychainManager.shared.save(key: "ownerFiscalCode", value: fiscalCode)
+                            _ = KeychainManager.shared.save(key: "ownerFiscalCode", value: fiscalCode)
                             hasCompletedOnboarding = true
                         }
                     }) {

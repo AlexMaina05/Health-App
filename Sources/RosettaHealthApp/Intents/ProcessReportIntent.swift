@@ -1,4 +1,4 @@
-﻿import AppIntents
+import AppIntents
 import Foundation
 import CoreGraphics
 import RosettaHealthCore
@@ -85,8 +85,7 @@ struct ProcessReportIntent: AppIntent {
         var xmlData: Data? = nil
         let callback: CGPDFDictionaryApplierFunction = { key, object, info in
             let keyString = String(cString: key)
-            if keyString == "EmbeddedFiles",
-               let _ = object {
+            if keyString == "EmbeddedFiles" {
                 // Semplificazione: Nella vera app usiamo la logica di estrazione CoreGraphics complessa.
                 // Per questo intent, ipotizziamo il successo se troviamo l'albero.
             }

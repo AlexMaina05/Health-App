@@ -131,14 +131,12 @@ public final class AppViewModel {
                                     pdfData: try? Data(contentsOf: file)
                                 )
                                 context.insert(vaultDoc)
-                                if #available(iOS 17.0, *) {
-                                    SpotlightManager.shared.indexDocument(
-                                        id: vaultDoc.id.uuidString,
-                                        title: vaultDoc.documentTitle,
-                                        patientName: vaultDoc.patientName,
-                                        date: vaultDoc.dateAdded
-                                    )
-                                }
+                                SpotlightManager.shared.indexDocument(
+                                    id: vaultDoc.id.uuidString,
+                                    title: vaultDoc.documentTitle,
+                                    patientName: vaultDoc.patientName,
+                                    date: vaultDoc.dateAdded
+                                )
                                 try? context.save()
                             }
                         }
@@ -253,14 +251,12 @@ public final class AppViewModel {
                             pdfData: try? Data(contentsOf: url)
                         )
                         context.insert(vaultDoc)
-                        if #available(iOS 17.0, *) {
-                            SpotlightManager.shared.indexDocument(
-                                id: vaultDoc.id.uuidString,
-                                title: vaultDoc.documentTitle,
-                                patientName: vaultDoc.patientName,
-                                date: vaultDoc.dateAdded
-                            )
-                        }
+                        SpotlightManager.shared.indexDocument(
+                            id: vaultDoc.id.uuidString,
+                            title: vaultDoc.documentTitle,
+                            patientName: vaultDoc.patientName,
+                            date: vaultDoc.dateAdded
+                        )
                         try? context.save()
                     }
                 }
