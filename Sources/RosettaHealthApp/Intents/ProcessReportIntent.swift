@@ -57,7 +57,7 @@ struct ProcessReportIntent: AppIntent {
                 let count = try await bridge.ingestRawMetrics(metrics: metrics)
                 
                 // Aggiorniamo il widget dal background
-                if let first = bundle.entry.first(where: { if case .observation(_) = $0.resource {  } else { return false } }),
+                if let first = bundle.entry.first(where: { if case .observation(_) = $0.resource { return true } else { return false } }),
                    case .observation(let obs) = first.resource {
                     let name = obs.code.coding.first?.display ?? "Glicemia"
                     let val = "\(obs.valueQuantity?.value ?? 0) \(obs.valueQuantity?.unit ?? "")"
