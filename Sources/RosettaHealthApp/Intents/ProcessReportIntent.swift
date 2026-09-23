@@ -46,7 +46,7 @@ struct ProcessReportIntent: AppIntent {
                 for entry in bundle.entry {
                     if case .observation(let obs) = entry.resource,
                        let loinc = obs.code.coding.first?.code,
-                       _ = bridge.loincToHKMap[loinc],
+                       bridge.loincToHKMap[loinc] != nil,
                        let qty = obs.valueQuantity {
                         
                         let date = try parseDate(obs.effectiveDateTime) ?? Date()
@@ -86,7 +86,7 @@ struct ProcessReportIntent: AppIntent {
         let callback: CGPDFDictionaryApplierFunction = { key, object, info in
             let keyString = String(cString: key)
             if keyString == "EmbeddedFiles",
-               var dict = object as? CGPDFDictionary {
+               let _ = object {
                 // Semplificazione: Nella vera app usiamo la logica di estrazione CoreGraphics complessa.
                 // Per questo intent, ipotizziamo il successo se troviamo l'albero.
             }

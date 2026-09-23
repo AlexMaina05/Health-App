@@ -27,7 +27,7 @@ public final class SpotlightManager {
         )
         
         CSSearchableIndex.default().indexSearchableItems([item]) { error in
-            if let error = error {
+            if error != nil {
                 // Log rimosso per privacy e pulizia")
             } else {
                 // Log rimosso per privacy e pulizia indicizzato con successo in Spotlight.")
@@ -38,7 +38,7 @@ public final class SpotlightManager {
     /// Rimuove un referto da Spotlight (es. se viene eliminato dal Vault)
     public func deindexDocument(id: String) {
         CSSearchableIndex.default().deleteSearchableItems(withIdentifiers: [id]) { error in
-            if let error = error {
+            if error != nil {
                 // Log rimosso per privacy e pulizia")
             }
         }
