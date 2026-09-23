@@ -1,0 +1,46 @@
+name: Build Unsigned iOS App
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: # Permette di avviare la build manualmente da GitHub
+
+jobs:
+  build:
+    runs-on: macos-14 # Usa un server macOS fornito da GitHub
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install XcodeGen
+      run: brew install xcodegen
+
+    - name: Generate Xcode Project
+      run: xcodegen generate
+
+    - name: Build Unsigned App
+      run: |
+        # Compila l'app disabilitando forzatamente la firma (necessaria senza account developer)
+        xcodebuild -project RosettaHealth.xcodeproj \
+        -scheme RosettaHealthApp \
+        -configuration Release \
+        -sdk iphoneos \
+        CODE_SIGN_IDENTITY="" \
+        CODE_SIGNING_REQUIRED=NO \
+        CODE_SIGNING_ALLOWED=NO \
+        clean build \
+        CONFIGURATION_BUILD_DIR="$(pwd)/build"
+
+    - name: Create IPA Package
+      run: |
+        # Pacchettizza l'app compilata nel formato .ipa
+        mkdir Payload
+        mv build/RosettaHealthApp.app Payload/
+        zip -r RosettaHealthApp.ipa Payload
+
+    - name: Upload IPA Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: RosettaHealthApp-Unsigned
+        path: RosettaHealthApp.ipa
