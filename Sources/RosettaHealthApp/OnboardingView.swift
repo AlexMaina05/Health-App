@@ -28,19 +28,15 @@ public struct OnboardingView: View {
         VStack(spacing: 0) {
             TabView(selection: $currentPage) {
                 // Pagina 0: Intro
-                tutorialPage(icon: "waveform.path.ecg", color: .blue, title: "I tuoi referti,
-finalmente vivi.", description: "Trasforma i noiosi PDF del Fascicolo Sanitario Elettronico in fantastici grafici interattivi su Apple Salute.")
+                tutorialPage(icon: "waveform.path.ecg", color: .blue, title: "I tuoi referti,\nfinalmente vivi.", description: "Trasforma i noiosi PDF del Fascicolo Sanitario Elettronico in fantastici grafici interattivi su Apple Salute.")
                     .tag(0)
                 
                 // Pagina 1: Privacy
-                tutorialPage(icon: "lock.shield.fill", color: .green, title: "Zero-Cloud
-Privacy Assoluta", description: "Nessun server. I tuoi dati medici sensibili vengono elaborati esclusivamente sul processore del tuo iPhone nel pieno rispetto del GDPR.")
+                tutorialPage(icon: "lock.shield.fill", color: .green, title: "Zero-Cloud\nPrivacy Assoluta", description: "Nessun server. I tuoi dati medici sensibili vengono elaborati esclusivamente sul processore del tuo iPhone nel pieno rispetto del GDPR.")
                     .tag(1)
                 
                 // Pagina 2: Tutorial
-                tutorialPage(icon: "square.and.arrow.up", color: .blue, title: "Come Funziona?", description: "1. Scarica un referto PDF dal tuo FSE
-2. Clicca su Condividi
-3. Seleziona RosettaHealth")
+                tutorialPage(icon: "square.and.arrow.up", color: .blue, title: "Come Funziona?", description: "1. Scarica un referto PDF dal tuo FSE\n2. Clicca su Condividi\n3. Seleziona RosettaHealth")
                     .tag(2)
                 
                 // Pagina 3: Registrazione

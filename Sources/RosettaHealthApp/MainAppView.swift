@@ -106,7 +106,7 @@ public struct MainAppView: View {
             }
         }
         .onContinueUserActivity(CSSearchableItemActionType) { userActivity in
-            if let uniqueIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
+            if let _ = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
                 // L'utente ha toccato un referto da Spotlight
                 // Navighiamo al Vault
                 selectedTab = 1

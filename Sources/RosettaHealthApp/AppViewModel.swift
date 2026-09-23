@@ -99,7 +99,7 @@ public final class AppViewModel {
             for file in pendingXMLs {
                 if let xmlData = try? Data(contentsOf: file) {
                     do {
-                        if #available(iOS 16.1, *) { self.updateLiveActivity(status: "Transcodifica in FHIR...", progress: 0) }
+                        self.updateLiveActivity(status: "Transcodifica in FHIR...", progress: 0)
                         let bundle = try transcoder.transcode(cdaData: xmlData)
                         let patientInfo = extractPatientInfo(bundle: bundle)
                         
@@ -193,13 +193,13 @@ public final class AppViewModel {
             
             self.isSuccess = true
             self.feedbackTrigger += 1
-            if #available(iOS 16.1, *) { self.endLiveActivity(status: "Completato con successo!") }
+            self.endLiveActivity(status: "Completato con successo!")
             isProcessing = false
             
         } catch {
             self.isSuccess = false
             self.feedbackTrigger += 1
-            if #available(iOS 16.1, *) { self.endLiveActivity(status: "Errore durante l'analisi.") }
+            self.endLiveActivity(status: "Errore durante l'analisi.")
             logger.error("Errore grave durante la lettura del container: \(error.localizedDescription)")
             isProcessing = false
         }
@@ -218,7 +218,7 @@ public final class AppViewModel {
             
             switch extractionResult {
             case .cdaXML(let xmlData):
-                if #available(iOS 16.1, *) { self.updateLiveActivity(status: "Transcodifica in FHIR...", progress: 0) }
+                self.updateLiveActivity(status: "Transcodifica in FHIR...", progress: 0)
                 let bundle = try transcoder.transcode(cdaData: xmlData)
                 let patientInfo = extractPatientInfo(bundle: bundle)
                 
@@ -426,38 +426,38 @@ public final class AppViewModel {
         return (isOwner, pName, pCF)
     }
     
-    @available(iOS 16.1, *)
     private func startLiveActivity(fileName: String) {
         guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
         
         let attributes = ParsingAttributes(batchName: "Analisi Referto: \(fileName)")
         let state = ParsingAttributes.ContentState(processedFiles: 0, totalFiles: 1, statusText: "Decrittazione in corso...")
+        let content = ActivityContent(state: state, staleDate: nil)
         
         do {
-            let activity = try Activity.request(attributes: attributes, contentState: state, pushType: nil)
+            let activity = try Activity.request(attributes: attributes, content: content, pushType: nil)
             self.parsingActivity = activity
         } catch {
             logger.error("Impossibile avviare Live Activity: \(error)")
         }
     }
     
-    @available(iOS 16.1, *)
     private func updateLiveActivity(status: String, progress: Int) {
         guard let activity = self.parsingActivity as? Activity<ParsingAttributes> else { return }
         let state = ParsingAttributes.ContentState(processedFiles: progress, totalFiles: 1, statusText: status)
+        let content = ActivityContent(state: state, staleDate: nil)
         
         Task {
-            await activity.update(using: state)
+            await activity.update(content)
         }
     }
     
-    @available(iOS 16.1, *)
     private func endLiveActivity(status: String) {
         guard let activity = self.parsingActivity as? Activity<ParsingAttributes> else { return }
         let state = ParsingAttributes.ContentState(processedFiles: 1, totalFiles: 1, statusText: status)
+        let content = ActivityContent(state: state, staleDate: nil)
         
         Task {
-            await activity.end(using: state, dismissalPolicy: .default)
+            await activity.end(content, dismissalPolicy: .default)
             self.parsingActivity = nil
         }
     }

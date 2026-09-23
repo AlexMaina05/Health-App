@@ -180,7 +180,9 @@ public struct SettingsView: View {
                         }
                     }
                 }
-            }.alert("RosettaHealth PRO Richiesto", isPresented: $showProAlert) {
+            }
+        }
+        .alert("RosettaHealth PRO Richiesto", isPresented: $showProAlert) {
             Button("Sblocca Ora", role: .none) {
                 // Future IAP logic or scroll to pro toggle
             }
@@ -188,21 +190,20 @@ public struct SettingsView: View {
         } message: {
             Text("La personalizzazione del tema è una funzionalità esclusiva della versione PRO. Sbloccala per scegliere il colore che si adatta di più al tuo stile.")
         }
-            .navigationTitle("Impostazioni")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Fine") {
-                        KeychainManager.shared.save(key: "ownerFiscalCode", value: ownerFiscalCode)
-                        dismiss()
-                    }
+        .navigationTitle("Impostazioni")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Fine") {
+                    KeychainManager.shared.save(key: "ownerFiscalCode", value: ownerFiscalCode)
+                    dismiss()
                 }
             }
-            .onAppear {
-                try? Tips.configure([.displayFrequency(.immediate), .datastoreLocation(.applicationDefault)])
-                birthDate = Date(timeIntervalSince1970: dateOfBirthInterval)
-                ownerFiscalCode = KeychainManager.shared.read(key: "ownerFiscalCode") ?? ""
-            }
+        }
+        .onAppear {
+            try? Tips.configure([.displayFrequency(.immediate), .datastoreLocation(.applicationDefault)])
+            birthDate = Date(timeIntervalSince1970: dateOfBirthInterval)
+            ownerFiscalCode = KeychainManager.shared.read(key: "ownerFiscalCode") ?? ""
         }
     }
 }

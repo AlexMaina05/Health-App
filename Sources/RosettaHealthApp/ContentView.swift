@@ -1,4 +1,4 @@
-﻿import SwiftUI
+import SwiftUI
 import SwiftData
 import TipKit
 import Charts
@@ -366,7 +366,7 @@ public struct ContentView: View {
                     let safeURL = tempDir.appendingPathComponent(UUID().uuidString + ".pdf")
                     do {
                         try FileManager.default.copyItem(at: fileURL, to: safeURL)
-                        Task {
+                        Task { @MainActor in
                             await viewModel.processPDF(url: safeURL, modelContainer: modelContext.container)
                             try? FileManager.default.removeItem(at: safeURL)
                         }

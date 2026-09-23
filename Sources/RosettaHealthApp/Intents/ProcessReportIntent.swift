@@ -1,5 +1,6 @@
 import AppIntents
 import Foundation
+import CoreGraphics
 import RosettaHealthCore
 import HealthKit
 
@@ -45,10 +46,10 @@ struct ProcessReportIntent: AppIntent {
                 for entry in bundle.entry {
                     if case .observation(let obs) = entry.resource,
                        let loinc = obs.code.coding.first?.code,
-                       let metricTarget = bridge.loincToHKMap[loinc],
+                       _ = bridge.loincToHKMap[loinc],
                        let qty = obs.valueQuantity {
                         
-                        let date = try parseDate(obs.effectiveDateTime ?? "") ?? Date()
+                        let date = try parseDate(obs.effectiveDateTime) ?? Date()
                         metrics.append(ExtractedMetric(name: obs.code.text ?? "Parametro Clinico", value: qty.value, unit: qty.unit, loincCode: loinc, date: date))
                     }
                 }

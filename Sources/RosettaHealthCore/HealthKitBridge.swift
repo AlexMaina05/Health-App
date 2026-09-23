@@ -8,9 +8,9 @@ public final class HealthKitBridge {
     
     // MARK: - Mappa Estesa LOINC -> HKQuantityTypeIdentifier & Unità Target
     public struct MetricTarget {
-        let type: HKQuantityTypeIdentifier
-        let defaultUnit: HKUnit
-        let conversion: ((Double, String) -> Double)? 
+        public let type: HKQuantityTypeIdentifier
+        public let defaultUnit: HKUnit
+        public let conversion: ((Double, String) -> Double)? 
         
         init(type: HKQuantityTypeIdentifier, defaultUnit: HKUnit, conversion: ((Double, String) -> Double)? = nil) {
             self.type = type
