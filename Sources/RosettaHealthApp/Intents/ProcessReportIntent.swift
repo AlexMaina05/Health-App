@@ -1,4 +1,4 @@
-import AppIntents
+﻿import AppIntents
 import Foundation
 import CoreGraphics
 import RosettaHealthCore
@@ -57,7 +57,7 @@ struct ProcessReportIntent: AppIntent {
                 let count = try await bridge.ingestRawMetrics(metrics: metrics)
                 
                 // Aggiorniamo il widget dal background
-                if let first = bundle.entry.first(where: { if case .observation(_) = $0.resource { return true } else { return false } }),
+                if let first = bundle.entry.first(where: { if case .observation(_) = $0.resource {  } else { return false } }),
                    case .observation(let obs) = first.resource {
                     let name = obs.code.coding.first?.display ?? "Glicemia"
                     let val = "\(obs.valueQuantity?.value ?? 0) \(obs.valueQuantity?.unit ?? "")"
@@ -90,7 +90,7 @@ struct ProcessReportIntent: AppIntent {
                 // Semplificazione: Nella vera app usiamo la logica di estrazione CoreGraphics complessa.
                 // Per questo intent, ipotizziamo il successo se troviamo l'albero.
             }
-            return true
+            
         }
         
         CGPDFDictionaryApplyFunction(catalog, callback, &xmlData)
@@ -120,8 +120,8 @@ enum IntentError: Swift.Error, CustomLocalizedStringResourceConvertible {
     
     var localizedStringResource: LocalizedStringResource {
         switch self {
-        case .invalidFile: return "Il file fornito non è un PDF valido."
-        case .healthKitNotAvailable: return "Apple Salute non è disponibile su questo dispositivo."
+        case .invalidFile: return "Il file fornito non Ã¨ un PDF valido."
+        case .healthKitNotAvailable: return "Apple Salute non Ã¨ disponibile su questo dispositivo."
         }
     }
 }

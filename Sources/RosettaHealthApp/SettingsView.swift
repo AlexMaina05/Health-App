@@ -101,7 +101,7 @@ public struct SettingsView: View {
     }
 
     private var personalDataSection: some View {
-        Section(header: Text("Dati Anagrafici (Proprietario)")) {
+        Section {
             TextField("Nome", text: $firstName)
                 .textContentType(.givenName)
             
@@ -116,6 +116,8 @@ public struct SettingsView: View {
             TextField("Codice Fiscale", text: $ownerFiscalCode)
                 .autocapitalization(.allCharacters)
                 .disableAutocorrection(true)
+        } header: {
+            Text("Dati Anagrafici (Proprietario)")
         } footer: {
             Text("RosettaHealth userà questi dati per garantire che i referti dei tuoi familiari non inquinino i tuoi grafici su Apple Salute.")
         }
