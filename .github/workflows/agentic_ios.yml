@@ -1,0 +1,59 @@
+name: 🤖 iOS Agentic UI Test
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # Esegue ogni notte alle 2:00 AM per risparmiare minuti
+  workflow_dispatch: # Permette di lanciarlo a mano dal pannello Actions
+
+jobs:
+  autonomous-test:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build iOS App for Simulator
+        run: |
+          # Compila l'app per il simulatore disabilitando la firma (non serve su simulatore)
+          xcodebuild -project RosettaHealth.xcodeproj \
+            -scheme RosettaHealthApp \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            build \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Install Maestro CLI
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          # Aggiunge Maestro al PATH della GitHub Action
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Boot Simulator & Install App
+        run: |
+          # Avvia il simulatore (usa iPhone 15 come default in macos-latest)
+          xcrun simctl boot "iPhone 15" || true
+          xcrun simctl bootstatus "iPhone 15"
+          
+          # Cerca l'app compilata in modo dinamico
+          APP_PATH=$(find build/Build/Products -name "*.app" | head -n 1)
+          echo "Trovata App: $APP_PATH"
+          
+          # Installa l'app nel simulatore
+          xcrun simctl install "iPhone 15" "$APP_PATH"
+          
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: 🧠 Run Agentic Tester
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          pip install requests
+          # TODO: Quando avrai lo script run_agentic_tester.py pronto, decommenta la linea sotto
+          # python3 scripts/run_agentic_tester.py --platform ios --app "it.unimib.RosettaHealth" --goal "Assicurati di poter visualizzare la dashboard"
+          echo "Infrastruttura pronta. In attesa dello script Python Agentico."
