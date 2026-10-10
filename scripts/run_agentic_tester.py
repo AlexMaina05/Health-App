@@ -56,18 +56,26 @@ def call_llm(hierarchy, goal):
         print(f"❌ Errore nella chiamata a Ollama locale: {e}")
         return None
 
-def execute_action(action):
+def execute_action(action, app_id):
     act = action.get("action")
     el_id = action.get("id")
     
+    flow_content = f"appId: {app_id}\n---\n"
+    
     if act == "tap":
-        subprocess.run(["maestro", "tap", el_id])
+        flow_content += f"- tapOn:\n    id: \"{el_id}\"\n"
     elif act == "input":
         text = action.get("text")
-        subprocess.run(["maestro", "tap", el_id])
-        subprocess.run(["maestro", "inputText", text])
+        flow_content += f"- tapOn:\n    id: \"{el_id}\"\n"
+        flow_content += f"- inputText: \"{text}\"\n"
     elif act == "scroll":
-        subprocess.run(["maestro", "scroll"])
+        flow_content += "- scroll\n"
+        
+    with open("temp_step.yaml", "w") as f:
+        f.write(flow_content)
+        
+    # Execute the single step flow
+    subprocess.run(["maestro", "test", "temp_step.yaml"])
 
 def main():
     parser = argparse.ArgumentParser()
@@ -80,7 +88,13 @@ def main():
     print(f"🎯 Obiettivo: {args.goal}")
     
     print("🚀 Avvio dell'applicazione...")
-    subprocess.run(["maestro", "launch", args.app])
+    if args.platform.lower() == "ios":
+        subprocess.run(["xcrun", "simctl", "launch", "booted", args.app])
+    else:
+        # Fallback per Android (se mai servirà) creando un flow veloce
+        with open("launch.yaml", "w") as f:
+            f.write(f"appId: {args.app}\n---\n- launchApp\n")
+        subprocess.run(["maestro", "test", "launch.yaml"])
     time.sleep(5) # Attendiamo che l'app sia completamente caricata
     
     max_steps = 15
@@ -106,7 +120,7 @@ def main():
             print("❌ L'IA ha stabilito che l'obiettivo non può essere raggiunto.")
             exit(1)
             
-        execute_action(action)
+        execute_action(action, args.app)
         time.sleep(3) # Pausa per l'animazione della UI
         
     print("❌ Raggiunto il limite massimo di mosse (Loop Infinito). Test Fallito.")
