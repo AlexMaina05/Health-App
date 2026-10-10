@@ -64,4 +64,4 @@ jobs:
         run: |
           python3 -m pip install requests --break-system-packages
           # Esegui lo script python 100% in locale senza chiavi API
-          python3 scripts/run_agentic_tester.py --platform ios --app "it.unimib.RosettaHealth" --goal "Assicurati di poter visualizzare la dashboard"
+          python3 scripts/run_agentic_tester.py --platform ios --app "dev.alexmaina.RosettaHealthApp" --goal "Assicurati di poter visualizzare la dashboard"
