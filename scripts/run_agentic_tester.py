@@ -46,10 +46,10 @@ def call_llm(hierarchy, goal):
         "response_format": {"type": "json_object"}
     }
     
-    print("🧠 Invocazione dell'LLM Locale (Ollama)...")
+    print("🧠 Invocazione dell'LLM Locale (Ollama)...", flush=True)
     try:
         # Usa l'endpoint di Ollama compatibile con lo standard OpenAI
-        response = requests.post("http://localhost:11434/v1/chat/completions", headers=headers, json=payload)
+        response = requests.post("http://localhost:11434/v1/chat/completions", headers=headers, json=payload, timeout=120)
         response.raise_for_status()
         data = response.json()
         return json.loads(data["choices"][0]["message"]["content"])
