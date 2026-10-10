@@ -14,7 +14,7 @@ def get_hierarchy():
         print(f"Errore durante l'estrazione della hierarchy: {e}")
         return None
 
-def call_llm(hierarchy, goal, api_key):
+def call_llm(hierarchy, goal):
     prompt = f"""
     Sei un Agente IA di test QA autonomo per app mobile.
     Il tuo obiettivo corrente è: {goal}
@@ -32,24 +32,24 @@ def call_llm(hierarchy, goal, api_key):
     """
     
     headers = {
-        "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
     
     payload = {
-        "model": "gpt-4o",
+        "model": "llama3.2",
         "messages": [{"role": "user", "content": prompt}],
         "response_format": {"type": "json_object"}
     }
     
-    print("Invocazione dell'LLM (Cervello Agentico)...")
+    print("🧠 Invocazione dell'LLM Locale (Ollama)...")
     try:
-        response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+        # Usa l'endpoint di Ollama compatibile con lo standard OpenAI
+        response = requests.post("http://localhost:11434/v1/chat/completions", headers=headers, json=payload)
         response.raise_for_status()
         data = response.json()
         return json.loads(data["choices"][0]["message"]["content"])
     except Exception as e:
-        print(f"Errore nella chiamata all'API OpenAI: {e}")
+        print(f"❌ Errore nella chiamata a Ollama locale: {e}")
         return None
 
 def execute_action(action):
@@ -57,7 +57,6 @@ def execute_action(action):
     el_id = action.get("id")
     
     if act == "tap":
-        # Maestro usa regex o substring per fare match del testo/id visibile
         subprocess.run(["maestro", "tap", el_id])
     elif act == "input":
         text = action.get("text")
@@ -73,17 +72,7 @@ def main():
     parser.add_argument('--goal', required=True)
     args = parser.parse_args()
 
-    # Per non far fallire la CI se la chiave API non è settata (mock test)
-    api_key = os.environ.get("OPENAI_API_KEY")
-    if not api_key:
-        print("⚠️ OPENAI_API_KEY non trovata nei secrets.")
-        print("Esecuzione in modalità 'Mock' per far passare la CI...")
-        print("Mock: Simulazione tap su bottone dashboard...")
-        time.sleep(2)
-        print("Mock: Goal raggiunto (success)!")
-        return
-
-    print(f"🤖 Inizio Test Agentico per {args.app} su {args.platform}")
+    print(f"🤖 Inizio Test Agentico per {args.app} su {args.platform} [100% LOCALE]")
     print(f"🎯 Obiettivo: {args.goal}")
     
     max_steps = 15
@@ -95,7 +84,7 @@ def main():
             print("❌ Impossibile leggere lo schermo.")
             exit(1)
             
-        action = call_llm(hierarchy, args.goal, api_key)
+        action = call_llm(hierarchy, args.goal)
         if not action:
             exit(1)
             

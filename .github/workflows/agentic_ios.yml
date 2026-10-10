@@ -53,15 +53,17 @@ jobs:
           # Installa l'app nel simulatore (booted si riferisce a quello appena avviato)
           xcrun simctl install booted "$APP_PATH"
           
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
+      - name: Install & Run Ollama (Local LLM)
+        run: |
+          brew install ollama
+          # Avvia Ollama in background
+          ollama serve &
+          sleep 3
+          # Scarica il modello Llama 3.2 (circa 2GB, molto veloce su M1)
+          ollama pull llama3.2
           
-      - name: 🧠 Run Agentic Tester
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      - name: 🧠 Run Agentic Tester (Local AI)
         run: |
           pip install requests
-          # Esegui lo script python passando le variabili ambientali necessaries
+          # Esegui lo script python 100% in locale senza chiavi API
           python3 scripts/run_agentic_tester.py --platform ios --app "it.unimib.RosettaHealth" --goal "Assicurati di poter visualizzare la dashboard"
