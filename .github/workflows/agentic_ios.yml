@@ -63,6 +63,5 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           pip install requests
-          # TODO: Quando avrai lo script run_agentic_tester.py pronto, decommenta la linea sotto
-          # python3 scripts/run_agentic_tester.py --platform ios --app "it.unimib.RosettaHealth" --goal "Assicurati di poter visualizzare la dashboard"
-          echo "Infrastruttura pronta. In attesa dello script Python Agentico."
+          # Esegui lo script python passando le variabili ambientali necessaries
+          python3 scripts/run_agentic_tester.py --platform ios --app "it.unimib.RosettaHealth" --goal "Assicurati di poter visualizzare la dashboard"
