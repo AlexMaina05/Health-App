@@ -64,6 +64,6 @@ jobs:
           
       - name: 🧠 Run Agentic Tester (Local AI)
         run: |
-          pip install requests
+          python3 -m pip install requests
           # Esegui lo script python 100% in locale senza chiavi API
           python3 scripts/run_agentic_tester.py --platform ios --app "it.unimib.RosettaHealth" --goal "Assicurati di poter visualizzare la dashboard"
