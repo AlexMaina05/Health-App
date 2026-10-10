@@ -22,6 +22,10 @@ def call_llm(hierarchy, goal):
     Questa è la View Hierarchy attuale della schermata (testo JSON/XML):
     {hierarchy}
     
+    REGOLE FONDAMENTALI:
+    1. Ignora la status bar di sistema (es. "100% battery power", "Wi-Fi", "Cellular", orario). Non interagire mai con essi.
+    2. Interagisci SOLO con i bottoni e i campi di testo dell'applicazione.
+    
     Decidi la tua prossima mossa. Rispondi RIGOROSAMENTE con un JSON formattato così:
     {{
         "action": "tap" | "input" | "scroll" | "success" | "failure",
@@ -74,6 +78,10 @@ def main():
 
     print(f"🤖 Inizio Test Agentico per {args.app} su {args.platform} [100% LOCALE]")
     print(f"🎯 Obiettivo: {args.goal}")
+    
+    print("🚀 Avvio dell'applicazione...")
+    subprocess.run(["maestro", "launch", args.app])
+    time.sleep(5) # Attendiamo che l'app sia completamente caricata
     
     max_steps = 15
     for step in range(max_steps):
