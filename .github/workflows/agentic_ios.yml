@@ -39,16 +39,19 @@ jobs:
 
       - name: Boot Simulator & Install App
         run: |
-          # Avvia il simulatore (usa iPhone 15 come default in macos-latest)
-          xcrun simctl boot "iPhone 15" || true
-          xcrun simctl bootstatus "iPhone 15"
+          # Trova l'UDID del primo simulatore iPhone 16 disponibile (per evitare conflitti di nome)
+          DEVICE_ID=$(xcrun simctl list devices available -j | jq -r '.devices[] | .[] | select(.name | contains("iPhone 16")) | .udid' | head -n 1)
+          echo "Avvio simulatore con UDID: $DEVICE_ID"
+          
+          xcrun simctl boot "$DEVICE_ID" || true
+          xcrun simctl bootstatus "$DEVICE_ID"
           
           # Cerca l'app compilata in modo dinamico
           APP_PATH=$(find build/Build/Products -name "*.app" | head -n 1)
           echo "Trovata App: $APP_PATH"
           
-          # Installa l'app nel simulatore
-          xcrun simctl install "iPhone 15" "$APP_PATH"
+          # Installa l'app nel simulatore (booted si riferisce a quello appena avviato)
+          xcrun simctl install booted "$APP_PATH"
           
       - name: Setup Python
         uses: actions/setup-python@v4
