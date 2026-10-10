@@ -12,6 +12,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Install xcodegen
+        run: brew install xcodegen
+        
+      - name: Generate Xcode Project
+        run: xcodegen generate
+
       - name: Build iOS App for Simulator
         run: |
           # Compila l'app per il simulatore disabilitando la firma (non serve su simulatore)
