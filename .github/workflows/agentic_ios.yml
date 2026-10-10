@@ -1,9 +1,7 @@
 name: 🤖 iOS Agentic UI Test
 
 on:
-  schedule:
-    - cron: '0 2 * * *' # Esegue ogni notte alle 2:00 AM per risparmiare minuti
-  workflow_dispatch: # Permette di lanciarlo a mano dal pannello Actions
+  workflow_dispatch: # Permette di lanciarlo esclusivamente a mano dal pannello Actions
 
 jobs:
   autonomous-test:
