@@ -25,6 +25,7 @@ def call_llm(hierarchy, goal):
     REGOLE FONDAMENTALI:
     1. Ignora la status bar di sistema (es. "100% battery power", "Wi-Fi", "Cellular", orario). Non interagire mai con essi.
     2. Interagisci SOLO con i bottoni e i campi di testo dell'applicazione.
+    3. SE L'OBIETTIVO È STATO RAGGIUNTO (es. la dashboard o l'elemento cercato è già visibile a schermo), DEVI rispondere con l'azione "success". Non fare tap inutili se l'obiettivo è già completato!
     
     Decidi la tua prossima mossa. Rispondi RIGOROSAMENTE con un JSON formattato così:
     {{
