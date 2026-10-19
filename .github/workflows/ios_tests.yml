@@ -9,6 +9,9 @@ on:
 jobs:
   build-and-test:
     runs-on: macos-14 # Uses latest macOS (M1/M2 silicon runners on GH)
+    permissions:
+      contents: read
+      actions: write
     
     steps:
     - name: Checkout Repository
@@ -54,8 +57,21 @@ jobs:
         mv build/RosettaHealthApp.app Payload/
         zip -r RosettaHealthApp.ipa Payload
 
+    - name: Prune Old Artifacts
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        # Elimina tutte le build precedenti con lo stesso nome prima di caricare la nuova
+        gh api "repos/${{ github.repository }}/actions/artifacts?name=RosettaHealthApp-Unsigned" --jq '.artifacts[].id' | while read -r id; do
+          if [ -n "$id" ]; then
+            echo "Eliminazione vecchio artifact: $id"
+            gh api -X DELETE "repos/${{ github.repository }}/actions/artifacts/$id" || true
+          fi
+        done
+
     - name: Upload IPA Artifact
       uses: actions/upload-artifact@v4
       with:
         name: RosettaHealthApp-Unsigned
         path: RosettaHealthApp.ipa
+        retention-days: 1
