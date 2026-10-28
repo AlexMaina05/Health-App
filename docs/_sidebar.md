@@ -22,4 +22,4 @@
   - [Alessandro Mainardi](https://alexmaina.dev/about/)
   - [ORCID: 0009-0003-7003-7247](https://orcid.org/0009-0003-7003-7247)
   - [Wikidata: Q141886579](https://www.wikidata.org/wiki/Q141886579)
-  - [Concept DOI Zenodo](https://doi.org/10.5281/zenodo.23692700)
+  - [Concept DOI Zenodo](https://doi.org/10.5281/zenodo.23735226)
