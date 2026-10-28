@@ -17,7 +17,6 @@
   - [Informativa sulla Privacy](PRIVACY_POLICY.md)
   - [Valutazione d'Impatto (DPIA)](DPIA.md)
   - [Termini di Servizio (ToS)](TOS.md)
-  - [Business Plan & Etica](BUSINESS_PLAN.md)
 
 - **Identificatori & Autore**
   - [Alessandro Mainardi](https://alexmaina.dev/about/)
