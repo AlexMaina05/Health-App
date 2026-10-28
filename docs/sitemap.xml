@@ -6,6 +6,12 @@
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+    <url>
+    <loc>https://alexmaina.dev/Health-App/monografia/</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
   <url>
     <loc>https://alexmaina.dev/Health-App/doc/</loc>
     <lastmod>2026-10-28</lastmod>

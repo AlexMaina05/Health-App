@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RosettaHealth: Monografia Tecnica Ufficiale | Alessandro Mainardi</title>
+  <meta name="description" content="Monografia tecnica e trattato formale di ingegneria del software sanitario (44 pagine, ISO A4): Un'Architettura Mobile Edge Zero-Cloud per l'Interoperabilità Semantica tra Fascicolo Sanitario Elettronico (HL7 CDA) e Apple HealthKit. Autore: Alessandro Mainardi (UniBo). DOI: 10.5281/zenodo.23735226.">
+  <meta name="author" content="Alessandro Mainardi">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="theme-color" content="#070b14">
+  <link rel="canonical" href="https://alexmaina.dev/Health-App/monografia/">
+  <link rel="icon" href="https://alexmaina.dev/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://alexmaina.dev/assets/images/icon-192.png">
+
+  <!-- Open Graph / Facebook / LinkedIn -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://alexmaina.dev/Health-App/monografia/">
+  <meta property="og:title" content="RosettaHealth: Monografia Tecnica Ufficiale (44 Pagine) | Alessandro Mainardi">
+  <meta property="og:description" content="Trattato accademico e specifica architetturale per l'interoperabilità semantica Zero-Cloud tra FSE 2.0 (HL7 CDA R2) e Apple HealthKit. DOI: 10.5281/zenodo.23735226.">
+  <meta property="og:image" content="https://alexmaina.dev/Health-App/assets/images/rosetta-health.webp">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:site_name" content="Alessandro Mainardi">
+  <meta property="article:author" content="https://alexmaina.dev/about/">
+  <meta property="article:published_time" content="2026-10-28T16:00:00+01:00">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RosettaHealth: Monografia Tecnica Ufficiale (44 Pagine)">
+  <meta name="twitter:description" content="Trattato formale e specifica mobile edge Zero-Cloud per FSE 2.0 e Apple HealthKit. DOI: 10.5281/zenodo.23735226.">
+  <meta name="twitter:image" content="https://alexmaina.dev/Health-App/assets/images/rosetta-health.webp">
+  <meta name="twitter:creator" content="@AlexMaina05">
+
+  <!-- Google Scholar & Academic Indexing (Highwire Press Meta Tags) -->
+  <meta name="citation_title" content="RosettaHealth: Un'Architettura Mobile Edge Zero-Cloud per l'Interoperabilità Semantica tra Fascicolo Sanitario Elettronico (HL7 CDA) e Apple HealthKit">
+  <meta name="citation_author" content="Mainardi, Alessandro">
+  <meta name="citation_author_orcid" content="https://orcid.org/0009-0003-7003-7247">
+  <meta name="citation_author_institution" content="Alma Mater Studiorum - Università di Bologna">
+  <meta name="citation_publication_date" content="2026/10/28">
+  <meta name="citation_online_date" content="2026/10/28">
+  <meta name="citation_pdf_url" content="https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf">
+  <meta name="citation_fulltext_html_url" content="https://alexmaina.dev/Health-App/monografia/">
+  <meta name="citation_doi" content="10.5281/zenodo.23735226">
+  <meta name="citation_language" content="it">
+  <meta name="citation_technical_report_number" content="DISI-RH-2026-01">
+  <meta name="citation_keywords" content="HL7 CDA; Apple HealthKit; FSE 2.0; LOINC; UCUM; Zero-Cloud; Privacy by Design; Mobile Edge Computing; SwiftData; Secure Enclave">
+
+  <!-- Schema.org ScholarlyArticle Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://alexmaina.dev/#person",
+        "name": "Alessandro Mainardi",
+        "url": "https://alexmaina.dev/",
+        "jobTitle": "Software Developer & Computer Engineering Student",
+        "affiliation": {
+          "@type": "EducationalOrganization",
+          "name": "Alma Mater Studiorum - Università di Bologna",
+          "department": "Dipartimento di Informatica - Scienza e Ingegneria (DISI)"
+        },
+        "sameAs": [
+          "https://orcid.org/0009-0003-7003-7247",
+          "https://www.wikidata.org/wiki/Q141886579",
+          "https://github.com/AlexMaina05"
+        ]
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "@id": "https://alexmaina.dev/Health-App/monografia/#article",
+        "headline": "RosettaHealth: Un'Architettura Mobile Edge Zero-Cloud per l'Interoperabilità Semantica tra Fascicolo Sanitario Elettronico (HL7 CDA) e Apple HealthKit",
+        "name": "RosettaHealth: Monografia Tecnica Ufficiale",
+        "author": { "@id": "https://alexmaina.dev/#person" },
+        "datePublished": "2026-10-28",
+        "dateModified": "2026-10-28",
+        "inLanguage": "it",
+        "numberOfPages": 44,
+        "identifier": "10.5281/zenodo.23735226",
+        "sameAs": "https://doi.org/10.5281/zenodo.23735226",
+        "url": "https://alexmaina.dev/Health-App/monografia/",
+        "encoding": [
+          {
+            "@type": "MediaObject",
+            "encodingFormat": "application/pdf",
+            "contentUrl": "https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf",
+            "name": "Monografia Tecnica Ufficiale (PDF, 44 Pagine)"
+          }
+        ],
+        "publisher": {
+          "@type": "Organization",
+          "name": "Zenodo / CERN Open Science",
+          "url": "https://zenodo.org"
+        },
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "about": [
+          { "@type": "DefinedTerm", "name": "HL7 CDA Release 2" },
+          { "@type": "DefinedTerm", "name": "Apple HealthKit" },
+          { "@type": "DefinedTerm", "name": "Fascicolo Sanitario Elettronico (FSE 2.0)" },
+          { "@type": "DefinedTerm", "name": "LOINC" },
+          { "@type": "DefinedTerm", "name": "Zero-Cloud Architecture" }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #070b14;
+      --bg-card: rgba(15, 23, 42, 0.7);
+      --bg-card-hover: rgba(30, 41, 59, 0.85);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(0, 229, 255, 0.3);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #00e5ff;
+      --accent-secondary: #38bdf8;
+      --accent-purple: #a855f7;
+      --accent-green: #10b981;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7, 11, 20, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+    .brand-badge {
+      background: linear-gradient(135deg, var(--accent), var(--accent-purple));
+      color: #070b14;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      color: #070b14;
+      box-shadow: 0 4px 14px rgba(0, 229, 255, 0.25);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(0, 229, 255, 0.4);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .badge.cyan { border-color: var(--border-accent); color: var(--accent); background: rgba(0, 229, 255, 0.08); }
+    .badge.green { border-color: rgba(16, 185, 129, 0.4); color: var(--accent-green); background: rgba(16, 185, 129, 0.08); }
+
+    /* Paper Header */
+    .paper-header {
+      padding: 48px 0 32px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .paper-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .paper-title {
+      font-size: 2.4rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #ffffff 60%, var(--text-muted));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .paper-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 24px;
+      max-width: 950px;
+    }
+    .author-card {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+    .author-info strong {
+      color: var(--text);
+      font-size: 1rem;
+    }
+    .author-info span {
+      display: block;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+
+    /* Actions Bar */
+    .actions-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    /* Main Grid */
+    .paper-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 40px;
+      padding: 40px 0;
+    }
+
+    /* Viewer Container */
+    .viewer-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    }
+    .viewer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: rgba(15, 23, 42, 0.95);
+      border-bottom: 1px solid var(--border);
+    }
+    .viewer-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .viewer-iframe {
+      width: 100%;
+      height: 920px;
+      border: none;
+      background: #1e293b;
+      display: block;
+    }
+
+    /* Abstract & Content Section */
+    .content-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      margin-top: 32px;
+    }
+    .content-box h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .abstract-text {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    /* Table of Contents */
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .toc-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      transition: all 0.2s ease;
+    }
+    .toc-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
+    }
+    .toc-num {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .toc-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .toc-desc {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    /* Citation Box */
+    .citation-box {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      margin-top: 16px;
+    }
+    .citation-code {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #38bdf8;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover { background: var(--accent); color: #070b14; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      margin-top: 60px;
+      background: rgba(7, 11, 20, 0.95);
+      font-size: 0.9rem;
+      color: var(--text-dim);
+    }
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-left: 20px;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--accent); }
+
+    @media (max-width: 768px) {
+      .paper-title { font-size: 1.75rem; }
+      .viewer-iframe { height: 600px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="https://alexmaina.dev/Health-App/" class="brand">
+        <span>RosettaHealth</span>
+        <span class="brand-badge">Paper</span>
+      </a>
+      <div class="nav-links">
+        <a href="https://alexmaina.dev/Health-App/">← Home Progetto</a>
+        <a href="https://alexmaina.dev/Health-App/doc/">Documentazione</a>
+        <a href="https://alexmaina.dev/">alexmaina.dev</a>
+        <a href="https://github.com/AlexMaina05/Health-App" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="paper-header">
+    <div class="container">
+      <div class="paper-eyebrow">
+        <span>Monografia Accademica Ufficiale &middot; DISI-RH-2026-01</span>
+      </div>
+      <h1 class="paper-title">
+        RosettaHealth: Un'Architettura Mobile Edge Zero-Cloud per l'Interoperabilità Semantica tra Fascicolo Sanitario Elettronico (HL7 CDA) e Apple HealthKit
+      </h1>
+      <p class="paper-subtitle">
+        Trattato formale di ingegneria del software sanitario. Formalizzazione del parsing SAX streaming ad allocazione costante \(\mathcal{O}(d_{\max})\), pipeline di validazione anagrafica Identity Firewall, Doppio Binario Semantico (Vitals vs. Chimica Clinica FHIR R4) e benchmark empirici su hardware fisico Apple A17 Pro e A15 Bionic.
+      </p>
+
+      <div class="author-card">
+        <div class="author-info">
+          <strong>Alessandro Mainardi</strong>
+          <span>Alma Mater Studiorum &mdash; Università di Bologna (DISI)</span>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto;">
+          <a href="https://orcid.org/0009-0003-7003-7247" target="_blank" rel="noopener" class="badge cyan">
+            ORCID: 0009-0003-7003-7247
+          </a>
+          <a href="https://www.wikidata.org/wiki/Q141886579" target="_blank" rel="noopener" class="badge">
+            Wikidata: Q141886579
+          </a>
+          <a href="https://doi.org/10.5281/zenodo.23735226" target="_blank" rel="noopener" class="badge green">
+            DOI: 10.5281/zenodo.23735226
+          </a>
+          <span class="badge">44 Pagine (ISO A4)</span>
+          <span class="badge">Open Access CC BY 4.0</span>
+        </div>
+      </div>
+
+      <div class="actions-bar">
+        <a href="https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          Apri PDF a Schermo Intero ↗
+        </a>
+        <a href="https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf" download class="btn btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Scarica PDF (1.0 MB)
+        </a>
+        <a href="https://doi.org/10.5281/zenodo.23735226" target="_blank" rel="noopener" class="btn btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          Scheda Zenodo / OpenAIRE ↗
+        </a>
+        <a href="#bibtex" class="btn btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+          Copia BibTeX
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container paper-layout">
+
+    <!-- Interactive Online PDF Viewer -->
+    <section class="viewer-card" id="viewer">
+      <div class="viewer-header">
+        <div class="viewer-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <span>Visualizzatore PDF Ufficiale &middot; 44 Pagine (ISO A4)</span>
+        </div>
+        <div>
+          <a href="https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf" target="_blank" rel="noopener noreferrer" class="badge cyan" style="text-decoration:none;">
+            Nuova Finestra ↗
+          </a>
+        </div>
+      </div>
+      <iframe 
+        class="viewer-iframe" 
+        src="https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf#toolbar=1&navpanes=1" 
+        title="RosettaHealth Monografia Tecnica PDF">
+        <p style="padding: 24px; color: var(--text-muted); text-align: center;">
+          Il tuo browser non supporta la visualizzazione diretta dei file PDF. 
+          <a href="https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf" target="_blank" style="color: var(--accent);">
+            Clicca qui per aprire la monografia PDF in una nuova scheda
+          </a>.
+        </p>
+      </iframe>
+    </section>
+
+    <!-- Abstracts Section (Full Text) -->
+    <section class="content-box">
+      <h2>Estratto Accademico &middot; Abstract</h2>
+      <div style="margin-bottom: 24px;">
+        <h3 style="font-size: 1.1rem; color: var(--accent); margin-bottom: 8px;">Sommario (Italiano)</h3>
+        <p class="abstract-text">
+          La digitalizzazione dei referti clinici nell'ambito del Fascicolo Sanitario Elettronico (FSE 2.0) ha prodotto una disponibilità senza precedenti di dati sanitari per i cittadini. Tuttavia, l'esperienza utente sui dispositivi mobili rimane frammentata: i documenti clinici vengono prevalentemente erogati come file PDF non strutturati, impedendo l'integrazione continua con i framework di telemetria fisiologica nativi come Apple HealthKit. Questo lavoro presenta l'architettura formale di <strong>RosettaHealth</strong>, un framework mobile-edge nativo in Swift 5.10 progettato per l'interoperabilità semantica deterministica e zero-cloud tra lo standard HL7 Clinical Document Architecture (CDA) Release 2 e Apple HealthKit.
+        </p>
+        <p class="abstract-text">
+          La sicurezza e la riservatezza dei dati sono garantite a livello strutturale mediante l'<strong>Identity Firewall</strong>, che applica una distanza metrica normalizzata di Jaro-Winkler con fallback su Levenshtein sull'intestazione anagrafica per prevenire iniezioni accidentali di dati di terzi, e dal <strong>Doppio Binario Semantico</strong>, che isola i campioni biometrici fisiologici (HKQuantitySample) dai referti di chimica clinica complessi archiviati nel vault locale crittografato SwiftData sotto forma di risorse standard FHIR R4. La valutazione empirica su hardware fisico (iPhone 15 Pro con Apple A17 Pro e iPhone 13 con Apple A15 Bionic) dimostra che il parsing streaming a passaggio singolo mantiene una complessità spaziale \(\mathcal{O}(d_{\max})\) con picco di soli 4.2 MB di RAM e latenza end-to-end compresa tra 32.5 ms e 409.1 ms.
+        </p>
+      </div>
+
+      <div style="border-top: 1px solid var(--border); padding-top: 24px;">
+        <h3 style="font-size: 1.1rem; color: var(--accent-secondary); margin-bottom: 8px;">Abstract (English)</h3>
+        <p class="abstract-text" style="font-style: italic;">
+          The digitization of clinical documentation across the Italian Electronic Health Record framework (FSE 2.0) has made medical documents accessible to citizens; however, patient engagement on mobile operating systems remains constrained by unstructured PDF formats. This monograph presents the engineering architecture of <strong>RosettaHealth</strong>, a native Swift 5.10 mobile-edge framework achieving deterministic on-device semantic interoperability between HL7 CDA Release 2 laboratory reports and Apple HealthKit under a strict Zero-Cloud and Privacy-by-Design paradigm.
+        </p>
+      </div>
+    </section>
+
+    <!-- Structure & Table of Contents -->
+    <section class="content-box">
+      <h2>Indice dei Contenuti della Monografia</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">
+        La monografia si articola in 9 capitoli e 3 appendici formali, per complessive 44 pagine redatte secondo gli standard tipografici dell'ingegneria informatica.
+      </p>
+
+      <div class="toc-grid">
+        <div class="toc-card">
+          <div class="toc-num">CAPITOLO 01</div>
+          <div class="toc-title">Introduzione e Contesto</div>
+          <div class="toc-desc">Il paradosso del PDF sanitario (\textit{data tomb}), analisi della centralizzazione cloud e formalizzazione dei 6 contributi scientifici di RosettaHealth.</div>
+        </div>
+        <div class="toc-card">
+          <div class="toc-num">CAPITOLO 02</div>
+          <div class="toc-title">Stato dell'Arte & Standard</div>
+          <div class="toc-desc">Analisi comparativa: FSE 2.0 (DPCM 29/09/2023), ontologie LOINC e UCUM, Apple HealthKit e lo standard HL7 FHIR R4.</div>
+        </div>
+        <div class="toc-card">
+          <div class="toc-num">CAPITOLO 03</div>
+          <div class="toc-title">Architettura Zero-Cloud & Sicurezza</div>
+          <div class="toc-desc">Paradigma mobile edge computing, modello di minaccia formale STRIDE, isolamento biometrico Secure Enclave e conformità GDPR Art. 9 & 25.</div>
+        </div>
+        <div class="toc-card">
+          <div class="toc-num">CAPITOLO 04</div>
+          <div class="toc-title">Il Rosetta Transcoder Engine</div>
+          <div class="toc-desc">Parser SAX streaming streaming ad allocazione costante \(\mathcal{O}(d_{\max})\), pipeline Identity Firewall (Jaro-Winkler) e architettura a Doppio Binario Semantico.</div>
+        </div>
+        <div class="toc-card">
+          <div class="toc-num">CAPITOLO 05</div>
+          <div class="toc-title">Supporto Decisionale Clinico (CDS)</div>
+          <div class="toc-desc">Actor analitico Swift asincrono per l'identificazione di trend avversi longitudinali (rigidità arteriosa, peggioramento lipidico) e conformità MDR 2017/745.</div>
+        </div>
+        <div class="toc-card">
+          <div class="toc-num">CAPITOLO 06</div>
+          <div class="toc-title">Ingegneria Software & Apple Ecosystem</div>
+          <div class="toc-desc">Architettura Clean/MVVM, Swift Concurrency senza lock (Actors), pipeline di persistenza SwiftData Class A e Share Extension per ingestion da file system.</div>
+        </div>
+        <div class="toc-card">
+          <div class="toc-num">CAPITOLO 07</div>
+          <div class="toc-title">Valutazione Sperimentale & Benchmark</div>
+          <div class="toc-desc">Test suite TDD multi-tier, stress test avversariali (fuzzing), benchmark XCTest su iPhone 15 Pro vs 13 con metriche XCTClock/Memory/CPU ed Energy Trace.</div>
+        </div>
+        <div class="toc-card">
+          <div class="toc-num">CAPITOLO 08</div>
+          <div class="toc-title">Conclusioni e Sviluppi Futuri</div>
+          <div class="toc-desc">Sintesi dei risultati, limiti metodologici e roadmap evolutiva verso modelli SLM on-device (CoreML) per la spiegabilità dei referti.</div>
+        </div>
+        <div class="toc-card">
+          <div class="toc-num">CAPITOLO 09</div>
+          <div class="toc-title">Appendici Ontologiche & Schemi</div>
+          <div class="toc-desc">Matrici LOINC \(\rightarrow\) HealthKit / FHIR, payload XML CDA annotato, specifica XcodeGen e modello di citazione formale.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Citation Box -->
+    <section class="content-box" id="bibtex">
+      <h2>Modello di Citazione Ufficiale (BibTeX)</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Se utilizzi l'architettura, i mapping ontologici o i dati sperimentali di RosettaHealth nella tua ricerca o nei tuoi progetti software, cita la monografia come segue:
+      </p>
+
+      <div class="citation-box">
+        <button class="copy-btn" id="copyBtn" onclick="copyBibtex()">Copia</button>
+        <pre class="citation-code" id="bibtexCode">@article{mainardi2026rosettahealth,
+  author    = {Mainardi, Alessandro},
+  title     = {{RosettaHealth: Un'Architettura Mobile Edge Zero-Cloud per l'Interoperabilit{\`a} Semantica tra Fascicolo Sanitario Elettronico (HL7 CDA) e Apple HealthKit}},
+  year      = {2026},
+  month     = {10},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.23735226},
+  url       = {https://doi.org/10.5281/zenodo.23735226},
+  note      = {Monografia Tecnica Accademica, 44 pagine. Alma Mater Studiorum -- Universit{\`a} di Bologna (DISI). Validazione sperimentale su iOS 17 e watchOS 10.}
+}</pre>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-content">
+      <div>
+        <strong>RosettaHealth</strong> &middot; Progetto Open Source di Alessandro Mainardi &copy; 2026
+        <br>
+        <span style="font-size: 0.8rem; color: var(--text-dim);">
+          DOI: <a href="https://doi.org/10.5281/zenodo.23735226" target="_blank" rel="noopener" style="color: var(--text-muted);">10.5281/zenodo.23735226</a> &middot; ORCID: 0009-0003-7003-7247
+        </span>
+      </div>
+      <div class="footer-links">
+        <a href="https://alexmaina.dev/Health-App/">Home</a>
+        <a href="https://alexmaina.dev/Health-App/doc/">Documentazione</a>
+        <a href="https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf" target="_blank">PDF</a>
+        <a href="https://alexmaina.dev/">alexmaina.dev</a>
+        <a href="https://github.com/AlexMaina05/Health-App" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function copyBibtex() {
+      const code = document.getElementById('bibtexCode').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.innerText = 'Copiato!';
+        btn.style.background = 'var(--accent-green)';
+        btn.style.color = '#070b14';
+        setTimeout(() => {
+          btn.innerText = 'Copia';
+          btn.style.background = 'rgba(255, 255, 255, 0.1)';
+          btn.style.color = 'var(--text)';
+        }, 2500);
+      });
+    }
+  </script>
+</body>
+</html>

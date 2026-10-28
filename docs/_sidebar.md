@@ -3,6 +3,7 @@
 
 - **Progetto RosettaHealth**
   - [Panoramica Generale](README.md)
+  - [📖 Monografia Online & Viewer](https://alexmaina.dev/Health-App/monografia/)
   - [📄 Monografia Tecnica (PDF)](https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf ':ignore')
   - [Guida Utente](GUIDA_UTENTE.md)
 
