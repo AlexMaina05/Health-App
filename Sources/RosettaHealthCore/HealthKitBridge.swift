@@ -26,7 +26,11 @@ public final class HealthKitBridge {
         "2345-7":  MetricTarget(type: .bloodGlucose, defaultUnit: HKUnit(from: "mg/dL")), 
         "2339-0":  MetricTarget(type: .bloodGlucose, defaultUnit: HKUnit(from: "mg/dL")),
         
-        // MARK: - Profilo Lipidico
+        // MARK: - Profilo Lipidico (Consumer Telemetry Adapter)
+        // NOTA SEMANTICA (Doppio Binario): Apple HealthKit non dispone di un HKQuantityType per il colesterolo
+        // sierico/ematico. I referti di chimica clinica autorevoli sono conservati come risorse native
+        // FHIR Observation crittografate in SwiftData e sincronizzate tramite HKClinicalRecord (.labResultRecord).
+        // I target .dietary* fungono esclusivamente da proxy di visualizzazione per i grafici utente di Apple Health.
         "2093-3":  MetricTarget(type: .dietaryCholesterol, defaultUnit: HKUnit.gramUnit(with: .milli)), 
         "2571-8":  MetricTarget(type: .dietaryFatTotal, defaultUnit: HKUnit.gramUnit(with: .milli)),
         
@@ -50,11 +54,13 @@ public final class HealthKitBridge {
         "8280-0":  MetricTarget(type: .waistCircumference, defaultUnit: HKUnit.meterUnit(with: .centi)), // Circonferenza Vita
         "41982-0": MetricTarget(type: .bodyFatPercentage, defaultUnit: HKUnit.percent()),           // Massa Grassa
         
-        // MARK: - Elettroliti
+        // MARK: - Elettroliti Sierici (Consumer Telemetry Adapter)
+        // NOTA SEMANTICA: Sodio e potassio sierici di laboratorio sono persistiti come FHIR Observation
+        // e mappati su HKClinicalRecord. Le voci sottostanti consentono un proxy visivo locale verso Apple Health.
         "2951-2": MetricTarget(type: .dietarySodium, defaultUnit: HKUnit.gramUnit(with: .milli)),
         "2823-3": MetricTarget(type: .dietaryPotassium, defaultUnit: HKUnit.gramUnit(with: .milli)),
         
-        // MARK: - Vitamine
+        // MARK: - Vitamine Sieriche (Consumer Telemetry Adapter)
         "32220-6": MetricTarget(type: .dietaryVitaminC, defaultUnit: HKUnit.gramUnit(with: .milli)),
         "32309-7": MetricTarget(type: .dietaryVitaminD, defaultUnit: HKUnit.gramUnit(with: .micro)),
         
