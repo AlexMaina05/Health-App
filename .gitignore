@@ -1,4 +1,4 @@
-﻿# Xcode
+# Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
 
@@ -68,4 +68,8 @@ cda.xml
 
 # Ignore Android port folder (moved to separate repo)
 android/
+
+# Technical Paper (Monograph in LaTeX)
+paper/
+paper/**
 
