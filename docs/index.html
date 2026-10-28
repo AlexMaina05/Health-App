@@ -1,132 +1,1037 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <title>RosettaHealth - Homepage</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RosettaHealth | Mobile Edge Zero-Cloud per FSE 2.0 e Apple HealthKit</title>
+  <meta name="description" content="RosettaHealth: architettura software mobile edge nativa per iOS e watchOS sviluppata da Alessandro Mainardi. Transcodifica deterministica on-device tra HL7 CDA R2 (Fascicolo Sanitario Elettronico) e Apple HealthKit in totale conformità Zero-Cloud e GDPR Art. 9.">
+  <meta name="author" content="Alessandro Mainardi">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="theme-color" content="#0a0f1d">
+  <link rel="canonical" href="https://alexmaina.dev/Health-App/">
+
+  <!-- Open Graph / Facebook / LinkedIn -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://alexmaina.dev/Health-App/">
+  <meta property="og:title" content="RosettaHealth — Mobile Edge Zero-Cloud per FSE 2.0 e Apple HealthKit">
+  <meta property="og:description" content="Pipeline deterministica on-device tra HL7 CDA R2 e Apple HealthKit. Privacy-by-Design, Identity Firewall, Secure Enclave e Clinical Decision Support sviluppati da Alessandro Mainardi (UniBo DISI).">
+  <meta property="og:image" content="https://alexmaina.dev/assets/images/profile.webp">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:site_name" content="Alessandro Mainardi">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RosettaHealth | Mobile Edge Zero-Cloud per FSE 2.0 e Apple HealthKit">
+  <meta name="twitter:description" content="Ingegneria del software sanitario: transcodifica ontologica LOINC -> HealthKit on-device, zero-cloud e privacy-by-design.">
+  <meta name="twitter:creator" content="@AlexMaina05">
+
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://alexmaina.dev/#person",
+        "name": "Alessandro Mainardi",
+        "url": "https://alexmaina.dev/",
+        "jobTitle": "Software Developer & Computer Engineering Student",
+        "email": "mailto:maina@alexmaina.dev",
+        "affiliation": {
+          "@type": "EducationalOrganization",
+          "name": "Alma Mater Studiorum - Università di Bologna",
+          "department": "DISI - Dipartimento di Informatica - Scienza e Ingegneria",
+          "url": "https://www.unibo.it"
+        },
+        "identifier": [
+          {
+            "@type": "PropertyValue",
+            "propertyID": "ORCID",
+            "value": "0009-0003-7003-7247",
+            "url": "https://orcid.org/0009-0003-7003-7247"
+          },
+          {
+            "@type": "PropertyValue",
+            "propertyID": "Wikidata",
+            "value": "Q141886579",
+            "url": "https://www.wikidata.org/wiki/Q141886579"
+          }
+        ],
+        "sameAs": [
+          "https://orcid.org/0009-0003-7003-7247",
+          "https://www.wikidata.org/wiki/Q141886579",
+          "https://doi.org/10.5281/zenodo.23692700",
+          "https://github.com/AlexMaina05",
+          "https://alexmaina.dev/"
+        ]
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://alexmaina.dev/Health-App/#software",
+        "name": "RosettaHealth",
+        "applicationCategory": "HealthApplication",
+        "operatingSystem": "iOS 17.0+, watchOS 10.0+",
+        "author": {
+          "@id": "https://alexmaina.dev/#person"
+        },
+        "description": "Architettura software mobile edge per l'interoperabilità semantica tra Fascicolo Sanitario Elettronico (HL7 CDA R2) e Apple HealthKit con tecnologia Zero-Cloud e crittografia Secure Enclave.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0.00",
+          "priceCurrency": "EUR"
+        },
+        "softwareRequirements": "iOS 17.0 o successivo, watchOS 10.0 o successivo",
+        "codeRepository": "https://github.com/AlexMaina05/Health-App",
+        "license": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "@id": "https://doi.org/10.5281/zenodo.23692700",
+        "headline": "RosettaHealth: Un'Architettura Mobile Edge Zero-Cloud per l'Interoperabilità Semantica tra Fascicolo Sanitario Elettronico (HL7 CDA) e Apple HealthKit",
+        "author": {
+          "@id": "https://alexmaina.dev/#person"
+        },
+        "datePublished": "2026-10",
+        "inLanguage": "it",
+        "identifier": "10.5281/zenodo.23692700",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Zenodo / CERN Open Science"
+        },
+        "url": "https://doi.org/10.5281/zenodo.23692700"
+      }
+    ]
+  }
+  </script>
+
   <style>
     :root {
-      --bg: #0b0b0f;
-      --text: #cbd5e1;
+      --bg: #070b14;
+      --bg-card: rgba(15, 23, 42, 0.7);
+      --bg-card-hover: rgba(30, 41, 59, 0.85);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(0, 229, 255, 0.3);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #00e5ff;
+      --accent-secondary: #38bdf8;
+      --accent-purple: #a855f7;
+      --accent-green: #10b981;
+      --accent-danger: #ef4444;
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
-      background-color: var(--bg); color: var(--text); font-family: var(--font);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      min-height: 100vh; overflow: hidden; position: relative; text-align: center;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
     }
-    .glass { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
-    .text-gradient {
-      background: -webkit-linear-gradient(45deg, #a855f7, #38bdf8);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+
+    /* Ambient Background Gradients */
+    .ambient-mesh {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: 
+        radial-gradient(circle at 15% 20%, rgba(0, 229, 255, 0.08), transparent 45%),
+        radial-gradient(circle at 85% 60%, rgba(168, 85, 247, 0.08), transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.05), transparent 40%);
+      pointer-events: none;
     }
-    .mesh-bg {
-      position: absolute; inset: 0; z-index: 0;
-      background: radial-gradient(circle at 10% 50%, rgba(139, 92, 246, 0.15), transparent 40%),
-                  radial-gradient(circle at 90% 20%, rgba(56, 189, 248, 0.15), transparent 40%);
+
+    /* Top Navigation */
+    header.site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(7, 11, 20, 0.8);
+      border-bottom: 1px solid var(--border);
     }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.5px;
+    }
+    .brand-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: rgba(0, 229, 255, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+    .nav-back-main {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text) !important;
+      font-size: 0.85rem !important;
+    }
+    .nav-back-main:hover {
+      background: rgba(0, 229, 255, 0.1);
+      border-color: var(--accent);
+    }
+
+    /* Container */
     .container {
-      position: relative; z-index: 10; max-width: 900px; padding: 0 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
     }
-    h1 {
-      font-size: 4.5rem; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 24px;
+
+    /* Hero Section */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+      position: relative;
     }
-    p {
-      font-size: 1.5rem; font-weight: 300; color: #94a3b8; margin-bottom: 48px;
-      line-height: 1.6; max-width: 700px; margin-left: auto; margin-right: auto;
+    .author-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-accent);
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 28px;
+      text-decoration: none;
+      transition: all 0.3s ease;
     }
-    .buttons {
-      display: flex; gap: 24px; justify-content: center; align-items: center;
+    .author-pill:hover {
+      background: rgba(0, 229, 255, 0.1);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .author-pill img {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+    }
+    .hero-title {
+      font-size: 3.75rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1.5px;
+      margin-bottom: 24px;
+      max-width: 950px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, #00e5ff 0%, #38bdf8 50%, #a855f7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: 1.35rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto 40px;
+    }
+    .badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+    .tech-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-family: var(--mono);
+    }
+    .tech-badge.highlight {
+      background: rgba(0, 229, 255, 0.1);
+      border-color: rgba(0, 229, 255, 0.3);
+      color: var(--accent);
+    }
+    .tech-badge.green {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: var(--accent-green);
+    }
+    .cta-group {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
     }
     .btn {
-      text-decoration: none; padding: 16px 32px; border-radius: 9999px;
-      font-size: 1.125rem; font-weight: 600; transition: all 0.3s ease;
-      display: inline-block;
-    }
-    .btn-primary {
-      background: linear-gradient(90deg, #a855f7, #0ea5e9); color: white;
-      box-shadow: 0 8px 30px rgba(139, 92, 246, 0.3); border: none;
-    }
-    .btn-primary:hover {
-      transform: translateY(-4px); box-shadow: 0 12px 40px rgba(139, 92, 246, 0.5);
-    }
-    .btn-secondary {
-      background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-    .btn-secondary:hover {
-      background: rgba(255,255,255,0.1); transform: translateY(-4px);
-    }
-    
-
-    .waitlist-form {
-      margin-bottom: 24px;
-      display: flex;
-      flex-direction: column;
+      display: inline-flex;
       align-items: center;
-      gap: 12px;
-    }
-    .flex-form {
-      display: flex;
-      gap: 12px;
-      width: 100%;
-      max-width: 500px;
-      justify-content: center;
-    }
-    .email-input {
-      flex: 1;
-      padding: 16px 24px;
-      border-radius: 9999px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.05);
-      color: white;
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.3s;
-    }
-    .email-input::placeholder {
-      color: #64748b;
-    }
-    .email-input:focus {
-      border-color: #a855f7;
-      background: rgba(255,255,255,0.1);
-    }
-    .submit-btn {
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
       cursor: pointer;
     }
-    .waitlist-subtext {
-      font-size: 0.85rem;
-      color: #64748b;
-      margin-bottom: 0;
-      max-width: 100%;
+    .btn-primary {
+      background: linear-gradient(135deg, #00e5ff 0%, #0284c7 100%);
+      color: #04101d;
+      box-shadow: 0 8px 30px rgba(0, 229, 255, 0.3);
+      border: none;
     }
-    
-    @media (max-width: 768px) {
-      .flex-form { flex-direction: column; }
-      h1 { font-size: 3rem; }
-      p { font-size: 1.25rem; }
-      .buttons { flex-direction: column; width: 100%; gap: 16px; }
-      .btn { width: 100%; text-align: center; }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(0, 229, 255, 0.5);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text);
+      backdrop-filter: blur(10px);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--text-muted);
+      transform: translateY(-3px);
+    }
+
+    /* Section Styling */
+    section {
+      padding: 70px 0;
+      border-top: 1px solid var(--border);
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .section-eyebrow {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* Feature Grid */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 32px;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-accent);
+      transform: translateY(-4px);
+    }
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+    .card-text {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    /* Monograph Showcase Card */
+    .monograph-box {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(24, 32, 47, 0.9) 100%);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: 18px;
+      padding: 44px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+    .monograph-box::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #00e5ff, #38bdf8, #a855f7);
+    }
+    .monograph-content {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 40px;
+      align-items: center;
+    }
+    .monograph-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .citation-snippet {
+      background: #030712;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: #93c5fd;
+      overflow-x: auto;
+      margin-top: 16px;
+      line-height: 1.5;
+      position: relative;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #04101d;
+    }
+
+    /* Interactive LOINC Explorer Widget */
+    .explorer-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      margin-top: 30px;
+    }
+    .explorer-search {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(3, 7, 18, 0.6);
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      margin-bottom: 20px;
+      transition: border-color 0.2s;
+    }
+    .explorer-search:focus {
+      border-color: var(--accent);
+    }
+    .table-container {
+      overflow-x: auto;
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+    table.data-table th {
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--accent);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+    }
+    table.data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    table.data-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text);
+    }
+    .code-pill {
+      background: rgba(0, 229, 255, 0.1);
+      color: var(--accent);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+    }
+
+    /* Footer */
+    footer.site-footer {
+      padding: 60px 0 40px;
+      border-top: 1px solid var(--border);
+      background: #040711;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    .footer-brand h4 {
+      color: var(--text);
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+    }
+    .footer-col h5 {
+      color: var(--text);
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+    .footer-col ul {
+      list-style: none;
+    }
+    .footer-col ul li {
+      margin-bottom: 10px;
+    }
+    .footer-col ul li a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-col ul li a:hover {
+      color: var(--accent);
+    }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    @media (max-width: 860px) {
+      .hero-title { font-size: 2.75rem; }
+      .monograph-content { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+      .nav-links { display: none; }
     }
   </style>
 </head>
 <body>
-  <div class="mesh-bg"></div>
-  <div class="container">
-    <h1 class="text-gradient drop-shadow-lg">⚕️ RosettaHealth</h1>
-    <p>Il ponte Zero-Cloud tra il tuo Fascicolo Sanitario e Apple Salute. Inietta i referti PDF nell'ecosistema Apple in totale sicurezza.</p>
-    
-    <div class="waitlist-form">
-      <a href="mailto:maina@alexmaina.dev?subject=Richiesta%20Accesso%20Beta%20TestFlight%20RosettaHealth&body=Ciao%20Alex,%0A%0AVorrei%20partecipare%20alla%20Beta%20privata%20su%20TestFlight%20per%20iOS.%0A%0AGrazie!" class="btn btn-primary">
-        &#128640; Partecipa alla Beta (TestFlight)
+
+  <div class="ambient-mesh"></div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="./" class="brand-link">
+        ⚕️ RosettaHealth
+        <span class="brand-badge">v3.0 Edge</span>
       </a>
-      <p class="waitlist-subtext" style="margin-top: 12px;">Richiedi l'invito ufficiale tramite email per l'app iOS.</p>
+      <ul class="nav-links">
+        <li><a href="#architettura">Architettura</a></li>
+        <li><a href="#loinc">LOINC Explorer</a></li>
+        <li><a href="#monografia">Monografia (PDF)</a></li>
+        <li><a href="#sicurezza">Zero-Cloud & GDPR</a></li>
+        <li><a href="tesi/">Documentazione</a></li>
+        <li>
+          <a href="https://alexmaina.dev/" class="nav-back-main">
+            ← alexmaina.dev
+          </a>
+        </li>
+      </ul>
     </div>
-    
-    <div class="buttons" style="margin-top: 32px;">
-      <a href="tesi/" class="btn btn-secondary glass" style="font-size: 0.9rem; padding: 10px 24px;">Leggi la Documentazione (Tesi)</a>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <a href="https://alexmaina.dev/about/" class="author-pill" title="Profilo Ufficiale di Alessandro Mainardi">
+        <img src="https://alexmaina.dev/assets/images/profile.webp" alt="Alessandro Mainardi" onerror="this.style.display='none'">
+        <span>Progetto Accademico & Ingegneristico di <strong>Alessandro Mainardi</strong> (UniBo DISI)</span>
+        <span style="color: var(--accent);">→</span>
+      </a>
+
+      <h1 class="hero-title">
+        Il Ponte Mobile Edge Zero-Cloud tra <span class="text-gradient">FSE 2.0</span> e <span class="text-gradient">Apple Health</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Transcodifica deterministica e sicura tra i referti di laboratorio <strong>HL7 CDA Release 2</strong> emessi dal Fascicolo Sanitario Elettronico e il database <strong>Apple HealthKit</strong>, senza che un singolo byte abbandoni il tuo dispositivo.
+      </p>
+
+      <div class="badges-row">
+        <span class="tech-badge highlight">Swift 5.10 / Swift 6 Ready</span>
+        <span class="tech-badge">iOS 17+ & watchOS 10+</span>
+        <span class="tech-badge green">Zero-Cloud (GDPR Art. 9)</span>
+        <span class="tech-badge">Secure Enclave Hardware-Backed</span>
+        <span class="tech-badge">LOINC & UCUM Standard</span>
+        <span class="tech-badge">100% Core Code Coverage</span>
+      </div>
+
+      <div class="cta-group">
+        <a href="rosettahealth-monografia-tecnica.pdf" class="btn btn-primary" download>
+          📄 Scarica Monografia Tecnica (43 Pagine, PDF)
+        </a>
+        <a href="tesi/" class="btn btn-secondary">
+          📖 Esplora la Documentazione Completa
+        </a>
+        <a href="https://github.com/AlexMaina05/Health-App" class="btn btn-secondary" target="_blank" rel="noopener">
+          ⭐ GitHub Repository
+        </a>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <!-- Monograph Showcase Section -->
+  <section id="monografia">
+    <div class="container">
+      <div class="monograph-box">
+        <div class="monograph-content">
+          <div>
+            <div class="section-eyebrow">Pubblicazione Scientifica & Specifica Ingegneristica</div>
+            <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 16px; color: var(--text);">
+              RosettaHealth: Monografia Tecnica Architetturale
+            </h2>
+            <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; margin-bottom: 16px;">
+              Un trattato esaustivo di <strong>43 pagine</strong> redatto in formato LaTeX accademico, con analisi formale dello stato dell'arte (FSE 2.0, HL7 CDA R2, FHIR R4), modello di minaccia STRIDE, formalizzazione dell'Identity Firewall (D.M. 23/12/1976 + Jaro-Winkler), benchmark sperimentali su iPhone 15 Pro vs iPhone 13 e appendici ontologiche complete.
+            </p>
+            <div class="monograph-meta-row">
+              <span class="tech-badge highlight">Autore: Alessandro Mainardi</span>
+              <a href="https://orcid.org/0009-0003-7003-7247" target="_blank" rel="noopener" class="tech-badge" style="text-decoration:none;">ORCID: 0009-0003-7003-7247</a>
+              <a href="https://www.wikidata.org/wiki/Q141886579" target="_blank" rel="noopener" class="tech-badge" style="text-decoration:none;">Wikidata: Q141886579</a>
+              <a href="https://doi.org/10.5281/zenodo.23692700" target="_blank" rel="noopener" class="tech-badge green" style="text-decoration:none;">DOI: 10.5281/zenodo.23692700</a>
+            </div>
+            <div style="margin-top: 24px; display: flex; gap: 14px; flex-wrap: wrap;">
+              <a href="rosettahealth-monografia-tecnica.pdf" class="btn btn-primary" download>
+                Scarica il Paper Completo (PDF, 996 KB)
+              </a>
+              <a href="https://doi.org/10.5281/zenodo.23692700" target="_blank" rel="noopener" class="btn btn-secondary">
+                Scheda Zenodo / OpenAIRE
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">
+              Come Citare (BibTeX):
+            </div>
+            <div class="citation-snippet" id="bibtexSnippet">
+              <button class="copy-btn" onclick="copyBibtex()">Copia</button>
+@article{mainardi2026rosettahealth,
+  author  = {Mainardi, Alessandro},
+  title   = {{RosettaHealth: Un'Architettura Mobile Edge Zero-Cloud per l'Interoperabilit{\`a} Semantica tra Fascicolo Sanitario Elettronico (HL7 CDA) e Apple HealthKit}},
+  journal = {Technical Monograph in Health Informatics},
+  year    = {2026},
+  doi     = {10.5281/zenodo.23692700},
+  note    = {Alma Mater Studiorum Universit{\`a} di Bologna. ORCID: 0009-0003-7003-7247}
+}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture & Features Section -->
+  <section id="architettura">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">Architettura Modulare</div>
+        <h2 class="section-title">Ingegnerizzato per la Sicurezza Clinica</h2>
+        <p class="section-desc">
+          Sei pilastri architetturali garantiscono che l'elaborazione dei referti medici rimanga veloce, accurata e matematicamente impermeabile a fughe di dati.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <!-- Feature 1 -->
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <h3 class="card-title">SAX Streaming Parser</h3>
+          <p class="card-text">
+            Elaborazione a stati finiti con complessità di memoria costante \(\mathcal{O}(d_{\max})\). Neutralizza istantaneamente gli attacchi di espansione XML (Billion Laughs / XXE) e garantisce zero terminazioni da parte del demone Jetsam di iOS.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="card">
+          <div class="card-icon">🛡️</div>
+          <h3 class="card-title">Identity Firewall</h3>
+          <p class="card-text">
+            Previene l'inquinamento dei grafici di Apple Salute con i dati clinici dei familiari. Verifica la congruità aritmetica del Codice Fiscale (D.M. 23/12/1976) e applica la distanza di Jaro-Winkler (\(\tau = 0.88\)) su nominativi parziali.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="card">
+          <div class="card-icon">🔬</div>
+          <h3 class="card-title">Matrice Ontologica LOINC</h3>
+          <p class="card-text">
+            Mappatura deterministica e normalizzazione dimensionale conforme a UCUM. Converte analiti ematochimici e parametri cardiometabolici in tipi quantitativi nativi <code>HKQuantityTypeIdentifier</code>.
+          </p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="card">
+          <div class="card-icon">📈</div>
+          <h3 class="card-title">Clinical Decision Support</h3>
+          <p class="card-text">
+            Motore analitico per serie temporali longitudinali basato su regressione lineare OLS ed Exponential Moving Average (EMA). Applica i protocolli clinici ESC/ESH 2023 (ipertensione) e ADA 2024 (glicemia).
+          </p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="card">
+          <div class="card-icon">👁️</div>
+          <h3 class="card-title">Vision OCR (HITL)</h3>
+          <p class="card-text">
+            Pipeline di ripiego accelerata dal Neural Engine per la digitalizzazione di scansioni cartacee e referti bitmap. Adotta il paradigma <em>Human-in-the-Loop</em> con conferma visiva esplicita prima del commit.
+          </p>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="card">
+          <div class="card-icon">🔐</div>
+          <h3 class="card-title">Secure Enclave & SwiftData</h3>
+          <p class="card-text">
+            Persistenza a riposo protetta da chiavi crittografiche hardware vincolate a Face ID / Touch ID nel Keychain di sistema. Database SwiftData con classe di protezione <code>NSFileProtectionComplete</code>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive LOINC Explorer -->
+  <section id="loinc">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">Interoperabilità Semantica</div>
+        <h2 class="section-title">LOINC $\rightarrow$ HealthKit Explorer</h2>
+        <p class="section-desc">
+          Esplora interattivamente il catalogo delle corrispondenze ontologiche supportate nativamente dal motore RosettaHealth.
+        </p>
+      </div>
+
+      <div class="explorer-box">
+        <input type="text" id="loincSearch" class="explorer-search" placeholder="Cerca parametro (es. Glicemia, Pressione, Colesterolo, Sodio, 15074-8)..." oninput="filterLoinc()">
+
+        <div class="table-container">
+          <table class="data-table" id="loincTable">
+            <thead>
+              <tr>
+                <th>Codice LOINC</th>
+                <th>Parametro Clinico</th>
+                <th>HealthKit Type</th>
+                <th>Unità UCUM</th>
+                <th>Fattore / Regola di Normalizzazione</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="code-pill">15074-8</span></td>
+                <td><strong>Glucosio Basale (Siero/Plasma)</strong></td>
+                <td><code>.bloodGlucose</code></td>
+                <td><code>mg/dL</code></td>
+                <td>Pass-through; Gate: [10, 1500] mg/dL</td>
+              </tr>
+              <tr>
+                <td><span class="code-pill">2345-7</span></td>
+                <td><strong>Glucosio (Moli/Volume)</strong></td>
+                <td><code>.bloodGlucose</code></td>
+                <td><code>mmol/L</code></td>
+                <td>Conversione molare: \(\times 18.0182\) \(\to\) mg/dL</td>
+              </tr>
+              <tr>
+                <td><span class="code-pill">2093-3</span></td>
+                <td><strong>Colesterolo Totale</strong></td>
+                <td><code>.dietaryCholesterol</code></td>
+                <td><code>mg/dL</code></td>
+                <td>Gate fisiologico: [20, 1000] mg/dL</td>
+              </tr>
+              <tr>
+                <td><span class="code-pill">2085-9</span></td>
+                <td><strong>Colesterolo HDL</strong></td>
+                <td><code>.dietaryCholesterol</code></td>
+                <td><code>mg/dL</code></td>
+                <td>Gate fisiologico: [5, 300] mg/dL</td>
+              </tr>
+              <tr>
+                <td><span class="code-pill">2571-8</span></td>
+                <td><strong>Trigliceridi</strong></td>
+                <td><code>.dietaryFatTotal</code></td>
+                <td><code>mg/dL</code></td>
+                <td>Se mmol/L \(\to \times 88.57\) \(\to\) mg/dL</td>
+              </tr>
+              <tr>
+                <td><span class="code-pill">8480-6</span></td>
+                <td><strong>Pressione Arteriosa Sistolica</strong></td>
+                <td><code>.bloodPressureSystolic</code></td>
+                <td><code>mm[Hg]</code></td>
+                <td>Triage ESC/ESH 2023; Gate: [40, 350] mmHg</td>
+              </tr>
+              <tr>
+                <td><span class="code-pill">8462-4</span></td>
+                <td><strong>Pressione Arteriosa Diastolica</strong></td>
+                <td><code>.bloodPressureDiastolic</code></td>
+                <td><code>mm[Hg]</code></td>
+                <td>Triage ESC/ESH 2023; Gate: [20, 200] mmHg</td>
+              </tr>
+              <tr>
+                <td><span class="code-pill">8867-4</span></td>
+                <td><strong>Frequenza Cardiaca</strong></td>
+                <td><code>.heartRate</code></td>
+                <td><code>/min</code></td>
+                <td>Unità target: count/min; Gate: [10, 300] bpm</td>
+              </tr>
+              <tr>
+                <td><span class="code-pill">2708-6</span></td>
+                <td><strong>Saturazione Ossigeno (\(SpO_2\))</strong></td>
+                <td><code>.oxygenSaturation</code></td>
+                <td><code>%</code></td>
+                <td>Se frazione \([0.1, 1.0] \to \times 100\); Gate: [50, 100]%</td>
+              </tr>
+              <tr>
+                <td><span class="code-pill">8310-5</span></td>
+                <td><strong>Temperatura Corporea</strong></td>
+                <td><code>.bodyTemperature</code></td>
+                <td><code>Cel</code></td>
+                <td>Se Fahrenheit \(\to (F - 32) \times \frac{5}{9}\) \(\to\) °C</td>
+              </tr>
+              <tr>
+                <td><span class="code-pill">29463-7</span></td>
+                <td><strong>Massa Corporea (Peso)</strong></td>
+                <td><code>.bodyMass</code></td>
+                <td><code>kg</code></td>
+                <td>Se libbre ([lb_av]) \(\to \times 0.453592\) \(\to\) kg</td>
+              </tr>
+              <tr>
+                <td><span class="code-pill">39156-5</span></td>
+                <td><strong>Indice di Massa Corporea (BMI)</strong></td>
+                <td><code>.bodyMassIndex</code></td>
+                <td><code>kg/m2</code></td>
+                <td>Gate fisiologico: [5, 100] kg/m\(^2\)</td>
+              </tr>
+              <tr>
+                <td><span class="code-pill">2951-2</span></td>
+                <td><strong>Sodio nel Siero</strong></td>
+                <td><code>.dietarySodium</code></td>
+                <td><code>mmol/L</code></td>
+                <td>Normalizzazione stechiometrica: \(\times 22.99\) \(\to\) mg</td>
+              </tr>
+              <tr>
+                <td><span class="code-pill">2823-3</span></td>
+                <td><strong>Potassio nel Siero</strong></td>
+                <td><code>.dietaryPotassium</code></td>
+                <td><code>mmol/L</code></td>
+                <td>Normalizzazione stechiometrica: \(\times 39.10\) \(\to\) mg</td>
+              </tr>
+              <tr>
+                <td><span class="code-pill">94122-8</span></td>
+                <td><strong>Massimo Consumo Ossigeno (\(VO_2\) max)</strong></td>
+                <td><code>.vo2Max</code></td>
+                <td><code>mL/kg/min</code></td>
+                <td>Unità HealthKit nativa: mL/kg*min</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Security & GDPR Section -->
+  <section id="sicurezza">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">Privacy-by-Design</div>
+        <h2 class="section-title">Perché il Paradigma Zero-Cloud?</h2>
+        <p class="section-desc">
+          I dati sanitari sono irrevocabili. Caricarli su server cloud commerciali crea una superficie d'attacco inaccettabile per il cittadino.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-icon">🏛️</div>
+          <h3 class="card-title">Esenzione GDPR Art. 2 (2)(c)</h3>
+          <p class="card-text">
+            Non essendoci alcun server backend o fornitore cloud intermedio, il trattamento ricade totalmente nell'esenzione per finalità personali e domestiche. L'utente è l'unico ed esclusivo custode dei propri referti.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🔒</div>
+          <h3 class="card-title">Air-Gapped Processing</h3>
+          <p class="card-text">
+            RosettaHealth non richiede né effettua alcuna connessione socket HTTP/TCP esterna durante il parsing o l'analisi clinica: <code>NetworkTraffic(d) = ∅</code> per ogni documento processato.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🗑️</div>
+          <h3 class="card-title">Diritto all'Oblio Reale (Art. 17)</h3>
+          <p class="card-text">
+            L'interfaccia include cancellazione fisica immediata: eliminando un'osservazione o un referto, il record viene rimosso fisicamente sia da SwiftData sia da HealthKit tramite <code>deleteObject</code>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>⚕️ RosettaHealth</h4>
+          <p style="margin-bottom: 16px; max-width: 380px;">
+            Architettura mobile edge open-source concepita e sviluppata da <strong>Alessandro Mainardi</strong> per garantire la sovranità computazionale del dato clinico a beneficio del cittadino.
+          </p>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <a href="https://orcid.org/0009-0003-7003-7247" target="_blank" rel="noopener" class="tech-badge" style="text-decoration:none;">ORCID</a>
+            <a href="https://www.wikidata.org/wiki/Q141886579" target="_blank" rel="noopener" class="tech-badge" style="text-decoration:none;">Wikidata</a>
+            <a href="https://doi.org/10.5281/zenodo.23692700" target="_blank" rel="noopener" class="tech-badge" style="text-decoration:none;">Zenodo DOI</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>Risorse di Progetto</h5>
+          <ul>
+            <li><a href="rosettahealth-monografia-tecnica.pdf" download>Monografia Tecnica (PDF)</a></li>
+            <li><a href="tesi/">Portale Documentazione</a></li>
+            <li><a href="https://github.com/AlexMaina05/Health-App" target="_blank" rel="noopener">Codice Sorgente su GitHub</a></li>
+            <li><a href="PRIVACY_POLICY.md">Informativa Privacy</a></li>
+            <li><a href="DPIA.md">Valutazione DPIA</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Alessandro Mainardi</h5>
+          <ul>
+            <li><a href="https://alexmaina.dev/">alexmaina.dev (Sito Ufficiale)</a></li>
+            <li><a href="https://alexmaina.dev/about/">Profilo & Bio Accademica</a></li>
+            <li><a href="https://alexmaina.dev/projects/">Altri Progetti Software</a></li>
+            <li><a href="https://alexmaina.dev/guide/">Guide Tecniche & Sistemi</a></li>
+            <li><a href="mailto:maina@alexmaina.dev">maina@alexmaina.dev</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          &copy; 2026 Alessandro Mainardi &middot; Alma Mater Studiorum Università di Bologna &middot; Rilasciato con licenza <a href="https://creativecommons.org/licenses/by/4.0/" style="color:var(--text-muted);" target="_blank" rel="noopener">CC BY 4.0</a>.
+        </div>
+        <div>
+          Ingegneria del Software Sanitario ed Interoperabilità Semantica Edge
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function filterLoinc() {
+      const input = document.getElementById('loincSearch');
+      const filter = input.value.toLowerCase();
+      const table = document.getElementById('loincTable');
+      const tr = table.getElementsByTagName('tr');
+
+      for (let i = 1; i < tr.length; i++) {
+        const text = tr[i].textContent || tr[i].innerText;
+        if (text.toLowerCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+
+    function copyBibtex() {
+      const code = `@article{mainardi2026rosettahealth,
+  author  = {Mainardi, Alessandro},
+  title   = {{RosettaHealth: Un'Architettura Mobile Edge Zero-Cloud per l'Interoperabilit{\\`a} Semantica tra Fascicolo Sanitario Elettronico (HL7 CDA) e Apple HealthKit}},
+  journal = {Technical Monograph in Health Informatics},
+  year    = {2026},
+  doi     = {10.5281/zenodo.23692700},
+  note    = {Alma Mater Studiorum Universit{\\`a} di Bologna. ORCID: 0009-0003-7003-7247}
+}`;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.innerText = 'Copiato!';
+        setTimeout(() => { btn.innerText = 'Copia'; }, 2000);
+      });
+    }
+  </script>
 </body>
 </html>

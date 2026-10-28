@@ -1,48 +1,82 @@
 # ⚕️ RosettaHealth 
-**Il ponte on-device tra il Fascicolo Sanitario Elettronico (FSE) e Apple Health.**
+**Il ponte mobile edge on-device tra il Fascicolo Sanitario Elettronico (FSE) e Apple Health.**
 
+[![Author](https://img.shields.io/badge/Author-Alessandro_Mainardi-00e5ff?style=for-the-badge)](https://alexmaina.dev/)
+[![Affiliation](https://img.shields.io/badge/UniBo-DISI-CC0000?style=for-the-badge)](https://disi.unibo.it/)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0003--7003--7247-A6CE39?style=for-the-badge&logo=orcid&logoColor=white)](https://orcid.org/0009-0003-7003-7247)
+[![Wikidata](https://img.shields.io/badge/Wikidata-Q141886579-3399CC?style=for-the-badge&logo=wikidata&logoColor=white)](https://www.wikidata.org/wiki/Q141886579)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23692700-007EC6?style=for-the-badge)](https://doi.org/10.5281/zenodo.23692700)
 [![iOS 17+](https://img.shields.io/badge/iOS-17.0%2B-black?style=for-the-badge&logo=apple)](https://apple.com)
 [![watchOS 10+](https://img.shields.io/badge/watchOS-10.0%2B-black?style=for-the-badge&logo=apple)](https://apple.com)
 [![Swift 5.10](https://img.shields.io/badge/Swift-5.10-F05138?style=for-the-badge&logo=swift)](https://swift.org)
 [![Zero Cloud](https://img.shields.io/badge/Architecture-Zero_Cloud-2b2b2b?style=for-the-badge)](#)
-[![License](https://img.shields.io/badge/License-GPL_v3-4CAF50?style=for-the-badge)](#)
+[![License](https://img.shields.io/badge/License-CC_BY_4.0-4CAF50?style=for-the-badge)](https://creativecommons.org/licenses/by/4.0/)
 
 > **RosettaHealth** non è un semplice lettore PDF; è una *pipeline invisibile e sicura* progettata per restituire ai pazienti il controllo sui propri dati medici. Sviluppata interamente in Swift (nativa), estrae i referti complessi (FSE 2.0) e li traduce in grafici interattivi all'interno di Apple Salute... il tutto senza che un singolo byte abbandoni il tuo iPhone.
 
 ---
 
 ## 📖 Indice
-- [Documentazione di Progetto](#-documentazione-di-progetto)
+- [Documentazione di Progetto & Monografia](#-documentazione-di-progetto--monografia)
 - [Guida Utente](#-guida-utente)
 - [Il Problema & La Soluzione](#-il-problema--la-soluzione)
 - [Come Funziona (User Journey)](#-come-funziona-user-journey)
 - [Architettura & Rosetta Engine](#-architettura--rosetta-engine)
 - [Funzionalità Core](#-funzionalità-core)
 - [Ecosistema Avanzato (iOS & watchOS)](#-ecosistema-avanzato-ios--watchos)
+- [Privacy & GDPR Compliance](#-privacy--gdpr-compliance)
+- [Metriche Cliniche Supportate](#-metriche-cliniche-supportate)
+- [Autore & Attribuzione Accademica](#-autore--attribuzione-accademica)
 
+---
 
+## 📚 Documentazione di Progetto & Monografia
 
-### UI/UX & Cosmetica (Theme Engine)
-L'app è stata ingegnerizzata con una palette cromatica predefinita "Blu Medico" per trasmettere fiducia e pulizia clinica. Gli utenti **RosettaHealth PRO** hanno inoltre accesso a un *Theme Engine Globale* che permette di ricolorare dinamicamente l'intera interfaccia (incluso il blocco FaceID) scegliendo tra diverse palette (Ottanio, Verde Salute, Rosso Cardio, ecc.).
+Oltre al presente README e alla [Homepage Interattiva](https://alexmaina.dev/Health-App/), il progetto include una corposa monografia accademica e documentazione tecnica strutturata:
 
-### Esperienza di Onboarding (Carousel)
-Per abbattere la frizione dell'importazione manuale, l'app accoglie i nuovi utenti con un tutorial nativo "a scorrimento" (PageTabViewStyle). Questo onboarding educa l'utente al concetto di Zero-Cloud e spiega l'interazione con l'FSE prima di richiedere i consensi GDPR, garantendo un'esperienza fluida e *Apple-like*.
+- 📄 [**Monografia Tecnica Ufficiale (PDF, 43 Pagine)**](https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf): Trattato formale in LaTeX redatto da Alessandro Mainardi (UniBo DISI). Include specifiche matematiche, modello di minaccia STRIDE, validazione dell'Identity Firewall (D.M. 23/12/1976 + Jaro-Winkler), benchmark sperimentali su iPhone 15 Pro / iPhone 13 e appendici ontologiche LOINC complete. DOI: [10.5281/zenodo.23692700](https://doi.org/10.5281/zenodo.23692700).
+- 🏛️ [**Analisi dello Stato dell'Arte**](https://alexmaina.dev/Health-App/tesi/#/Stato_dell_Arte): Analisi del panorama italiano (FSE 2.0, HL7 CDA R2, standard regionali Emilia-Romagna/Lombardia/Veneto) e internazionale (FHIR R4).
+- ⚙️ [**Technical Design Document (TDD)**](https://alexmaina.dev/Health-App/tesi/#/tdd): Il cuore ingegneristico (modello Producer-Consumer, schema SwiftData `@ModelActor`, crittografia Secure Enclave, Swift Concurrency).
+- 🚀 [**Sviluppi Futuri e Roadmap**](https://alexmaina.dev/Health-App/tesi/#/Sviluppi_Futuri): Vision evolutiva (v4.0+), inclusi Small Language Models (SLM) on-device con CoreML ed European Health Data Space (EHDS).
+- 🔒 [**Valutazione d'Impatto DPIA**](https://alexmaina.dev/Health-App/tesi/#/DPIA) & [**Informativa Privacy**](https://alexmaina.dev/Health-App/tesi/#/PRIVACY_POLICY): Conformità rigorosa al GDPR Art. 9 ed esenzione Art. 2(2)(c).
+- 📖 [**Manuale Utente Operativo**](https://alexmaina.dev/Health-App/tesi/#/GUIDA_UTENTE): Istruzioni passo-passo per l'acquisizione, la condivisione e la revisione Human-in-the-Loop.
 
-### Inclusività e "Modalità Anonima" (Fail-Safe)
-Cosa succede se l'utente è uno straniero (STP) o non possiede un Codice Fiscale italiano? L'app offre una Modalità Anonima attivabile in fase di registrazione.
-Per mantenere inviolato il firewall dei dati ed evitare che l'utente inquini Apple Salute con i referti dei familiari, il motore attiva un livello di sicurezza secondario: il **Fuzzy Name Matching**. I referti sprovvisti di CF vengono analizzati incrociando stringhe e sottostringhe del nome del proprietario in modo case-insensitive, garantendo l'iniezione solo se l'identità è confermata.
+---
 
-## 💎 Modello di Business (Freemium)
+## 🎯 Il Problema & La Soluzione
+
+**Il Problema:**  
+In Italia, l'esito di un esame diagnostico o di laboratorio viene caricato sul Fascicolo Sanitario Elettronico come file PDF. Sepolto all'interno di quel documento si trova un payload **HL7 CDA R2 XML** — uno standard clinicamente accurato ma virtualmente illeggibile per la tecnologia consumer. Se desideri tracciare il tuo colesterolo negli ultimi 5 anni per monitorare il tuo stato cardiovascolare, sei costretto ad aprire decine di PDF e annotare i numeri manualmente.
+
+**La Soluzione:**  
+Abbiamo costruito un motore di transcodifica *on-device*. **RosettaHealth** intercetta il PDF governativo tramite un'Estensione di Condivisione nativa di iOS, estrapola il payload XML, e lo transcodifica nel modernissimo standard **HL7 FHIR R4**. Infine, inietta nativamente i valori numerici nel database di **Apple HealthKit**.
+
+Il risultato? Il PDF burocratico diventa istantaneamente un grafico sanitario interattivo a lungo termine, analizzabile a colpo d'occhio.
+
+---
+
+## ⚙️ Come Funziona (User Journey)
+
+1. **Scarica**: L'utente scarica un referto (PDF) dal portale FSE (o via email/File).
+2. **Condividi**: Senza uscire da Safari o Mail, l'utente preme "Condividi" e seleziona "RosettaHealth" dal menu di condivisione di sistema.
+3. **Elabora (In Background)**: La *Custom Share Extension* accoda il file. L'utente non deve neanche aprire l'app. In background (grazie a `BGTaskScheduler`), l'app esegue il parsing XML in streaming e lo transcodifica.
+4. **Visualizza**: I parametri clinici (Glicemia, Pressione, Colesterolo) appaiono su Apple Salute o direttamente al polso tramite l'app **watchOS Companion**.
+
+---
+
+## 💎 Modello di Business (Freemium Etico)
 
 L'applicazione abbraccia un modello di monetizzazione etico e sostenibile (Zero-Ads, Zero-Data-Selling):
 - **Core Gratuito**: Importazione illimitata di referti personali (Glicemia, Pressione, ecc.) sincronizzati direttamente in Apple Salute.
-- **RosettaHealth PRO (Paywall)**: Sblocca il *Family Vault*, permettendo l'archiviazione di referti appartenenti a terzi (figli, genitori) sul dispositivo. Se un utente free tenta di importare il referto di un familiare, l'App blocca preventivamente l'iniezione (per evitare inquinamento dati) e propone l'acquisto In-App.
+- **RosettaHealth PRO**: Sblocca il *Family Vault*, permettendo l'archiviazione di referti appartenenti a terzi (figli minori, genitori anziani) sul dispositivo con isolamento crittografico Face ID.
+
+---
 
 ## 🚀 Compilazione & Sviluppo (XcodeGen)
 
-Il progetto utilizza **Swift Package Manager** (SPM) come singola fonte di verità per le dipendenze e **XcodeGen** per generare nativamente l'ambiente di lavoro. L'app non possiede file `.xcodeproj` o `.xcworkspace` tracciati su git per favorire un ambiente di CI/CD pulito.
+Il progetto utilizza **Swift Package Manager** (SPM) come singola fonte di verità per le dipendenze e **XcodeGen** per generare nativamente l'ambiente di lavoro. L'app non possiede file `.xcodeproj` o `.xcworkspace` tracciati su git per favorire un ambiente di CI/CD pulito e deterministico.
 
-Per buildare il progetto sul tuo Mac:
+Per compilare il progetto sul tuo Mac:
 ```bash
 # 1. Installa XcodeGen
 brew install xcodegen
@@ -54,106 +88,32 @@ xcodegen generate
 open RosettaHealth.xcodeproj
 ```
 
+---
+
 ## 🧪 Testing, Accessibilità (A11y) & Modularità
 
-L'ultimo sprint architetturale (v3.0) ha certificato l'app come *Senior Grade*:
-- **Accessibilità Totale (VoiceOver)**: Le View SwiftUI (come `ObservationRowView`) possiedono etichette semantiche. I grafici e le sparkline cliniche vengono tradotti in un linguaggio umano perfettamente leggibile per ipovedenti.
-- **Unit Testing (100% Coverage sul Core)**: Include file di Test specializzati (`ClinicalDecisionSupportTests`, `RosettaTranscoderTests`) per garantire, ad esempio, che l'algoritmo CDS allarmi l'utente solo se il trend cardiovascolare sta oggettivamente peggiorando.
-- **Modularità UI**: L'antica "God View" da oltre 600 righe è stata suddivisa in componenti indipendenti (`SettingsView`, `ShareSheet`, `ObservationRowView`).
-- **Esattezza Dati OCR (Human-in-the-Loop)**: L'estrazione dati non strutturata tramite AI non inietta più in automatico i dati in Apple Salute, ma richiede conferma esplicita dell'utente tramite UI.
-- **Keychain & Diritto all'Oblio**: Sicurezza spinta al massimo. Il Codice Fiscale è isolato in `Keychain` e l'utente ha pieno controllo del database locale potendo cancellare fisicamente i referti tramite l'interfaccia SwiftData (`.onDelete`).
-
-- [Privacy & GDPR Compliance](#-privacy--gdpr-compliance)
-- [Metriche Cliniche Supportate](#-metriche-cliniche-supportate)
+L'architettura rispetta gli standard industriali più rigorosi:
+- **Accessibilità Totale (VoiceOver)**: Le View SwiftUI (`ObservationRowView`) possiedono etichette semantiche. I grafici e le sparkline cliniche vengono tradotti in un linguaggio umano perfettamente leggibile per ipovedenti.
+- **Unit Testing (100% Coverage sul Core)**: Include test specialistici (`ClinicalDecisionSupportTests`, `RosettaTranscoderTests`, `ValidationGateTests`) per garantire che l'algoritmo allarmi l'utente solo se il trend cardiovascolare o metabolico sta oggettivamente peggiorando.
+- **Modularità UI**: Scomposizione in componenti atomici indipendenti (`SettingsView`, `ShareSheet`, `ObservationRowView`, `FamilyVaultView`).
+- **Esattezza Dati OCR (Human-in-the-Loop)**: L'estrazione dati non strutturata tramite AI/Vision non inietta mai automaticamente i dati in Apple Salute, ma richiede conferma esplicita dell'utente tramite UI con crop dell'immagine originale.
+- **Keychain & Diritto all'Oblio**: Il Codice Fiscale è isolato in `Keychain` e l'utente ha pieno controllo del database locale potendo cancellare fisicamente i referti tramite SwiftData (`.onDelete`) con propagazione automatica a HealthKit (`deleteObject`).
 
 ---
 
----
-
-## 📚 Documentazione di Progetto
-
-Oltre al presente README, il progetto è corredato da una documentazione accademica e tecnica approfondita, suddivisa in tre documenti chiave:
-
-- 🏛️ [**Analisi dello Stato dell'Arte**](https://alexmaina.dev/Health-App/Stato_dell_Arte): Un'analisi del panorama italiano (FSE 2.0, HL7 CDA) e internazionale (FHIR R4), che evidenzia i limiti di interoperabilità superati da quest'app.
-- ⚙️ [**Technical Design Document (TDD)**](https://alexmaina.dev/Health-App/tdd): Il cuore ingegneristico del progetto. Dettaglia l'architettura Producer-Consumer, lo schema SwiftData, le regex per l'OCR, l'uso della Secure Enclave e molto altro.
-- 🚀 [**Sviluppi Futuri e Roadmap**](https://alexmaina.dev/Health-App/Sviluppi_Futuri): La vision di prodotto per le versioni future (v4.0+), inclusa l'integrazione di Small Language Models locali e cruscotti olistici proprietari.
-
----
-
-## 🎯 Il Problema & La Soluzione
-
-**Il Problema:** 
-In Italia, l'esito di un esame diagnostico o di laboratorio viene caricato sul Fascicolo Sanitario Elettronico come file PDF. Sepolto all'interno di quel documento si trova un payload **HL7 CDA R2 XML** — uno standard clinicamente accurato ma virtualmente illeggibile per la tecnologia consumer. Se desideri tracciare il tuo colesterolo negli ultimi 5 anni per monitorare il tuo stato cardiovascolare, sei costretto ad aprire decine di PDF e annotare i numeri manualmente.
-
-**La Soluzione:** 
-Abbiamo costruito un motore di transcodifica *on-device*. **RosettaHealth** intercetta il PDF governativo tramite un'Estensione di Condivisione nativa di iOS, estrapola il payload XML, e lo transcodifica nel modernissimo standard **HL7 FHIR R4**. Infine, inietta nativamente i valori numerici nel database di **Apple HealthKit**.
-
-Il risultato? Il PDF burocratico diventa istantaneamente un grafico sanitario interattivo a lungo termine, analizzabile a colpo d'occhio.
-
----
-
-## ⚙️ Come Funziona (User Journey)
-
-1. **Scarica**: L'utente scarica un referto (PDF) dal portale FSE (o via email/File).
-2. **Condividi**: Senza uscire da Safari, l'utente preme "Condividi" e seleziona "RosettaHealth" dal menu di condivisione di sistema.
-3. **Elabora (In Background)**: La *Custom Share Extension* accoda il file. L'utente non deve neanche aprire l'app. Di notte (grazie a `BGTaskScheduler`), l'app si sveglia silenziosamente, esegue il parsing XML e lo transcodifica.
-4. **Visualizza**: I parametri clinici (Glicemia, Pressione, Colesterolo) appaiono su Apple Salute o direttamente al polso tramite l'app **watchOS Companion**.
-
----
-
-## 🧠 Architettura & Rosetta Engine
-
-L'infrastruttura di RosettaHealth si basa su una rigorosa architettura **Producer-Consumer** via `App Groups` e un motore di transcodifica avanzato:
-
-> 📚 **Approfondimento**: Per tutti i dettagli su modelli dati, sicurezza IPC e flussi, consulta il [**Technical Design Document (TDD)**](https://alexmaina.dev/Health-App/tdd).
-
-### Interoperabilità Transfrontaliera (IPS)
-Il *Rosetta Engine* implementa deterministicamente la semantica del **Microsoft FHIR-Converter**. Non si limita a generare codice FHIR R4, ma inietta attivamente i metadati del profilo **International Patient Summary (IPS)**. L'esportazione JSON generata dall'App è formalmente riconosciuta a livello internazionale, consentendo la portabilità clinica transfrontaliera all'interno dell'Unione Europea.
-
-### Graceful OCR Fallback (Apple Vision)
-Nel panorama sanitario italiano, molti referti (specie visite specialistiche) vengono caricati come scansioni raster (senza XML integrato). RosettaHealth adotta un pattern di *Graceful Degradation*:
-Se il parser XML fallisce, subentra il modulo **VisionOCRExtractor**. Sfruttando la Neural Engine del dispositivo (`VNRecognizeTextRequest`), l'app legge l'immagine ed estrae eufemisticamente i parametri quantitativi tramite espressioni regolari (Regex). Tali dati vengono salvati nei grafici con un metadato esplicito di tracciabilità (Audit Trail), indicando l'origine euristica.
-
----
-
-## ✨ Funzionalità Core
-
-| Feature | Descrizione | Stack Tecnologico |
-|---------|-------------|-------------------|
-| **Apple Health Injection** | Inserimento in tempo reale dei referti CDA ufficiali (`HKCDADocumentSample`) e dei campioni quantitativi (`HKQuantitySample`). | `HealthKit` |
-| **Family Vault & Dual Routing** | **Prevenzione inquinamento dati**: L'app verifica il Codice Fiscale del PDF. Se non è il tuo (es. stai scaricando il referto di un genitore), nega l'accesso ad Apple Salute e lo salva nel *Family Vault* multi-utente, creando un EMR di famiglia separato. | `SwiftData` |
-| **Trend Sparklines** | Visualizzazione dinamica e fluida degli andamenti storici (interpolazione Catmull-Rom) con animazioni 3D *CoverFlow* in scorrimento. | `Swift Charts` |
-| **Live Activities** | Monitoraggio del parsing documentale asincrono direttamente dalla **Dynamic Island** e dalla Lock Screen. | `ActivityKit` |
-| **Clinical Decision Support** | Un mini-motore di inferenza medica locale (`RosettaEngine`) che analizza i referti appena consumati e genera alert preventivi in caso di anomalie prolungate. | `RosettaEngine` |
-
----
-
-## 🚀 Ecosistema Avanzato (iOS & watchOS)
-
-L'app non è relegata a un contenitore isolato, ma sfrutta appieno il tessuto dell'ecosistema Apple:
-
-* 📤 **Custom Share Extension SwiftUI**: Estrae e accoda i referti scavalcando la noiosa "Share UI" standard di iOS, offrendo animazioni fluide e **Sensory Feedback** aptici nativi (iOS 17).
-* 👆 **iPadOS Drag & Drop**: Affiancando due app su iPad, puoi trascinare (`.onDrop(of: [.pdf])`) direttamente un malloppo di referti dentro la Dashboard.
-* ⌚ **watchOS Companion App**: Tieni monitorato il Family Vault direttamente dal polso. Comunica via `UserDefaults` (App Groups) per renderizzare `Gauge` (tachimetri) senza sprecare batteria o risvegliare l'iPhone.
-* 🌙 **Nightly Background Fetch**: Integrazione con `BGTaskScheduler`. Il dispositivo esegue l'elaborazione PDF massiva di notte (headless model context) per garantirti i grafici pronti al mattino.
-* 🖍️ **PDF Vector Annotations**: Tramite `PDFKit`, i PDF raster estratti via Intelligenza Artificiale mantengono la propria valenza medico-legale: l'app genera annotazioni ed *evidenziazioni gialle* sopra le precise coordinate vettoriali da cui l'OCR ha estratto il dato.
-
----
-
-## 🔒 Privacy & GDPR Compliance
+## 🛡️ Privacy & GDPR Compliance
 
 Trattando *categorie particolari di dati personali (Art. 9 GDPR)*, l'app applica regole di sicurezza paramilitari:
-
-- 🚫 **Zero-Cloud Guarantee**: L'app **non importa stack di rete** (`URLSession` non esiste nel codice). Tutta l'elaborazione OCR e il parsing avvengono sul SoC locale del telefono. Nessun dato lascia mai la CPU di origine.
-- 🛡️ **Biometric Security (FaceID/TouchID)**: Se sposti l'app in background o la metti in multitasking, interviene un **Privacy Screen Blur** opaco. Per riaccendere lo schermo è richiesto l'accesso biometrico forzato (`LocalAuthentication`).
-- 🔐 **Crittografia Data at Rest**: La condivisione IPC tra Share Extension e Main App usa container schermati con `NSFileProtectionCompleteUntilFirstUserAuthentication`.
+- 🚫 **Zero-Cloud Guarantee**: L'app **non importa stack di rete** (`URLSession` non esiste nel codice core). Tutta l'elaborazione OCR e il parsing avvengono sul SoC locale del telefono. Nessun dato lascia mai la CPU di origine.
+- 🛡️ **Biometric Security (FaceID/TouchID)**: Se sposti l'app in background, interviene un **Privacy Screen Blur** opaco. Per sbloccare lo schermo è richiesta l'autenticazione biometrica hardware (`LocalAuthentication`).
+- 🔐 **Crittografia Data at Rest**: La condivisione IPC tra Share Extension e Main App usa container schermati con `NSFileProtectionComplete`.
 - 🧹 **Cleanup Atomico**: Qualsiasi PDF processato localmente subisce uno *scarto irreversibile* (`defer` block cleanup) per garantire **Zero-Retention** sul file system esposto.
 
 ---
 
 ## 📊 Metriche Cliniche Supportate
 
-Il motore di mappatura semantica trasla i codici identificativi (LOINC) presenti nel FSE direttamente nella tassonomia di `HKQuantityTypeIdentifier` di Cupertino:
+Il motore di mappatura semantica trasla i codici identificativi (LOINC) presenti nel FSE direttamente nella tassonomia di `HKQuantityTypeIdentifier` di Apple:
 
 | Categoria | Nome Parametro | LOINC (Esempi) | Identificativo Apple Salute |
 |-----------|----------------|----------------|-----------------------------|
@@ -161,15 +121,19 @@ Il motore di mappatura semantica trasla i codici identificativi (LOINC) presenti
 | 🫀 **Cardiologia** | Pressione, Battito, HRV, VO2 Max | `8480-6`, `80404-7` | `bloodPressureSystolic`, `heartRateVariabilitySDNN` |
 | 🍔 **Profilo Lipidico** | Colesterolo (Tot, HDL, LDL), Trigliceridi | `2093-3`, `2571-8` | `dietaryCholesterol`, `dietaryFatTotal` |
 | ⚖️ **Antropometria** | Peso, Altezza, BMI, Massa Grassa | `29463-7`, `39156-5` | `bodyMass`, `bodyMassIndex` |
-| 💊 **Vitamine** | Vitamina D, C, B12, A, E | `1649-3`, `2132-9` | `dietaryVitaminD`, `dietaryVitaminB12` |
-| 🧪 **Elettroliti** | Magnesio, Zinco, Sodio, Calcio, Ferro | `19123-9`, `3236-8` | `dietaryMagnesium`, `dietaryZinc` |
-
-*(Nota: Molte altre mappature LOINC sono estensibili nativamente modificando il dizionario in `HealthKitBridge.swift`)*
+| 💊 **Vitamine** | Vitamina D, C | `32309-7`, `32220-6` | `dietaryVitaminD`, `dietaryVitaminC` |
+| 🧪 **Elettroliti** | Sodio, Potassio nel Siero | `2951-2`, `2823-3` | `dietarySodium`, `dietaryPotassium` |
 
 ---
-**Progettato con ♥️ e SwiftUI per Apple Ecosystem.**  
-*Distribuito sotto licenza GNU General Public License v3.0 (GPLv3) con App Store Exception.*
 
-## 📜 Note Legali
-- [Privacy Policy](PRIVACY_POLICY)
-- [Termini di Servizio e Disclaimer Medico](TOS)
+## 👤 Autore & Attribuzione Accademica
+
+Il progetto **RosettaHealth** è ideato, formalizzato e sviluppato da:
+
+- **Autore:** [Alessandro Mainardi](https://alexmaina.dev/)
+- **Affiliazione:** Alma Mater Studiorum — Università di Bologna, Dipartimento di Informatica — Scienza e Ingegneria (DISI)
+- **ORCID:** [0009-0003-7003-7247](https://orcid.org/0009-0003-7003-7247)
+- **Wikidata:** [Q141886579](https://www.wikidata.org/wiki/Q141886579)
+- **Concept DOI:** [10.5281/zenodo.23692700](https://doi.org/10.5281/zenodo.23692700) (Zenodo / OpenAIRE)
+- **Contatto:** `maina@alexmaina.dev` · Sito Ufficiale: [alexmaina.dev](https://alexmaina.dev/)
+- **Licenza:** [Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)

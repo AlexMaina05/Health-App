@@ -32,3 +32,13 @@ Esempio di query: *"Ehi Siri, chiedi a RosettaHealth se il mio colesterolo e la 
 
 ## 4. Porting Android (Kotlin / Jetpack Compose)
 In ottica di espansione del mercato, è prevista una versione per ecosistema Android. L'app nascerà inizialmente come versione "castrata" (esclusivamente come visualizzatore sicuro locale dei referti FSE e decodificatore XML/FHIR), per poi evolversi introducendo (eventualmente come tier Premium) la sincronizzazione con **Google Health Connect** (l'equivalente Android di Apple HealthKit). L'architettura manterrà il paradigma Zero-Cloud, processando i dati interamente sul dispositivo locale.
+
+
+---
+
+## 📚 Riferimenti Bibliografici & Monografia Ufficiale
+
+- **Monografia Tecnica Accademica**: [Scarica il Paper Completo (PDF, 43 Pagine)](https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf)
+- **Autore**: [Alessandro Mainardi](https://alexmaina.dev/) — Alma Mater Studiorum Università di Bologna (DISI)
+- **Identificatori Persistenti**: ORCID [0009-0003-7003-7247](https://orcid.org/0009-0003-7003-7247) · Wikidata [Q141886579](https://www.wikidata.org/wiki/Q141886579) · DOI [10.5281/zenodo.23692700](https://doi.org/10.5281/zenodo.23692700)
+- **Portale Ufficiale**: [alexmaina.dev](https://alexmaina.dev/)

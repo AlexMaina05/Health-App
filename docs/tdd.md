@@ -230,3 +230,13 @@ Il *Family Vault* supporta la sincronizzazione opzionale tramite il **CloudKit P
 - **Architettura a Doppio Container:** In base alla variabile `isCloudSyncEnabled` in `UserDefaults`, `RosettaHealthApp.swift` inizializza `ModelConfiguration` con `cloudKitDatabase: .automatic` oppure `.none`.
 - **GDPR Compliance:** Dato che sfrutta il database privato dell'utente associato al suo Apple ID, l'infrastruttura CloudKit rimane invisibile agli sviluppatori e crittografata end-to-end. Il passaggio invalida il termine "Zero-Cloud" mutandolo in "Zero-Server-Terzi".
 - **Limiti di SwiftData:** Per supportare CloudKit, il vincolo di unicità (`@Attribute(.unique)`) su `VaultDocument.id` è stato rimosso in favore degli identificativi nativi di CloudKit, e tutti gli attributi del modello hanno ora valori di default espliciti.
+
+
+---
+
+## 📚 Riferimenti Bibliografici & Monografia Ufficiale
+
+- **Monografia Tecnica Accademica**: [Scarica il Paper Completo (PDF, 43 Pagine)](https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf)
+- **Autore**: [Alessandro Mainardi](https://alexmaina.dev/) — Alma Mater Studiorum Università di Bologna (DISI)
+- **Identificatori Persistenti**: ORCID [0009-0003-7003-7247](https://orcid.org/0009-0003-7003-7247) · Wikidata [Q141886579](https://www.wikidata.org/wiki/Q141886579) · DOI [10.5281/zenodo.23692700](https://doi.org/10.5281/zenodo.23692700)
+- **Portale Ufficiale**: [alexmaina.dev](https://alexmaina.dev/)

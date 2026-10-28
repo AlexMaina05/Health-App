@@ -57,3 +57,13 @@ Dall'analisi dello stato dell'arte emerge un vuoto infrastrutturale che isola il
 3. **Resilienza (Graceful Degradation)**: Riconoscendo che molti documenti del FSE sono scansioni rasterizzate prive di XML, l'architettura non fallisce ma adotta un piano di fallback tramite Computer Vision (Apple Vision OCR), garantendo l'estrazione del dato anche dai referti analogici, etichettandolo rigorosamente con metadati di provenienza per mantenere la validità dell'audit clinico.
 4. **Dashboard Olistica Proprietaria**: Dal momento che HealthKit supporta nativamente un numero ristretto di misurazioni grafiche (scartando ad esempio Creatinina e TSH), l'App funge non solo da traduttore, ma da *Electronic Medical Record (EMR)* indipendente, fornendo interfacce tridimensionali (Swift Charts 3D Scroll) e Live Activities su Dynamic Island per coprire i buchi architetturali di Apple.
 5. **Privacy by Design**: Ogni singola elaborazione, dal parsing XML all'inferenza IA, avviene sulla CPU locale senza alcuna chiamata di rete (`URLSession` assente), applicando programmaticamente la crittografia di grado militare hardware (AES-256) per conformità totale al GDPR.
+
+
+---
+
+## 📚 Riferimenti Bibliografici & Monografia Ufficiale
+
+- **Monografia Tecnica Accademica**: [Scarica il Paper Completo (PDF, 43 Pagine)](https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf)
+- **Autore**: [Alessandro Mainardi](https://alexmaina.dev/) — Alma Mater Studiorum Università di Bologna (DISI)
+- **Identificatori Persistenti**: ORCID [0009-0003-7003-7247](https://orcid.org/0009-0003-7003-7247) · Wikidata [Q141886579](https://www.wikidata.org/wiki/Q141886579) · DOI [10.5281/zenodo.23692700](https://doi.org/10.5281/zenodo.23692700)
+- **Portale Ufficiale**: [alexmaina.dev](https://alexmaina.dev/)
