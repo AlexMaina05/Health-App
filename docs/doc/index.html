@@ -9,6 +9,8 @@
   <meta name="author" content="Alessandro Mainardi">
   <meta name="theme-color" content="#070b14">
   <link rel="canonical" href="https://alexmaina.dev/Health-App/doc/">
+  <link rel="icon" href="https://alexmaina.dev/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://alexmaina.dev/assets/images/icon-192.png">
 
   <!-- Docsify Themeable Dark Theme -->
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css">
@@ -35,11 +37,14 @@
 <body>
   <div id="app">Caricamento della documentazione di RosettaHealth...</div>
   <script>
+    const isProduction = location.hostname.includes('alexmaina.dev');
+    const rootUrl = isProduction ? 'https://alexmaina.dev/Health-App/' : '../';
+
     window.$docsify = {
       name: '⚕️ RosettaHealth',
-      nameLink: '../',
+      nameLink: rootUrl,
       repo: 'https://github.com/AlexMaina05/Health-App',
-      basePath: '../',
+      basePath: rootUrl,
       loadSidebar: '_sidebar.md',
       subMaxLevel: 3,
       auto2top: true,
@@ -64,7 +69,7 @@
         errorText: 'Errore',
         successText: 'Copiato'
       }
-    }
+    };
   </script>
   <!-- Docsify Core -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
