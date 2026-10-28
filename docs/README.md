@@ -35,11 +35,11 @@
 Oltre al presente README e alla [Homepage Interattiva](https://alexmaina.dev/Health-App/), il progetto include una corposa monografia accademica e documentazione tecnica strutturata:
 
 - 📄 [**Monografia Tecnica Ufficiale (PDF, 40 Pagine)**](https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf): Trattato formale in LaTeX redatto da Alessandro Mainardi (UniBo DISI). Include specifiche matematiche, modello di minaccia STRIDE, validazione dell'Identity Firewall (D.M. 23/12/1976 + Jaro-Winkler), benchmark sperimentali su iPhone 15 Pro / iPhone 13 e appendici ontologiche LOINC complete. DOI: [10.5281/zenodo.23692700](https://doi.org/10.5281/zenodo.23692700).
-- 🏛️ [**Analisi dello Stato dell'Arte**](https://alexmaina.dev/Health-App/tesi/#/Stato_dell_Arte): Analisi del panorama italiano (FSE 2.0, HL7 CDA R2, standard regionali Emilia-Romagna/Lombardia/Veneto) e internazionale (FHIR R4).
-- ⚙️ [**Technical Design Document (TDD)**](https://alexmaina.dev/Health-App/tesi/#/tdd): Il cuore ingegneristico (modello Producer-Consumer, schema SwiftData `@ModelActor`, crittografia Secure Enclave, Swift Concurrency).
-- 🚀 [**Sviluppi Futuri e Roadmap**](https://alexmaina.dev/Health-App/tesi/#/Sviluppi_Futuri): Vision evolutiva (v4.0+), inclusi Small Language Models (SLM) on-device con CoreML ed European Health Data Space (EHDS).
-- 🔒 [**Valutazione d'Impatto DPIA**](https://alexmaina.dev/Health-App/tesi/#/DPIA) & [**Informativa Privacy**](https://alexmaina.dev/Health-App/tesi/#/PRIVACY_POLICY): Conformità rigorosa al GDPR Art. 9 ed esenzione Art. 2(2)(c).
-- 📖 [**Manuale Utente Operativo**](https://alexmaina.dev/Health-App/tesi/#/GUIDA_UTENTE): Istruzioni passo-passo per l'acquisizione, la condivisione e la revisione Human-in-the-Loop.
+- 🏛️ [**Analisi dello Stato dell'Arte**](https://alexmaina.dev/Health-App/doc/#/Stato_dell_Arte): Analisi del panorama italiano (FSE 2.0, HL7 CDA R2, standard regionali Emilia-Romagna/Lombardia/Veneto) e internazionale (FHIR R4).
+- ⚙️ [**Technical Design Document (TDD)**](https://alexmaina.dev/Health-App/doc/#/tdd): Il cuore ingegneristico (modello Producer-Consumer, schema SwiftData `@ModelActor`, crittografia Secure Enclave, Swift Concurrency).
+- 🚀 [**Sviluppi Futuri e Roadmap**](https://alexmaina.dev/Health-App/doc/#/Sviluppi_Futuri): Vision evolutiva (v4.0+), inclusi Small Language Models (SLM) on-device con CoreML ed European Health Data Space (EHDS).
+- 🔒 [**Valutazione d'Impatto DPIA**](https://alexmaina.dev/Health-App/doc/#/DPIA) & [**Informativa Privacy**](https://alexmaina.dev/Health-App/doc/#/PRIVACY_POLICY): Conformità rigorosa al GDPR Art. 9 ed esenzione Art. 2(2)(c).
+- 📖 [**Manuale Utente Operativo**](https://alexmaina.dev/Health-App/doc/#/GUIDA_UTENTE): Istruzioni passo-passo per l'acquisizione, la condivisione e la revisione Human-in-the-Loop.
 
 ---
 
