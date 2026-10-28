@@ -63,7 +63,7 @@ Dall'analisi dello stato dell'arte emerge un vuoto infrastrutturale che isola il
 
 ## 📚 Riferimenti Bibliografici & Monografia Ufficiale
 
-- **Monografia Tecnica Accademica**: [Scarica il Paper Completo (PDF, 40 Pagine)](https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf)
+- **Monografia Tecnica Accademica**: [Scarica il Paper Completo (PDF, 41 Pagine)](https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf)
 - **Autore**: [Alessandro Mainardi](https://alexmaina.dev/) — Alma Mater Studiorum Università di Bologna (DISI)
 - **Identificatori Persistenti**: ORCID [0009-0003-7003-7247](https://orcid.org/0009-0003-7003-7247) · Wikidata [Q141886579](https://www.wikidata.org/wiki/Q141886579) · DOI [10.5281/zenodo.23692700](https://doi.org/10.5281/zenodo.23692700)
 - **Portale Ufficiale**: [alexmaina.dev](https://alexmaina.dev/)
