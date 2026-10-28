@@ -1,0 +1,38 @@
+# RosettaHealth — Mobile Edge Zero-Cloud Architecture for FSE 2.0 & Apple HealthKit
+
+> RosettaHealth is a native iOS 17+ and watchOS 10+ mobile edge application and formal engineering framework developed by Alessandro Mainardi (Alma Mater Studiorum - University of Bologna). It achieves deterministic on-device semantic interoperability between Italian Electronic Health Records (Fascicolo Sanitario Elettronico - FSE 2.0 / HL7 CDA R2) and Apple HealthKit under a strict Zero-Cloud and Privacy-by-Design paradigm (GDPR Art. 9).
+
+## Key Metadata
+
+- Author: Alessandro Mainardi (ORCID: 0009-0003-7003-7247, Wikidata: Q141886579)
+- Academic Affiliation: Alma Mater Studiorum - Università di Bologna, Dipartimento di Informatica - Scienza e Ingegneria (DISI)
+- Monograph DOI: 10.5281/zenodo.23735226
+- Monograph Length: 44 pages (ISO A4, formal LaTeX specification)
+- Monograph PDF: https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf
+- Interactive Documentation Portal: https://alexmaina.dev/Health-App/doc/
+- Production Showcase: https://alexmaina.dev/Health-App/
+- Source Code Repository: https://github.com/AlexMaina05/Health-App
+
+## Core Architectural Innovations
+
+1. **Identity Firewall (Biometric Patient Matching):**
+   - High-throughput fuzzy matching pipeline (Jaro-Winkler + Levenshtein) comparing CDA Header `recordTarget` patient demographics (Fiscal Code, Name, Surname, Birth Date) against device user profile.
+   - Prevents accidental injection of family members' lab results into personal Apple Health profiles.
+   - Execution time: 1.8 ms on Apple A17 Pro (iPhone 15 Pro), 0% false positives across validation corpus.
+
+2. **Streaming SAX Engine (O(d_max) Memory Footprint):**
+   - Single-pass progressive streaming parser based on Swift Concurrency actors and libxml2 / XMLParser.
+   - Avoids memory accumulation with progressive observation callbacks (`onObservationParsed`).
+   - Constant memory overhead (~4.2 MB RAM peak) independent of payload file size (O(d_max) depth complexity instead of O(n) DOM tree).
+
+3. **Doppio Binario Semantico (Dual Semantic Pathway):**
+   - *Binario 1 (Vitals & Telemetry):* Direct translation of vital signs, anthropometrics, and glucose to Apple HealthKit `HKQuantitySample` with UCUM dimensional normalization.
+   - *Binario 2 (Clinical Biochemistry & Lab Panels):* Full-fidelity storage of serum lipids, electrolytes, creatinine, liver enzymes into an on-device encrypted SwiftData vault (persisted as native FHIR R4 `Observation` models) and bridged to Apple Health Records via `HKClinicalRecord` (`HKClinicalTypeIdentifier.labResultRecord`). Eliminates improper mapping of blood tests to dietary intake types.
+
+4. **Zero-Cloud & Hardware Cryptography:**
+   - Total on-device execution with zero remote servers, telemetry, or third-party APIs.
+   - Hardware-level protection via Apple Secure Enclave (`kSecAccessControlBiometryAny`) and iOS Data Protection Class A (`NSFileProtectionComplete`).
+   - Full compliance with GDPR Art. 9 (special category health data) and Art. 25 (Privacy by Design).
+
+5. **On-Device Clinical Decision Support (CDS):**
+   - Deterministic rule-based analytical actor for longitudinal trend detection (arterial stiffness, glycemic instability, lipid worsening) operating strictly as physiological triage without claiming Medical Device status (MDR 2017/745).
