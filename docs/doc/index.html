@@ -111,8 +111,8 @@
   }
   </script>
 
-  <!-- Docsify Themeable Dark Theme -->
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css">
+  <!-- Docsify Themeable Dark Theme (Self-hosted for CSP compatibility) -->
+  <link rel="stylesheet" href="./vendor/theme-simple-dark.css">
   <style>
     :root {
       --base-font-size: 15px;
@@ -137,13 +137,14 @@
   <div id="app">Caricamento della documentazione di RosettaHealth...</div>
   <script>
     const isProduction = location.hostname.includes('alexmaina.dev');
-    const rootUrl = isProduction ? 'https://alexmaina.dev/Health-App/' : '../';
+    const basePath = isProduction ? '/Health-App/' : '../';
+    const homeLink = isProduction ? 'https://alexmaina.dev/Health-App/' : '../';
 
     window.$docsify = {
       name: '⚕️ RosettaHealth',
-      nameLink: rootUrl,
+      nameLink: homeLink,
       repo: 'https://github.com/AlexMaina05/Health-App',
-      basePath: rootUrl,
+      basePath: basePath,
       loadSidebar: '_sidebar.md',
       subMaxLevel: 3,
       auto2top: true,
@@ -170,15 +171,15 @@
       }
     };
   </script>
-  <!-- Docsify Core -->
-  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-  <!-- Plugins -->
-  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-swift.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-xml-doc.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+  <!-- Docsify Core (Self-hosted for CSP compatibility) -->
+  <script src="./vendor/docsify.min.js"></script>
+  <!-- Plugins (Self-hosted) -->
+  <script src="./vendor/search.min.js"></script>
+  <script src="./vendor/docsify-copy-code.min.js"></script>
+  <script src="./vendor/docsify-pagination.min.js"></script>
+  <script src="./vendor/prism-swift.min.js"></script>
+  <script src="./vendor/prism-json.min.js"></script>
+  <script src="./vendor/prism-xml-doc.min.js"></script>
+  <script src="./vendor/prism-bash.min.js"></script>
 </body>
 </html>
