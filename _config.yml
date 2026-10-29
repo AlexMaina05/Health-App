@@ -1,3 +1,3 @@
-﻿theme: jekyll-theme-cayman
-title: RosettaHealth
-description: Il ponte on-device tra il Fascicolo Sanitario Elettronico (FSE) e Apple Health.
+theme: jekyll-theme-cayman
+title: RosettaEdge
+description: Il ponte on-device tra i referti clinici (PDF/CDA2) e Apple Salute / Health Connect.

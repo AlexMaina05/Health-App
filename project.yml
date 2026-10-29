@@ -1,4 +1,4 @@
-﻿name: RosettaHealth
+name: RosettaEdge
 options:
   xcodeVersion: "16.0"
   bundleIdPrefix: dev.alexmaina
@@ -10,13 +10,13 @@ settings:
   base:
     GENERATE_INFOPLIST_FILE: YES
 targets:
-  RosettaHealthApp:
+  RosettaEdgeApp:
     type: application
     platform: iOS
     deploymentTarget: 17.0
-    sources: [Sources/RosettaHealthApp]
+    sources: [Sources/RosettaEdgeApp]
     dependencies:
-      - target: RosettaHealthCore
+      - target: RosettaEdgeCore
     info:
       path: Info.plist
       properties:
@@ -25,11 +25,11 @@ targets:
         NSHealthShareUsageDescription: "L'app necessita di accedere ad Apple Salute per la sincronizzazione."
         NSFaceIDUsageDescription: "L'app utilizza Face ID per sbloccare in sicurezza il tuo Vault Medico."
 
-  RosettaHealthCore:
+  RosettaEdgeCore:
     type: framework
     platform: iOS
     deploymentTarget: 17.0
-    sources: [Sources/RosettaHealthCore]
+    sources: [Sources/RosettaEdgeCore]
 
   ShareExtension:
     type: app-extension
@@ -37,17 +37,17 @@ targets:
     deploymentTarget: 17.0
     sources: [Sources/ShareExtension]
     dependencies:
-      - target: RosettaHealthCore
+      - target: RosettaEdgeCore
     info:
       path: Info.plist
       properties:
         NSExtension:
           NSExtensionPointIdentifier: com.apple.share-services
           NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShareViewController"
-  RosettaHealthCoreTests:
+  RosettaEdgeCoreTests:
     type: bundle.unit-test
     platform: iOS
     deploymentTarget: 17.0
-    sources: [Tests/RosettaHealthCoreTests]
+    sources: [Tests/RosettaEdgeCoreTests]
     dependencies:
-      - target: RosettaHealthCore
+      - target: RosettaEdgeCore
