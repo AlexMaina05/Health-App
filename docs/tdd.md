@@ -238,5 +238,5 @@ Il *Family Vault* supporta la sincronizzazione opzionale tramite il **CloudKit P
 
 - **Monografia Tecnica Accademica**: [Scarica il Paper Completo (PDF, 44 Pagine)](https://alexmaina.dev/Health-App/rosettaedge-monografia-tecnica.pdf)
 - **Autore**: [Alessandro Mainardi](https://alexmaina.dev/) — Alma Mater Studiorum Università di Bologna (DISI)
-- **Identificatori Persistenti**: ORCID [0009-0003-7003-7247](https://orcid.org/0009-0003-7003-7247) · Wikidata [Q141886579](https://www.wikidata.org/wiki/Q141886579) · DOI [10.5281/zenodo.23735226](https://doi.org/10.5281/zenodo.23735226)
+- **Identificatori Persistenti**: ORCID [0009-0003-7003-7247](https://orcid.org/0009-0003-7003-7247) · Wikidata [Q141886579](https://www.wikidata.org/wiki/Q141886579) · DOI [10.5281/zenodo.23781231](https://doi.org/10.5281/zenodo.23781231)
 - **Portale Ufficiale**: [alexmaina.dev](https://alexmaina.dev/)
