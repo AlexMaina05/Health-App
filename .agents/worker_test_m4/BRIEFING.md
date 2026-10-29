@@ -1,7 +1,7 @@
 ﻿# BRIEFING — 2026-09-01T23:20:00Z
 
 ## Mission
-Author comprehensive Tier 1-4 E2E integration test suite for RosettaHealth, generate TEST_INFRA.md and TEST_READY.md.
+Author comprehensive Tier 1-4 E2E integration test suite for RosettaEdge, generate TEST_INFRA.md and TEST_READY.md.
 
 ## 🔒 My Identity
 - Archetype: test_writer
@@ -21,13 +21,13 @@ Author comprehensive Tier 1-4 E2E integration test suite for RosettaHealth, gene
 - Updated: 2026-09-01T23:20:00Z
 
 ## Task Summary
-- **What to build**: Comprehensive XCTest integration test suite (Tiers 1-4) in `Tests/RosettaHealthCoreTests/`, `TEST_INFRA.md`, `TEST_READY.md`.
+- **What to build**: Comprehensive XCTest integration test suite (Tiers 1-4) in `Tests/RosettaEdgeCoreTests/`, `TEST_INFRA.md`, `TEST_READY.md`.
 - **Success criteria**: Full coverage of transcode, validation gate, firewall routing, ViewModels/SwiftData/CDS integration, boundary cases, and real-world mock XMLs (`Mock_Laboratorio.xml`, `Mock_Specialistica.xml`).
 - **Interface contracts**: PROJECT.md
 - **Code layout**: PROJECT.md § Code Layout
 
 ## Key Decisions Made
-- Authored 5 dedicated integration test files in `Tests/RosettaHealthCoreTests/`:
+- Authored 5 dedicated integration test files in `Tests/RosettaEdgeCoreTests/`:
   - `Tier1FeatureCoverageTests.swift` (5 tests)
   - `Tier2BoundaryCornerTests.swift` (11 tests)
   - `Tier3CrossFeaturePipelineTests.swift` (6 tests)
@@ -37,11 +37,11 @@ Author comprehensive Tier 1-4 E2E integration test suite for RosettaHealth, gene
 - Documented all findings, logic chains, and verification methods in `handoff.md`.
 
 ## Artifact Index
-- `Tests/RosettaHealthCoreTests/Tier1FeatureCoverageTests.swift`
-- `Tests/RosettaHealthCoreTests/Tier2BoundaryCornerTests.swift`
-- `Tests/RosettaHealthCoreTests/Tier3CrossFeaturePipelineTests.swift`
-- `Tests/RosettaHealthCoreTests/Tier4RealWorldWorkloadTests.swift`
-- `Tests/RosettaHealthCoreTests/RosettaE2ETests.swift`
+- `Tests/RosettaEdgeCoreTests/Tier1FeatureCoverageTests.swift`
+- `Tests/RosettaEdgeCoreTests/Tier2BoundaryCornerTests.swift`
+- `Tests/RosettaEdgeCoreTests/Tier3CrossFeaturePipelineTests.swift`
+- `Tests/RosettaEdgeCoreTests/Tier4RealWorldWorkloadTests.swift`
+- `Tests/RosettaEdgeCoreTests/RosettaE2ETests.swift`
 - `TEST_INFRA.md`
 - `TEST_READY.md`
 - `.agents/worker_test_m4/handoff.md`

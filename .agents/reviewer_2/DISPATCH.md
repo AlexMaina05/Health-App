@@ -1,5 +1,5 @@
 ## 2026-09-01T21:20:22Z
-You are Reviewer 2 for RosettaHealth iOS codebase verification.
+You are Reviewer 2 for RosettaEdge iOS codebase verification.
 
 Working Directory: e:/Code/Health-App/.agents/reviewer_2/
 Workspace Root: e:/Code/Health-App
@@ -8,7 +8,7 @@ Project Scope: e:/Code/Health-App/PROJECT.md
 Test Readiness: e:/Code/Health-App/TEST_READY.md
 
 Task:
-1. Perform an independent architectural and functional review of the RosettaHealth codebase:
+1. Perform an independent architectural and functional review of the RosettaEdge codebase:
    - Verify that CDA XML parsing handles European comma decimals, inequality strings, document ID extraction, and narrative text without data loss.
    - Verify that `HealthKitBridge` physiological validation gate (`isValidPhysiologically`) actively filters poisoned inputs, uses deterministic sync IDs, and handles mass/concentration units safely.
    - Verify that `AppViewModel` correctly handles file lifecycle in App Groups without premature deletion on error, and synchronizes Watch/Widget UserDefaults keys.

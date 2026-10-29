@@ -13,7 +13,7 @@ struct Provider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         // Leggiamo dall'App Group condiviso! Zero-Cloud e Zero-HealthKit Lock
-        let sharedDefaults = UserDefaults(suiteName: "group.dev.alexmaina.rosettahealth")
+        let sharedDefaults = UserDefaults(suiteName: "group.dev.alexmaina.rosettaedge")
         let name = sharedDefaults?.string(forKey: "widget_metricName") ?? "Nessun referto"
         let value = sharedDefaults?.string(forKey: "widget_metricValue") ?? "--"
         
@@ -39,7 +39,7 @@ struct RosettaWidgetEntryView : View {
             HStack {
                 Image(systemName: "waveform.path.ecg")
                     .foregroundStyle(.blue)
-                Text("RosettaHealth")
+                Text("RosettaEdge")
                     .font(.caption)
                     .fontWeight(.bold)
                     .foregroundStyle(.secondary)
@@ -79,7 +79,7 @@ struct RosettaWidgetMain: Widget {
             }
         }
         .configurationDisplayName("Ultimo Referto")
-        .description("Visualizza l'ultimo parametro clinico analizzato da RosettaHealth.")
+        .description("Visualizza l'ultimo parametro clinico analizzato da RosettaEdge.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }

@@ -1,7 +1,7 @@
 # BRIEFING — 2026-09-01T21:17:00Z
 
 ## Mission
-Harden RosettaHealth for Zero-Cloud and GDPR Article 9 isolation: enforce `cloudKitDatabase: .none` in `MainAppView.swift`, update `SettingsView.swift` to reflect zero-cloud/on-device policy, redact PII in OSLog in `AppViewModel.swift`, and comprehensively verify complete absence of network SDKs and transmissions.
+Harden RosettaEdge for Zero-Cloud and GDPR Article 9 isolation: enforce `cloudKitDatabase: .none` in `MainAppView.swift`, update `SettingsView.swift` to reflect zero-cloud/on-device policy, redact PII in OSLog in `AppViewModel.swift`, and comprehensively verify complete absence of network SDKs and transmissions.
 
 ## 🔒 My Identity
 - Archetype: worker
@@ -12,9 +12,9 @@ Harden RosettaHealth for Zero-Cloud and GDPR Article 9 isolation: enforce `cloud
 
 ## 🔒 Key Constraints
 - Exclusive Write Ownership:
-  - `Sources/RosettaHealthApp/MainAppView.swift`
-  - `Sources/RosettaHealthApp/SettingsView.swift`
-  - `Sources/RosettaHealthApp/AppViewModel.swift`
+  - `Sources/RosettaEdgeApp/MainAppView.swift`
+  - `Sources/RosettaEdgeApp/SettingsView.swift`
+  - `Sources/RosettaEdgeApp/AppViewModel.swift`
 - DO NOT CHEAT: Genuine implementations only, no hardcoding, no dummy facades.
 - Zero-Cloud / GDPR Article 9 policy: 100% on-device local storage, no network imports or transmissions (`URLSession`, `Alamofire`, `Network`, `WebSocket`, telemetry, analytics, crash reporters).
 
@@ -47,9 +47,9 @@ Harden RosettaHealth for Zero-Cloud and GDPR Article 9 isolation: enforce `cloud
 
 ## Change Tracker
 - **Files modified**:
-  - `Sources/RosettaHealthApp/MainAppView.swift`: Hardcoded `ModelConfiguration(cloudKitDatabase: .none)`.
-  - `Sources/RosettaHealthApp/SettingsView.swift`: Removed `isCloudSyncEnabled` and added Zero-Cloud / GDPR Art. 9 section.
-  - `Sources/RosettaHealthApp/AppViewModel.swift`: Redacted patient name in OSLog (`privacy: .private`), removed `isCloudSyncEnabled`, improved error logging.
+  - `Sources/RosettaEdgeApp/MainAppView.swift`: Hardcoded `ModelConfiguration(cloudKitDatabase: .none)`.
+  - `Sources/RosettaEdgeApp/SettingsView.swift`: Removed `isCloudSyncEnabled` and added Zero-Cloud / GDPR Art. 9 section.
+  - `Sources/RosettaEdgeApp/AppViewModel.swift`: Redacted patient name in OSLog (`privacy: .private`), removed `isCloudSyncEnabled`, improved error logging.
 - **Build status**: Code inspected and verified; swift compiler not present on host Windows machine.
 - **Pending issues**: none
 

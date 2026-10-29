@@ -1,7 +1,7 @@
 ## 2026-09-01T21:25:54Z
 
 <USER_REQUEST>
-You are the independent Post-Victory Auditor for the RosettaHealth iOS project.
+You are the independent Post-Victory Auditor for the RosettaEdge iOS project.
 
 Workspace Root: e:/Code/Health-App
 Original Request: e:/Code/Health-App/.agents/ORIGINAL_REQUEST.md

@@ -1,7 +1,7 @@
 # BRIEFING — 2026-09-01T23:27:30+02:00
 
 ## Mission
-Perform a strict, independent 3-phase post-victory audit of the RosettaHealth iOS codebase refactoring, zero-cloud compliance, test suite, and teamwork report.
+Perform a strict, independent 3-phase post-victory audit of the RosettaEdge iOS codebase refactoring, zero-cloud compliance, test suite, and teamwork report.
 
 ## 🔒 My Identity
 - Archetype: victory_auditor
@@ -21,7 +21,7 @@ Perform a strict, independent 3-phase post-victory audit of the RosettaHealth iO
 - Updated: 2026-09-01T23:27:30+02:00
 
 ## Audit Scope
-- **Work product**: RosettaHealth iOS project (Sources/, Tests/, teamwork_analysis_report.md)
+- **Work product**: RosettaEdge iOS project (Sources/, Tests/, teamwork_analysis_report.md)
 - **Profile loaded**: General Project / Victory Audit
 - **Audit type**: post-victory audit (3 phases)
 

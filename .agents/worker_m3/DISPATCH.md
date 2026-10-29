@@ -7,9 +7,9 @@ Original Request: e:/Code/Health-App/ORIGINAL_REQUEST.md (MUST read first)
 Project Scope: e:/Code/Health-App/PROJECT.md
 
 Exclusive Write Ownership:
-- `Sources/RosettaHealthApp/MainAppView.swift`
-- `Sources/RosettaHealthApp/SettingsView.swift`
-- `Sources/RosettaHealthApp/AppViewModel.swift`
+- `Sources/RosettaEdgeApp/MainAppView.swift`
+- `Sources/RosettaEdgeApp/SettingsView.swift`
+- `Sources/RosettaEdgeApp/AppViewModel.swift`
 
 MANDATORY INTEGRITY WARNING:
 DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results, create dummy/facade implementations, or circumvent the intended task. A teamwork_preview_auditor will independently verify your work. Integrity violations WILL be detected and your work WILL be rejected.

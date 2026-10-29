@@ -1,7 +1,7 @@
 # BRIEFING — 2026-09-01T21:03:30Z
 
 ## Mission
-Investigate HealthKit integration, SwiftData persistence, ViewModels, and cross-module concurrency/communication defects in the RosettaHealth iOS codebase.
+Investigate HealthKit integration, SwiftData persistence, ViewModels, and cross-module concurrency/communication defects in the RosettaEdge iOS codebase.
 
 ## 🔒 My Identity
 - Archetype: explorer
@@ -21,26 +21,26 @@ Investigate HealthKit integration, SwiftData persistence, ViewModels, and cross-
 
 ## Investigation State
 - **Explored paths**:
-  - `Sources/RosettaHealthCore/HealthKitBridge.swift`
-  - `Sources/RosettaHealthCore/FHIRModels.swift`
-  - `Sources/RosettaHealthCore/RosettaTranscoder.swift`
-  - `Sources/RosettaHealthCore/ClinicalDecisionSupport.swift`
-  - `Sources/RosettaHealthCore/PDFExtractor.swift`
-  - `Sources/RosettaHealthCore/VisionOCRExtractor.swift`
-  - `Sources/RosettaHealthApp/Vault/VaultDocument.swift`
-  - `Sources/RosettaHealthApp/Vault/VaultModelActor.swift`
-  - `Sources/RosettaHealthApp/Vault/ClinicalDashboardView.swift`
-  - `Sources/RosettaHealthApp/Vault/FamilyVaultView.swift`
-  - `Sources/RosettaHealthApp/AppViewModel.swift`
-  - `Sources/RosettaHealthApp/BackgroundTaskManager.swift`
-  - `Sources/RosettaHealthApp/ContentView.swift`
-  - `Sources/RosettaHealthApp/MainAppView.swift`
-  - `Sources/RosettaHealthApp/ObservationRowView.swift`
-  - `Sources/RosettaHealthApp/BiometricAuthManager.swift`
+  - `Sources/RosettaEdgeCore/HealthKitBridge.swift`
+  - `Sources/RosettaEdgeCore/FHIRModels.swift`
+  - `Sources/RosettaEdgeCore/RosettaTranscoder.swift`
+  - `Sources/RosettaEdgeCore/ClinicalDecisionSupport.swift`
+  - `Sources/RosettaEdgeCore/PDFExtractor.swift`
+  - `Sources/RosettaEdgeCore/VisionOCRExtractor.swift`
+  - `Sources/RosettaEdgeApp/Vault/VaultDocument.swift`
+  - `Sources/RosettaEdgeApp/Vault/VaultModelActor.swift`
+  - `Sources/RosettaEdgeApp/Vault/ClinicalDashboardView.swift`
+  - `Sources/RosettaEdgeApp/Vault/FamilyVaultView.swift`
+  - `Sources/RosettaEdgeApp/AppViewModel.swift`
+  - `Sources/RosettaEdgeApp/BackgroundTaskManager.swift`
+  - `Sources/RosettaEdgeApp/ContentView.swift`
+  - `Sources/RosettaEdgeApp/MainAppView.swift`
+  - `Sources/RosettaEdgeApp/ObservationRowView.swift`
+  - `Sources/RosettaEdgeApp/BiometricAuthManager.swift`
   - `Sources/ShareExtension/ShareViewController.swift`
   - `Sources/RosettaWatch/WatchDashboardView.swift`
   - `Sources/RosettaWidget/RosettaWidget.swift`
-  - All test files in `Tests/RosettaHealthCoreTests/`
+  - All test files in `Tests/RosettaEdgeCoreTests/`
 - **Key findings**:
   - 19 distinct architectural defects and compilation blockers catalogued across HealthKit, SwiftData, ViewModels, Transcoder, and IPC.
   - SwiftData `@Model` thread-safety violation in `ClinicalDashboardView` (`Task.detached` accessing `VaultDocument`).

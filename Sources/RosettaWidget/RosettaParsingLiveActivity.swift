@@ -1,7 +1,7 @@
 import WidgetKit
 import SwiftUI
 import ActivityKit
-import RosettaHealthCore
+import RosettaEdgeCore
 
 @available(iOS 16.1, *)
 struct RosettaParsingLiveActivity: Widget {

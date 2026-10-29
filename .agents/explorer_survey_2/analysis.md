@@ -1,4 +1,4 @@
-# Architectural & Cross-Module Analysis Report: RosettaHealth iOS
+# Architectural & Cross-Module Analysis Report: RosettaEdge iOS
 
 **Date**: 2026-09-01  
 **Investigator**: Explorer 2 (Subagent)  
@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-A comprehensive architectural inspection was conducted across the RosettaHealth iOS, watchOS, Widget, and Share Extension modules. Several critical defects, syntax errors, concurrency hazards, compilation blockers, and communication bottlenecks were identified across all subsystems. 
+A comprehensive architectural inspection was conducted across the RosettaEdge iOS, watchOS, Widget, and Share Extension modules. Several critical defects, syntax errors, concurrency hazards, compilation blockers, and communication bottlenecks were identified across all subsystems. 
 
 Key themes identified:
 1. **Compilation Blockers & Invalid Availability**: Widespread use of `@available(iOS 26.0, *)` and `#available(iOS 26.0, *)` disables code execution or prevents compilation on standard iOS targets (iOS 17/18). Syntax errors such as duplicate variable declarations (`currentRangeUnit`), missing variables (`documentId`, `modelContext`, `containerToUse`, `activeError`, `showError`), and missing static singletons (`HealthKitBridge.shared`) prevent successful builds.
@@ -23,7 +23,7 @@ Key themes identified:
 ## 1. HealthKit Integration Analysis
 
 ### 1.1 Missing Singleton & Inconsistent Instantiation
-- **File**: `Sources/RosettaHealthCore/HealthKitBridge.swift` (Lines 4-70) vs `Sources/RosettaHealthApp/ObservationRowView.swift` (Line 108)
+- **File**: `Sources/RosettaEdgeCore/HealthKitBridge.swift` (Lines 4-70) vs `Sources/RosettaEdgeApp/ObservationRowView.swift` (Line 108)
 - **Observation**:
   `HealthKitBridge` is declared as:
   ```swift
@@ -40,7 +40,7 @@ Key themes identified:
 - **Recommended Fix**: Add `public static let shared = HealthKitBridge()` to `HealthKitBridge.swift` or pass an injected instance.
 
 ### 1.2 Validation Gate Bypass / Dead Code
-- **File**: `Sources/RosettaHealthCore/HealthKitBridge.swift` (Lines 155-238)
+- **File**: `Sources/RosettaEdgeCore/HealthKitBridge.swift` (Lines 155-238)
 - **Observation**:
   `isValidPhysiologically(value:for:)` is implemented on lines 155-167:
   ```swift
@@ -69,7 +69,7 @@ Key themes identified:
   ```
 
 ### 1.3 Unit Incompatibility Crash in ClinicalDecisionSupport
-- **File**: `Sources/RosettaHealthCore/HealthKitBridge.swift` (Line 28) & `Sources/RosettaHealthCore/ClinicalDecisionSupport.swift` (Lines 32-47)
+- **File**: `Sources/RosettaEdgeCore/HealthKitBridge.swift` (Line 28) & `Sources/RosettaEdgeCore/ClinicalDecisionSupport.swift` (Lines 32-47)
 - **Observation**:
   In `HealthKitBridge.swift` (line 28):
   ```swift
@@ -86,13 +86,13 @@ Key themes identified:
 - **Recommended Fix**: Ensure consistent unit mapping or check `quantity.is(compatibleWith:)` before requesting `doubleValue(for:)`.
 
 ### 1.4 Oxygen Saturation Scaling Error
-- **File**: `Sources/RosettaHealthCore/HealthKitBridge.swift` (Lines 35-36, 161)
+- **File**: `Sources/RosettaEdgeCore/HealthKitBridge.swift` (Lines 35-36, 161)
 - **Observation**:
   `loincToHKMap["2708-6"]` maps oxygen saturation to `HKUnit.percent()`. In HealthKit, `1.0` represents `100%`, `0.98` represents `98%`. However, lab reports typically express oxygen saturation as a percentage integer/float (e.g. `98.0`). `HealthKitBridge` does not specify a `conversion` function (`conversion: { val, _ in val > 1.0 ? val / 100.0 : val }`). Furthermore, `isValidPhysiologically` checks `value >= 0.1 && value <= 1.0`, which causes any unscaled raw value `98.0` to either fail validation or be interpreted by HealthKit as `9800%`.
 - **Recommended Fix**: Add a conversion closure in `MetricTarget` for LOINC `2708-6` and `59408-5` to normalize percentages (`value / 100.0` if `value > 1.0`).
 
 ### 1.5 Non-Deterministic SyncIdentifiers Causing HealthKit Duplication
-- **File**: `Sources/RosettaHealthCore/HealthKitBridge.swift` (Lines 217-224)
+- **File**: `Sources/RosettaEdgeCore/HealthKitBridge.swift` (Lines 217-224)
 - **Observation**:
   ```swift
   metadata: [
@@ -106,7 +106,7 @@ Key themes identified:
 - **Recommended Fix**: Base `SyncIdentifier` deterministically on the document ID (from CDA header) combined with the LOINC code and sample effective date.
 
 ### 1.6 Composite Blood Pressure Parsing Loss
-- **File**: `Sources/RosettaHealthCore/HealthKitBridge.swift` (Lines 188-198)
+- **File**: `Sources/RosettaEdgeCore/HealthKitBridge.swift` (Lines 188-198)
 - **Observation**:
   When handling a combined Blood Pressure entry with `valueString = "120/80"`, the parser checks `if metric.type == .bloodPressureSystolic`. It extracts `120` and creates one sample. The diastolic value (`80`) is ignored because there is only one entry in `fhirBundle.entry` and no second sample is created.
 - **Defect Impact**: Diastolic blood pressure is lost from composite string observations.
@@ -118,25 +118,25 @@ Key themes identified:
 
 ### 2.1 Invalid Platform Availability Annotation (`@available(iOS 26.0, *)`)
 - **Files**:
-  - `Sources/RosettaHealthApp/Vault/VaultDocument.swift` (Line 7)
-  - `Sources/RosettaHealthApp/Vault/VaultModelActor.swift` (Line 6)
-  - `Sources/RosettaHealthApp/RosettaHealthApp.swift` (Line 4)
-  - `Sources/RosettaHealthApp/BackgroundTaskManager.swift` (Line 7)
-  - `Sources/RosettaHealthApp/MainAppView.swift` (Line 5)
-  - `Sources/RosettaHealthApp/Vault/ClinicalDashboardView.swift` (Line 6)
-  - `Sources/RosettaHealthApp/Vault/FamilyVaultView.swift` (Lines 5, 98, 202)
-  - `Sources/RosettaHealthApp/SpotlightManager.swift` (Line 6)
-  - `Sources/RosettaHealthApp/OnboardingView.swift` (Line 3)
-  - `Sources/RosettaHealthApp/BiometricAuthManager.swift` (Line 6)
+  - `Sources/RosettaEdgeApp/Vault/VaultDocument.swift` (Line 7)
+  - `Sources/RosettaEdgeApp/Vault/VaultModelActor.swift` (Line 6)
+  - `Sources/RosettaEdgeApp/RosettaEdgeApp.swift` (Line 4)
+  - `Sources/RosettaEdgeApp/BackgroundTaskManager.swift` (Line 7)
+  - `Sources/RosettaEdgeApp/MainAppView.swift` (Line 5)
+  - `Sources/RosettaEdgeApp/Vault/ClinicalDashboardView.swift` (Line 6)
+  - `Sources/RosettaEdgeApp/Vault/FamilyVaultView.swift` (Lines 5, 98, 202)
+  - `Sources/RosettaEdgeApp/SpotlightManager.swift` (Line 6)
+  - `Sources/RosettaEdgeApp/OnboardingView.swift` (Line 3)
+  - `Sources/RosettaEdgeApp/BiometricAuthManager.swift` (Line 6)
   - `Sources/ShareExtension/ShareViewController.swift` (Lines 8, 17, 54)
   - `Sources/RosettaWidget/RosettaWidget.swift` (Line 72)
-  - `Sources/RosettaHealthApp/AppViewModel.swift` (Lines 132, 250)
+  - `Sources/RosettaEdgeApp/AppViewModel.swift` (Lines 132, 250)
 - **Observation**: The annotation `@available(iOS 26.0, *)` and runtime checks `if #available(iOS 26.0, *)` are placed on classes, structs, and code blocks throughout the app.
 - **Defect Impact**: iOS 26 is fictitious (current OS is iOS 17 / iOS 18). Any code marked `@available(iOS 26.0, *)` will either fail to build or will be dead code (runtime `#available` checks will evaluate to `false`). SwiftData was introduced in iOS 17.0.
 - **Recommended Fix**: Replace all `@available(iOS 26.0, *)` with `@available(iOS 17.0, *)` (or remove if target platform is iOS 17+).
 
 ### 2.2 Cross-Thread SwiftData Model Sharing in `ClinicalDashboardView`
-- **File**: `Sources/RosettaHealthApp/Vault/ClinicalDashboardView.swift` (Lines 30-71)
+- **File**: `Sources/RosettaEdgeApp/Vault/ClinicalDashboardView.swift` (Lines 30-71)
 - **Observation**:
   ```swift
   private func loadTrends() async {
@@ -153,7 +153,7 @@ Key themes identified:
 - **Recommended Fix**: Extract plain Sendable value types (e.g. `struct SendableDocData: Sendable { let date: Date; let json: Data }`) on the `@MainActor` before entering `Task.detached`, or perform the query inside `VaultModelActor`.
 
 ### 2.3 `VaultModelActor` Unused; Main Thread Context Blocked
-- **File**: `Sources/RosettaHealthApp/Vault/VaultModelActor.swift` (Lines 7-35) vs `Sources/RosettaHealthApp/AppViewModel.swift` (Lines 119-142, 237-260)
+- **File**: `Sources/RosettaEdgeApp/Vault/VaultModelActor.swift` (Lines 7-35) vs `Sources/RosettaEdgeApp/AppViewModel.swift` (Lines 119-142, 237-260)
 - **Observation**:
   `VaultModelActor` was implemented as a `@ModelActor` actor for background database writes:
   ```swift
@@ -166,14 +166,14 @@ Key themes identified:
 - **Recommended Fix**: Use `VaultModelActor` with the application's `ModelContainer` for non-blocking background persistence.
 
 ### 2.4 Missing Scope Identifiers in `AppViewModel` and `BackgroundTaskManager`
-- **File**: `Sources/RosettaHealthApp/AppViewModel.swift` (Line 237)
+- **File**: `Sources/RosettaEdgeApp/AppViewModel.swift` (Line 237)
   - `if let context = modelContext as? SwiftData.ModelContext` -> `modelContext` is not defined in `AppViewModel`. (Compile error).
-- **File**: `Sources/RosettaHealthApp/BackgroundTaskManager.swift` (Lines 60-68)
+- **File**: `Sources/RosettaEdgeApp/BackgroundTaskManager.swift` (Lines 60-68)
   - `var contextToUse = modelContext` -> `modelContext` is not defined in `BackgroundTaskManager`. (Compile error).
   - `await viewModel.syncPendingDocuments(modelContainer: containerToUse)` -> `containerToUse` is undefined, and `syncPendingDocuments` expects `modelContext:`, not `modelContainer:`. (Compile error).
 
 ### 2.5 Swallowed SwiftData Save Errors
-- **File**: `Sources/RosettaHealthApp/AppViewModel.swift` (Lines 140, 258)
+- **File**: `Sources/RosettaEdgeApp/AppViewModel.swift` (Lines 140, 258)
 - **Observation**:
   ```swift
   try? context.save()
@@ -186,7 +186,7 @@ Key themes identified:
 ## 3. ViewModels & SwiftUI State Management
 
 ### 3.1 `AppViewModel` Lacks `@Observable` / `ObservableObject`
-- **File**: `Sources/RosettaHealthApp/AppViewModel.swift` (Lines 12-25) & `Sources/RosettaHealthApp/ContentView.swift` (Line 10)
+- **File**: `Sources/RosettaEdgeApp/AppViewModel.swift` (Lines 12-25) & `Sources/RosettaEdgeApp/ContentView.swift` (Line 10)
 - **Observation**:
   `AppViewModel` is declared as:
   ```swift
@@ -213,14 +213,14 @@ Key themes identified:
   ```
 
 ### 3.2 `BiometricAuthManager` Lacks `@Observable`
-- **File**: `Sources/RosettaHealthApp/BiometricAuthManager.swift` (Lines 6-11) & `Sources/RosettaHealthApp/MainAppView.swift` (Line 11)
+- **File**: `Sources/RosettaEdgeApp/BiometricAuthManager.swift` (Lines 6-11) & `Sources/RosettaEdgeApp/MainAppView.swift` (Line 11)
 - **Observation**:
   `BiometricAuthManager` is declared as `@MainActor public final class BiometricAuthManager` without `@Observable`. In `MainAppView.swift`, `@State private var authManager = BiometricAuthManager()` is used.
 - **Defect Impact**: When `authManager.isUnlocked` becomes `true` after biometric authentication, `MainAppView` does not re-render. The user remains locked out on the privacy blur overlay.
 - **Recommended Fix**: Annotate `BiometricAuthManager` with `@Observable`.
 
 ### 3.3 Method Signature Mismatches Between `ContentView` and `AppViewModel`
-- **File**: `Sources/RosettaHealthApp/ContentView.swift` (Lines 76, 293, 298, 325, 370) vs `Sources/RosettaHealthApp/AppViewModel.swift` (Lines 61, 78, 203)
+- **File**: `Sources/RosettaEdgeApp/ContentView.swift` (Lines 76, 293, 298, 325, 370) vs `Sources/RosettaEdgeApp/AppViewModel.swift` (Lines 61, 78, 203)
 - **Observation**:
   - `ContentView.swift` calls:
     - Line 76: `await viewModel.requestHealthKitAccess(modelContainer: modelContext.container)`
@@ -234,7 +234,7 @@ Key themes identified:
 - **Recommended Fix**: Unify the API across `AppViewModel` to accept either `modelContext: ModelContext` or `modelContainer: ModelContainer` consistently.
 
 ### 3.4 Undefined Identifiers in `PDFViewerWrapper`
-- **File**: `Sources/RosettaHealthApp/Vault/FamilyVaultView.swift` (Lines 226-227)
+- **File**: `Sources/RosettaEdgeApp/Vault/FamilyVaultView.swift` (Lines 226-227)
 - **Observation**:
   Inside `PDFViewerWrapper`:
   ```swift
@@ -248,7 +248,7 @@ Key themes identified:
 - **Recommended Fix**: Add `@State private var errorMessage: String?` and `@State private var showError: Bool = false` to `PDFViewerWrapper`.
 
 ### 3.5 Query Storm in `ObservationRowView`
-- **File**: `Sources/RosettaHealthApp/ObservationRowView.swift` (Lines 101-115)
+- **File**: `Sources/RosettaEdgeApp/ObservationRowView.swift` (Lines 101-115)
 - **Observation**:
   Every `ObservationRowView` executes `.task { await loadHistory() }` to fetch historical samples via `bridge.fetchHistoricalSamples(for:limit:)`. In a report containing 20-40 observations, 20-40 simultaneous HealthKit queries are dispatched to `healthd` upon list layout.
 - **Defect Impact**: High IPC latency, potential HealthKit daemon throttling, and UI stuttering on scroll.
@@ -259,7 +259,7 @@ Key themes identified:
 ## 4. Transcoder Output Interoperability & Data Loss
 
 ### 4.1 Syntax Errors & Undeclared Identifiers in `RosettaTranscoder.swift`
-- **File**: `Sources/RosettaHealthCore/RosettaTranscoder.swift` (Lines 27-28, 112-114)
+- **File**: `Sources/RosettaEdgeCore/RosettaTranscoder.swift` (Lines 27-28, 112-114)
 - **Observation**:
   1. Lines 27-28:
      ```swift
@@ -279,7 +279,7 @@ Key themes identified:
 - **Recommended Fix**: Remove duplicate declaration of `currentRangeUnit`, declare `private var documentId: String?`, and initialize `FHIRBundle` with `id: documentId ?? UUID().uuidString`.
 
 ### 4.2 Discarding Non-Parsable Double Observations (Data Loss)
-- **File**: `Sources/RosettaHealthCore/RosettaTranscoder.swift` (Lines 157-165)
+- **File**: `Sources/RosettaEdgeCore/RosettaTranscoder.swift` (Lines 157-165)
 - **Observation**:
   ```swift
   if elementName == "value" {
@@ -297,14 +297,14 @@ Key themes identified:
 - **Recommended Fix**: If `Double(valStr)` fails for `PQ`, fallback to setting `currentObsValueString = "\(valStr) \(attributeDict["unit"] ?? "")"`.
 
 ### 4.3 Narrative Clinical Text Extracted but Dropped from `FHIRComposition`
-- **File**: `Sources/RosettaHealthCore/RosettaTranscoder.swift` (Lines 30, 73-80, 181-187)
+- **File**: `Sources/RosettaEdgeCore/RosettaTranscoder.swift` (Lines 30, 73-80, 181-187)
 - **Observation**:
   `accumulatedNarrativeText` accumulates text from `<section><text>`, but line 73 instantiates `FHIRComposition` without the `text:` parameter (`text: nil`).
 - **Defect Impact**: Textual reports (such as cardiology, radiology, or specialist consults without structured observations like `Mock_Specialistica.xml`) have their text completely discarded. `FamilyVaultView` cannot display the narrative report.
 - **Recommended Fix**: Pass `FHIRNarrative(status: "generated", div: accumulatedNarrativeText)` to `FHIRComposition` initializer when narrative text is present.
 
 ### 4.4 Date Timezone Offset Truncation
-- **File**: `Sources/RosettaHealthCore/RosettaTranscoder.swift` (Lines 239-256)
+- **File**: `Sources/RosettaEdgeCore/RosettaTranscoder.swift` (Lines 239-256)
 - **Observation**:
   ```swift
   if raw.count >= 14 {
@@ -317,7 +317,7 @@ Key themes identified:
 - **Recommended Fix**: Support ISO8601 parsing and `yyyyMMddHHmmssZ` format strings to preserve timezone accuracy.
 
 ### 4.5 Date Parsing Failure in `ProcessReportIntent`
-- **File**: `Sources/RosettaHealthApp/Intents/ProcessReportIntent.swift` (Lines 51, 109-113)
+- **File**: `Sources/RosettaEdgeApp/Intents/ProcessReportIntent.swift` (Lines 51, 109-113)
 - **Observation**:
   In `ProcessReportIntent.perform()`, `obs.effectiveDateTime` is formatted as ISO 8601 (from `RosettaTranscoder`). However, `ProcessReportIntent.parseDate()` uses `formatter.dateFormat = "yyyyMMddHHmmssZ"`.
 - **Defect Impact**: `parseDate` returns `nil` for all observations, causing `date` to fallback to `Date()` (current time). Clinical samples injected into Apple Health receive the current timestamp instead of the historical test date.
@@ -328,7 +328,7 @@ Key themes identified:
 ## 5. Cross-Module Communication, Concurrency, and IPC Defects
 
 ### 5.1 Share Extension Document Race Condition & Premature Deletion
-- **File**: `Sources/RosettaHealthApp/AppViewModel.swift` (Lines 96-98) & `Sources/ShareExtension/ShareViewController.swift` (Lines 125-135)
+- **File**: `Sources/RosettaEdgeApp/AppViewModel.swift` (Lines 96-98) & `Sources/ShareExtension/ShareViewController.swift` (Lines 125-135)
 - **Observation**:
   When `ShareViewController` saves a `PendingCDA_*.xml` or `PendingPDF_*.pdf` into the App Group directory, `AppViewModel.syncPendingDocuments` loops through pending files and registers a `defer { try? FileManager.default.removeItem(at: file) }`.
   If an error occurs during parsing (`transcoder.transcode`) or SwiftData insertion, the file is already deleted by the `defer` block.
@@ -336,14 +336,14 @@ Key themes identified:
 - **Recommended Fix**: Only remove the pending file after successful transcode and persistence, or move failed files to a `Quarantine/` folder for user inspection.
 
 ### 5.2 Broken Live Activity Lifecycle
-- **File**: `Sources/RosettaHealthApp/AppViewModel.swift` (Lines 100, 191, 197, 216, 413-446)
+- **File**: `Sources/RosettaEdgeApp/AppViewModel.swift` (Lines 100, 191, 197, 216, 413-446)
 - **Observation**:
   `startLiveActivity(fileName:)` (line 413) is defined but NEVER called in `processPDF` or `syncPendingDocuments`. Calls to `updateLiveActivity` and `endLiveActivity` check `guard let activity = self.parsingActivity as? Activity<ParsingAttributes> else { return }`, which always evaluates to `nil`.
 - **Defect Impact**: Live Activities / Dynamic Island status indicators never appear during document processing.
 - **Recommended Fix**: Invoke `startLiveActivity(fileName:)` at the beginning of `processPDF` and `syncPendingDocuments` before processing begins.
 
 ### 5.3 Mismatched Keys & Data Types in Watch App / Widget Sync
-- **File**: `Sources/RosettaWatch/WatchDashboardView.swift` (Lines 8-15) vs `Sources/RosettaHealthApp/AppViewModel.swift` (Lines 325-342)
+- **File**: `Sources/RosettaWatch/WatchDashboardView.swift` (Lines 8-15) vs `Sources/RosettaEdgeApp/AppViewModel.swift` (Lines 325-342)
 - **Observation**:
   - `AppViewModel.updateWidgetData()` writes:
     - `"widget_metricName"` -> `String`

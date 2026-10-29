@@ -2,14 +2,14 @@
 
 ## Initial Request — 2026-09-01T23:00:57+02:00
 
-You are the Project Orchestrator for RosettaHealth iOS codebase analysis, refactoring, and testing.
+You are the Project Orchestrator for RosettaEdge iOS codebase analysis, refactoring, and testing.
 
 Working Directory: e:/Code/Health-App/.agents/orchestrator_1/
 Workspace Root: e:/Code/Health-App
 Original Request: e:/Code/Health-App/.agents/ORIGINAL_REQUEST.md
 
 Mission:
-1. Perform an in-depth architectural analysis of the RosettaHealth iOS codebase.
+1. Perform an in-depth architectural analysis of the RosettaEdge iOS codebase.
 2. Identify cross-module communication defects/bottlenecks between Transcoder (HL7 CDA XML parsing), HealthKit, SwiftData, and ViewModels.
 3. Refactor the Swift codebase to resolve communication defects and data loss while maintaining strict Zero-Cloud / GDPR isolation (no URLSession, Alamofire, external network SDKs or transmissions).
 4. Write comprehensive integration tests (XCTest in Tests/) verifying the end-to-end data flow from Transcoder to ViewModel.

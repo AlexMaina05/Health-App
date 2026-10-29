@@ -1,6 +1,6 @@
 # TECHNICAL DESIGN DOCUMENT (TDD) - v3.0
 
-## Project Name: RosettaHealth (FSE CDA to Apple Health & FHIR R4)
+## Project Name: RosettaEdge (FSE CDA to Apple Health & FHIR R4)
 
 **Document Version:** 3.0.0  
 **Target Environment:** iOS 17.0+ / watchOS 10.0+ / Swift 5.10+ / SwiftUI / Xcode 15+  
@@ -27,8 +27,8 @@
 Il Fascicolo Sanitario Elettronico italiano (FSE 2.0) rilascia referti in formato PDF/A-3 contenenti un payload XML strutturato (HL7 CDA R2). L'estrazione e l'integrazione di questi referti (Laboratorio, Radiologia, Visite Specialistiche) all'interno dell'ecosistema Apple Salute richiede elaborazioni complesse. 
 Il vincolo normativo fondamentale è la **Privacy (GDPR Art. 9)**: la transcodifica di dati sanitari sensibili deve avvenire al 100% on-device (Zero-Cloud Architecture), senza mai delegare l'elaborazione a server esterni.
 
-### 1.2 The RosettaHealth Solution (Hybrid Ingestion Architecture)
-**RosettaHealth** risolve il problema adottando una duplice architettura nativa ("Best of Both Worlds"):
+### 1.2 The RosettaEdge Solution (Hybrid Ingestion Architecture)
+**RosettaEdge** risolve il problema adottando una duplice architettura nativa ("Best of Both Worlds"):
 1. **Ingestione Documentale Globale (`HKCDADocumentSample`):** Estrae il payload CDA XML puro e lo inietta direttamente in HealthKit come documento clinico nativo, garantendo l'archiviazione del referto ufficiale (lettere di dimissione, referti radiologici) senza alcuna perdita di metadati.
 2. **Estrazione Quantitativa Selettiva (`HKQuantitySample`):** Parallelamente, il *Rosetta Engine* transcodifica l'XML in FHIR R4 JSON. Se rileva parametri numerici mappabili (es. glicemia, colesterolo, battito tramite codici LOINC), genera e salva in Salute anche i relativi campioni quantitativi (`HKQuantitySample`). Questo permette di popolare automaticamente i grafici storici dell'app nativa.
 
@@ -46,7 +46,7 @@ Per aggirare il problema, la Share Extension **non esegue il parsing**. Si limit
 3. Chiude il processo delegando il calcolo pesante all'App principale.
 
 ### 2.2 Topologia del Container Condiviso & Dual-Track IPC
-Il container condiviso (`group.dev.alexmaina.rosettahealth`) gestisce due tipologie di payload:
+Il container condiviso (`group.dev.alexmaina.rosettaedge`) gestisce due tipologie di payload:
 
 1. **Corsia Rapida CDA (`PendingCDA_<UUID>.xml`):** Payload XML puro estratto istantaneamente (se embedded nel PDF/A-3).
 2. **Corsia Differita OCR (`PendingPDF_<UUID>.pdf`):** Copia binaria del PDF rasterizzato, depositata in fallback se l'XML è assente.
@@ -227,7 +227,7 @@ Per la certificazione di stabilità biomedica, il framework core usa una suite d
 
 ### 7.4 Backup iCloud e CloudKit (Opt-In)
 Il *Family Vault* supporta la sincronizzazione opzionale tramite il **CloudKit Private Database** di Apple.
-- **Architettura a Doppio Container:** In base alla variabile `isCloudSyncEnabled` in `UserDefaults`, `RosettaHealthApp.swift` inizializza `ModelConfiguration` con `cloudKitDatabase: .automatic` oppure `.none`.
+- **Architettura a Doppio Container:** In base alla variabile `isCloudSyncEnabled` in `UserDefaults`, `RosettaEdgeApp.swift` inizializza `ModelConfiguration` con `cloudKitDatabase: .automatic` oppure `.none`.
 - **GDPR Compliance:** Dato che sfrutta il database privato dell'utente associato al suo Apple ID, l'infrastruttura CloudKit rimane invisibile agli sviluppatori e crittografata end-to-end. Il passaggio invalida il termine "Zero-Cloud" mutandolo in "Zero-Server-Terzi".
 - **Limiti di SwiftData:** Per supportare CloudKit, il vincolo di unicità (`@Attribute(.unique)`) su `VaultDocument.id` è stato rimosso in favore degli identificativi nativi di CloudKit, e tutti gli attributi del modello hanno ora valori di default espliciti.
 
@@ -236,7 +236,7 @@ Il *Family Vault* supporta la sincronizzazione opzionale tramite il **CloudKit P
 
 ## 📚 Riferimenti Bibliografici & Monografia Ufficiale
 
-- **Monografia Tecnica Accademica**: [Scarica il Paper Completo (PDF, 44 Pagine)](https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf)
+- **Monografia Tecnica Accademica**: [Scarica il Paper Completo (PDF, 44 Pagine)](https://alexmaina.dev/Health-App/rosettaedge-monografia-tecnica.pdf)
 - **Autore**: [Alessandro Mainardi](https://alexmaina.dev/) — Alma Mater Studiorum Università di Bologna (DISI)
 - **Identificatori Persistenti**: ORCID [0009-0003-7003-7247](https://orcid.org/0009-0003-7003-7247) · Wikidata [Q141886579](https://www.wikidata.org/wiki/Q141886579) · DOI [10.5281/zenodo.23735226](https://doi.org/10.5281/zenodo.23735226)
 - **Portale Ufficiale**: [alexmaina.dev](https://alexmaina.dev/)

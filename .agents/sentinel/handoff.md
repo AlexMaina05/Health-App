@@ -1,7 +1,7 @@
 # Sentinel Handoff Report
 
 ## Observation
-The user requested an architectural analysis of the RosettaHealth iOS codebase, refactoring to eliminate cross-module communication defects (Transcoder, HealthKit, SwiftData, ViewModel), strict Zero-Cloud / GDPR isolation, comprehensive integration test suite creation in `Tests/`, and removal of temporary scripts alongside the generation of `teamwork_analysis_report.md`.
+The user requested an architectural analysis of the RosettaEdge iOS codebase, refactoring to eliminate cross-module communication defects (Transcoder, HealthKit, SwiftData, ViewModel), strict Zero-Cloud / GDPR isolation, comprehensive integration test suite creation in `Tests/`, and removal of temporary scripts alongside the generation of `teamwork_analysis_report.md`.
 
 ## Logic Chain
 1. Routed the task to the General path (`teamwork_preview_orchestrator`) given the multi-module SWE refactoring and testing scope.
@@ -22,5 +22,5 @@ Project completed with full acceptance criteria satisfied and verified by an ind
 ## Verification Method
 - Independent Victory Audit: VICTORY CONFIRMED
 - Zero-Cloud check: 0 networking imports repository-wide (verified via ripgrep)
-- Test Suite: 40 tests across 10 XCTest files in `Tests/RosettaHealthCoreTests/`
+- Test Suite: 40 tests across 10 XCTest files in `Tests/RosettaEdgeCoreTests/`
 - Report: `teamwork_analysis_report.md` generated in workspace root.

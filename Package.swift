@@ -2,20 +2,20 @@
 import PackageDescription
 
 let package = Package(
-    name: "RosettaHealthCore",
+    name: "RosettaEdgeCore",
     platforms: [
         .iOS(.v17),
         .watchOS(.v10)
     ],
     products: [
         .library(
-            name: "RosettaHealthCore",
-            targets: ["RosettaHealthCore"]),
+            name: "RosettaEdgeCore",
+            targets: ["RosettaEdgeCore"]),
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "RosettaHealthCore",
+            name: "RosettaEdgeCore",
             dependencies: [],
             linkerSettings: [
                 .linkedFramework("HealthKit"),
@@ -25,8 +25,8 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "RosettaHealthCoreTests",
-            dependencies: ["RosettaHealthCore"]
+            name: "RosettaEdgeCoreTests",
+            dependencies: ["RosettaEdgeCore"]
         )
     ]
 )

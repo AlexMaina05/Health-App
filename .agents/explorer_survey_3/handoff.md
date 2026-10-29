@@ -3,9 +3,9 @@
 ## 1. Observation
 
 1. **Repository Layout & Target Structure**:
-   - `Package.swift:4-32`: Defines package `RosettaHealthCore` targeting iOS 17 and watchOS 10 with target `RosettaHealthCore` and test target `RosettaHealthCoreTests`. Links `HealthKit`, `Vision`, `PDFKit`, and `UIKit`.
-   - `project.yml:1-41`: Defines targets `RosettaHealthApp`, `RosettaHealthCore`, and `ShareExtension` with `deploymentTarget: 17.0`.
-   - Application targets exist in `Sources/RosettaHealthApp/`, `Sources/ShareExtension/`, `Sources/RosettaWidget/`, and `Sources/RosettaWatch/`.
+   - `Package.swift:4-32`: Defines package `RosettaEdgeCore` targeting iOS 17 and watchOS 10 with target `RosettaEdgeCore` and test target `RosettaEdgeCoreTests`. Links `HealthKit`, `Vision`, `PDFKit`, and `UIKit`.
+   - `project.yml:1-41`: Defines targets `RosettaEdgeApp`, `RosettaEdgeCore`, and `ShareExtension` with `deploymentTarget: 17.0`.
+   - Application targets exist in `Sources/RosettaEdgeApp/`, `Sources/ShareExtension/`, `Sources/RosettaWidget/`, and `Sources/RosettaWatch/`.
 
 2. **Zero-Cloud & GDPR Isolation Audit**:
    - Grep search for `URLSession`, `Alamofire`, `Network`, `WebSocket`, `Firebase`, `Sentry`, `Mixpanel`, `TelemetryDeck`: 0 active network calls or SDK dependencies in executable code.
@@ -38,7 +38,7 @@
    - `RosettaWatch/WatchDashboardView.swift:8-14` reads `"latestMetricValue"` (Double), `"latestMetricName"`, `"latestMetricUnit"`.
 
 5. **Test Suite & Integration Readiness**:
-   - `Tests/RosettaHealthCoreTests/`: 5 test files with unit tests for CDS, edge cases, transcoder, and validation gates.
+   - `Tests/RosettaEdgeCoreTests/`: 5 test files with unit tests for CDS, edge cases, transcoder, and validation gates.
    - `FSEEdgeCasesTests.swift:33`: Erroneously asserts `bundle.entry.count == 0` for narrative documents.
    - `RosettaTranscoderTests2.swift:25`: Checks `bundle.entry.first` assuming it is an Observation (it is Composition).
    - `ValidationGateTests.swift:55`: Compilation error in `FHIRBundleEntry` initialization (`resource:` without `fullUrl:`).
@@ -49,7 +49,7 @@
 ## 2. Logic Chain
 
 1. **Architecture & Pipeline Flow**:
-   - Starting from `ShareViewController.swift`, PDFs are received, hardware-encrypted (`FileProtectionType.completeUntilFirstUserAuthentication`), and stored in the shared container `group.dev.alexmaina.rosettahealth`.
+   - Starting from `ShareViewController.swift`, PDFs are received, hardware-encrypted (`FileProtectionType.completeUntilFirstUserAuthentication`), and stored in the shared container `group.dev.alexmaina.rosettaedge`.
    - `AppViewModel` (or `BackgroundTaskManager`) reads pending XMLs and calls `RosettaTranscoder.transcode(cdaData:)` to produce a `FHIRBundle` conforming to HL7 FHIR R4 and the International Patient Summary (IPS) profile.
    - The firewall logic in `AppViewModel.extractPatientInfo()` compares the patient's fiscal code against the owner's code stored in `KeychainManager`. If they match, `HealthKitBridge` ingests CDA documents and quantitative metrics (`HKQuantitySample`). If they do not match, the document is routed exclusively to SwiftData (`VaultDocument`) if PRO is enabled, preventing health data contamination.
 
@@ -75,7 +75,7 @@
 
 1. **Architecture Quality**: The core modular design (Producer-Consumer via App Groups, CDA -> FHIR R4 IPS Transcoder, Dual Routing Firewall, SwiftData Family Vault, and Clinical Decision Support) is well-conceived and strictly on-device.
 2. **Zero-Cloud Compliance**: 100% free of external networking frameworks (`URLSession`, `Alamofire`, Analytics). Two critical privacy enhancements are required: hardcoding `cloudKitDatabase: .none` and redacting patient names in OSLog.
-3. **Refactoring Scope**: 12 specific defects across `RosettaHealthCore` and `RosettaHealthApp` must be addressed to restore build integrity and data fidelity.
+3. **Refactoring Scope**: 12 specific defects across `RosettaEdgeCore` and `RosettaEdgeApp` must be addressed to restore build integrity and data fidelity.
 4. **Testing Readiness**: `MockData/Mock_Laboratorio.xml` and `Mock_Specialistica.xml` provide complete fixtures for full-pipeline integration tests once unit test compilation issues are fixed.
 
 ---
@@ -89,12 +89,12 @@ To independently verify the observations:
    Select-String -Path "Sources\**\*.swift" -Pattern "URLSession|Alamofire|Network|WebSocket|Firebase|Sentry|Mixpanel"
    ```
 2. **CloudKit Sync Inspection**:
-   Inspect `Sources/RosettaHealthApp/MainAppView.swift` lines 18-19 and `Sources/RosettaHealthApp/SettingsView.swift` line 22.
+   Inspect `Sources/RosettaEdgeApp/MainAppView.swift` lines 18-19 and `Sources/RosettaEdgeApp/SettingsView.swift` line 22.
 3. **Compilation Blockers Inspection**:
-   - Inspect `Sources/RosettaHealthCore/RosettaTranscoder.swift` lines 27-28 and 113.
-   - Inspect `Sources/RosettaHealthApp/OnboardingView.swift` line 189.
-   - Inspect `Sources/RosettaHealthApp/Vault/FamilyVaultView.swift` lines 226-227.
-   - Inspect `Sources/RosettaHealthApp/AppViewModel.swift` lines 12-13, 237.
+   - Inspect `Sources/RosettaEdgeCore/RosettaTranscoder.swift` lines 27-28 and 113.
+   - Inspect `Sources/RosettaEdgeApp/OnboardingView.swift` line 189.
+   - Inspect `Sources/RosettaEdgeApp/Vault/FamilyVaultView.swift` lines 226-227.
+   - Inspect `Sources/RosettaEdgeApp/AppViewModel.swift` lines 12-13, 237.
 4. **Unit Test Compilation Inspection**:
-   - Inspect `Tests/RosettaHealthCoreTests/ValidationGateTests.swift` line 55.
-   - Inspect `Tests/RosettaHealthCoreTests/RosettaTranscoderTests2.swift` line 25.
+   - Inspect `Tests/RosettaEdgeCoreTests/ValidationGateTests.swift` line 55.
+   - Inspect `Tests/RosettaEdgeCoreTests/RosettaTranscoderTests2.swift` line 25.

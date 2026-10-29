@@ -1,18 +1,18 @@
-# Project: RosettaHealth iOS Architecture, Refactoring, Zero-Cloud Compliance, and Testing
+# Project: RosettaEdge iOS Architecture, Refactoring, Zero-Cloud Compliance, and Testing
 
 ## Architecture
-RosettaHealth is a privacy-first, on-device iOS medical document transcode and health data aggregation platform.
-- **Core Engine (`RosettaHealthCore`)**:
+RosettaEdge is a privacy-first, on-device iOS medical document transcode and health data aggregation platform.
+- **Core Engine (`RosettaEdgeCore`)**:
   - `RosettaTranscoder`: SAX-based HL7 CDA XML parser converting clinical documents into HL7 FHIR R4 / International Patient Summary (IPS) bundles.
   - `HealthKitBridge`: Maps FHIR Observations to Apple HealthKit Quantity/Category samples, protected by a physiological validation gate (`isValidPhysiologically`).
   - `ClinicalDecisionSupport`: Local CDS evaluating clinical rules, cardiovascular risk factors, and vital trends.
   - `KeychainManager`: Secure hardware-backed storage for user fiscal code and security keys (`kSecAttrAccessibleWhenUnlockedThisDeviceOnly`).
-- **Application Layer (`RosettaHealthApp`)**:
+- **Application Layer (`RosettaEdgeApp`)**:
   - `AppViewModel`: `@Observable` orchestrator handling file ingestion, background sync, firewall routing, and state publishing to SwiftUI views.
   - `VaultModelActor` & `VaultDocument`: SwiftData persistence layer storing family/non-owner clinical records and full PDF archives locally.
   - `BackgroundTaskManager` & `SpotlightManager`: Background refresh, Spotlight indexing, and LocalAuthentication biometric access.
 - **Extensions & Cross-Platform**:
-  - `ShareExtension`: Receives external medical PDFs/CDAs via iOS Share Sheet, applying hardware encryption before saving to App Group container `group.dev.alexmaina.rosettahealth`.
+  - `ShareExtension`: Receives external medical PDFs/CDAs via iOS Share Sheet, applying hardware encryption before saving to App Group container `group.dev.alexmaina.rosettaedge`.
   - `RosettaWidget` & `RosettaWatch`: Glanceable metric display and watchOS synchronization via App Group UserDefaults / WatchConnectivity.
 - **Privacy Boundary (Zero-Cloud / GDPR Art. 9)**:
   - 100% on-device processing. Zero `URLSession`, `Alamofire`, `Network.framework`, telemetry, or cloud databases. SwiftData explicitly configured with `cloudKitDatabase: .none`.
@@ -93,21 +93,21 @@ RosettaHealth is a privacy-first, on-device iOS medical document transcode and h
 | M5 | Verification, Forensic Audit & Reporting | Reviewer, Challenger, and Forensic Auditor verification, cleanup temp scripts, and generate `teamwork_analysis_report.md` | M4 | DONE |
 
 ## Code Layout
-- `Sources/RosettaHealthCore/`: Core transcode, HealthKit, CDS, and Keychain engine
+- `Sources/RosettaEdgeCore/`: Core transcode, HealthKit, CDS, and Keychain engine
   - `RosettaTranscoder.swift`: Owned by M1 Worker
   - `HealthKitBridge.swift`: Owned by M1 Worker
   - `ClinicalDecisionSupport.swift`: Owned by M1 Worker
   - `FHIRModels.swift`: Owned by M1 Worker
-- `Sources/RosettaHealthApp/`: Application, ViewModels, Views, Vault
+- `Sources/RosettaEdgeApp/`: Application, ViewModels, Views, Vault
   - `AppViewModel.swift`: Owned by M2/M3 Worker
-  - `MainAppView.swift`, `RosettaHealthApp.swift`: Owned by M2/M3 Worker
+  - `MainAppView.swift`, `RosettaEdgeApp.swift`: Owned by M2/M3 Worker
   - `LiquidGlass.swift`, `OnboardingView.swift`: Owned by M2 Worker
   - `Vault/VaultDocument.swift`, `Vault/VaultModelActor.swift`, `Vault/ClinicalDashboardView.swift`, `Vault/FamilyVaultView.swift`: Owned by M2 Worker
   - `BackgroundTaskManager.swift`, `SpotlightManager.swift`, `BiometricAuthManager.swift`, `ObservationRowView.swift`, `ContentView.swift`: Owned by M2 Worker
 - `Sources/ShareExtension/`, `Sources/RosettaWidget/`, `Sources/RosettaWatch/`:
   - `ShareViewController.swift`, `RosettaWidget.swift`, `WatchDashboardView.swift`: Owned by M2 Worker
 - `Tests/`: Unit and Integration test targets
-  - `Tests/RosettaHealthCoreTests/`: 10 test files (40 test cases across Tiers 1-4, E2E lifecycle, and unit tests)
+  - `Tests/RosettaEdgeCoreTests/`: 10 test files (40 test cases across Tiers 1-4, E2E lifecycle, and unit tests)
 
 ## Interface Contracts
 ### Transcoder ↔ HealthKit / App Layer

@@ -3,14 +3,14 @@
 **Agent**: Challenger 2 (challenger_2)
 **Role**: EMPIRICAL CHALLENGER (critic, specialist)
 **Milestone**: M5 Forensic and Adversarial Verification
-**Evaluation Target**: RosettaHealth iOS / watchOS Platform
+**Evaluation Target**: RosettaEdge iOS / watchOS Platform
 **Verdict**: **APPROVE** [PASS]
 
 ---
 
 ## 1. Executive Summary & Risk Assessment
 
-An exhaustive adversarial audit and empirical stress-testing suite was executed against the RosettaHealth codebase, targeting:
+An exhaustive adversarial audit and empirical stress-testing suite was executed against the RosettaEdge codebase, targeting:
 1. SwiftData Persistence and Concurrency / Actor Isolation
 2. Zero-Cloud Architecture and GDPR Art. 9 Isolation Boundaries
 3. App Group File Handling and WatchOS / Widget IPC Key Alignment
@@ -23,7 +23,7 @@ Across 46 empirical verification checks and stress-test scenarios, zero regressi
 | SwiftData Concurrency | Zero @Model cross-actor leaks | Passing live SwiftData @Model references across Task.detached | ClinicalDashboardView converts models to DocumentDTO (Sendable) prior to detached processing | PASS |
 | Zero-Cloud Compliance | 0 remote network invocations | Search for covert SDKs (URLSession, Alamofire, Network.framework, CloudKit, analytics) | 0 banned symbols found. SwiftData explicitly set to cloudKitDatabase: .none | PASS |
 | Background Refresh | No network wakeups | Background refresh task requesting network connectivity | request.requiresNetworkConnectivity = false explicitly enforced | PASS |
-| App Group IPC | Consistent container and keys | Mismatched suite names or type serialization across iOS & watchOS | Shared suite group.dev.alexmaina.rosettahealth and keys (latestMetricValue, latestMetricName, etc.) 100% aligned | PASS |
+| App Group IPC | Consistent container and keys | Mismatched suite names or type serialization across iOS & watchOS | Shared suite group.dev.alexmaina.rosettaedge and keys (latestMetricValue, latestMetricName, etc.) 100% aligned | PASS |
 | PII Redaction | Strict log masking | Patient name or fiscal code emitted in plain text in OSLog | Patient name protected with privacy: .private; all raw debug prints eliminated | PASS |
 | Validation Gate | Physiological limit enforcement | Ingesting poisoned/lethal vitals (e.g. Glucose 3000 mg/dL, HR 450 bpm) | 100% blocked by isValidPhysiologically validation gate | PASS |
 
@@ -52,7 +52,7 @@ Across 46 empirical verification checks and stress-test scenarios, zero regressi
 ### Dimension 3: App Group File Handling & WatchOS / Widget IPC Alignment
 - Assumption Challenged: Can files shared via ShareSheet be lost on parse failure, or can IPC data types mismatch causing empty widgets or Apple Watch displays?
 - Inspection & Stress Test:
-  - ShareViewController.swift: Copies shared file synchronously inside loadFileRepresentation with .completeFileProtectionUntilFirstUserAuthentication into App Group container group.dev.alexmaina.rosettahealth.
+  - ShareViewController.swift: Copies shared file synchronously inside loadFileRepresentation with .completeFileProtectionUntilFirstUserAuthentication into App Group container group.dev.alexmaina.rosettaedge.
   - AppViewModel.swift: Reads pending files matching PendingCDA_*.xml and PendingPDF_*.pdf. File deletion occurs ONLY after successful processing or verified unrecoverable corruption.
   - IPC Key & Type Alignment:
     - widget_metricName (String): Shared between AppViewModel.swift & RosettaWidget.swift
@@ -79,7 +79,7 @@ Across 46 empirical verification checks and stress-test scenarios, zero regressi
 | 1-11 | Zero-Cloud & Banned Token Audit | Regex scanner over all .swift files | PASS (0 banned tokens) |
 | 12 | SwiftData CloudKit Disabled | AST check ModelConfiguration(cloudKitDatabase: .none) | PASS |
 | 13 | Background Task Offline Mode | Config check requiresNetworkConnectivity = false | PASS |
-| 14-17 | App Group Suite Consistency | Cross-file suite identifier verification | PASS (group.dev.alexmaina.rosettahealth) |
+| 14-17 | App Group Suite Consistency | Cross-file suite identifier verification | PASS (group.dev.alexmaina.rosettaedge) |
 | 18-20 | WatchOS IPC Keys & Types | Cross-file key verification (latestMetric*) | PASS |
 | 21-22 | Widget IPC Keys & Types | Cross-file key verification (widget_metric*) | PASS |
 | 23 | OSLog PII Privacy Masking | Regex search for unmasked patient interpolations | PASS (0 unmasked PII logs) |
@@ -95,4 +95,4 @@ Across 46 empirical verification checks and stress-test scenarios, zero regressi
 ## 4. Final Verdict
 
 **VERDICT: APPROVE**
-The RosettaHealth codebase successfully satisfies all adversarial stress tests, GDPR Art. 9 on-device requirements, SwiftData concurrency safety contracts, and cross-platform IPC synchronization.
+The RosettaEdge codebase successfully satisfies all adversarial stress tests, GDPR Art. 9 on-device requirements, SwiftData concurrency safety contracts, and cross-platform IPC synchronization.

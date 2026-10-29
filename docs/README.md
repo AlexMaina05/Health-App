@@ -1,4 +1,4 @@
-# ⚕️ RosettaHealth 
+# ⚕️ RosettaEdge 
 **Il ponte mobile edge on-device tra il Fascicolo Sanitario Elettronico (FSE) e Apple Health.**
 
 [![Author](https://img.shields.io/badge/Author-Alessandro_Mainardi-00e5ff?style=for-the-badge)](https://alexmaina.dev/)
@@ -12,7 +12,7 @@
 [![Zero Cloud](https://img.shields.io/badge/Architecture-Zero_Cloud-2b2b2b?style=for-the-badge)](#)
 [![License](https://img.shields.io/badge/License-CC_BY_4.0-4CAF50?style=for-the-badge)](https://creativecommons.org/licenses/by/4.0/)
 
-> **RosettaHealth** non è un semplice lettore PDF; è una *pipeline invisibile e sicura* progettata per restituire ai pazienti il controllo sui propri dati medici. Sviluppata interamente in Swift (nativa), estrae i referti complessi (FSE 2.0) e li traduce in grafici interattivi all'interno di Apple Salute... il tutto senza che un singolo byte abbandoni il tuo iPhone.
+> **RosettaEdge** non è un semplice lettore PDF; è una *pipeline invisibile e sicura* progettata per restituire ai pazienti il controllo sui propri dati medici. Sviluppata interamente in Swift (nativa), estrae i referti complessi (FSE 2.0) e li traduce in grafici interattivi all'interno di Apple Salute... il tutto senza che un singolo byte abbandoni il tuo iPhone.
 
 ---
 
@@ -34,7 +34,7 @@
 
 Oltre al presente README e alla [Homepage Interattiva](https://alexmaina.dev/Health-App/), il progetto include una corposa monografia accademica e documentazione tecnica strutturata:
 
-- 📄 [**Monografia Tecnica Ufficiale (PDF, 44 Pagine)**](https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf): Trattato formale in LaTeX redatto da Alessandro Mainardi (UniBo DISI). Include specifiche matematiche, modello di minaccia STRIDE, validazione dell'Identity Firewall (D.M. 23/12/1976 + Jaro-Winkler), benchmark sperimentali su iPhone 15 Pro / iPhone 13 e appendici ontologiche LOINC complete. DOI: [10.5281/zenodo.23735226](https://doi.org/10.5281/zenodo.23735226).
+- 📄 [**Monografia Tecnica Ufficiale (PDF, 44 Pagine)**](https://alexmaina.dev/Health-App/rosettaedge-monografia-tecnica.pdf): Trattato formale in LaTeX redatto da Alessandro Mainardi (UniBo DISI). Include specifiche matematiche, modello di minaccia STRIDE, validazione dell'Identity Firewall (D.M. 23/12/1976 + Jaro-Winkler), benchmark sperimentali su iPhone 15 Pro / iPhone 13 e appendici ontologiche LOINC complete. DOI: [10.5281/zenodo.23735226](https://doi.org/10.5281/zenodo.23735226).
 - 🏛️ [**Analisi dello Stato dell'Arte**](https://alexmaina.dev/Health-App/doc/#/Stato_dell_Arte): Analisi del panorama italiano (FSE 2.0, HL7 CDA R2, standard regionali Emilia-Romagna/Lombardia/Veneto) e internazionale (FHIR R4).
 - ⚙️ [**Technical Design Document (TDD)**](https://alexmaina.dev/Health-App/doc/#/tdd): Il cuore ingegneristico (modello Producer-Consumer, schema SwiftData `@ModelActor`, crittografia Secure Enclave, Swift Concurrency).
 - 🚀 [**Sviluppi Futuri e Roadmap**](https://alexmaina.dev/Health-App/doc/#/Sviluppi_Futuri): Vision evolutiva (v4.0+), inclusi Small Language Models (SLM) on-device con CoreML ed European Health Data Space (EHDS).
@@ -49,7 +49,7 @@ Oltre al presente README e alla [Homepage Interattiva](https://alexmaina.dev/Hea
 In Italia, l'esito di un esame diagnostico o di laboratorio viene caricato sul Fascicolo Sanitario Elettronico come file PDF. Sepolto all'interno di quel documento si trova un payload **HL7 CDA R2 XML** — uno standard clinicamente accurato ma virtualmente illeggibile per la tecnologia consumer. Se desideri tracciare il tuo colesterolo negli ultimi 5 anni per monitorare il tuo stato cardiovascolare, sei costretto ad aprire decine di PDF e annotare i numeri manualmente.
 
 **La Soluzione:**  
-Abbiamo costruito un motore di transcodifica *on-device*. **RosettaHealth** intercetta il PDF governativo tramite un'Estensione di Condivisione nativa di iOS, estrapola il payload XML, e lo transcodifica nel modernissimo standard **HL7 FHIR R4**. Infine, inietta nativamente i valori numerici nel database di **Apple HealthKit**.
+Abbiamo costruito un motore di transcodifica *on-device*. **RosettaEdge** intercetta il PDF governativo tramite un'Estensione di Condivisione nativa di iOS, estrapola il payload XML, e lo transcodifica nel modernissimo standard **HL7 FHIR R4**. Infine, inietta nativamente i valori numerici nel database di **Apple HealthKit**.
 
 Il risultato? Il PDF burocratico diventa istantaneamente un grafico sanitario interattivo a lungo termine, analizzabile a colpo d'occhio.
 
@@ -58,7 +58,7 @@ Il risultato? Il PDF burocratico diventa istantaneamente un grafico sanitario in
 ## ⚙️ Come Funziona (User Journey)
 
 1. **Scarica**: L'utente scarica un referto (PDF) dal portale FSE (o via email/File).
-2. **Condividi**: Senza uscire da Safari o Mail, l'utente preme "Condividi" e seleziona "RosettaHealth" dal menu di condivisione di sistema.
+2. **Condividi**: Senza uscire da Safari o Mail, l'utente preme "Condividi" e seleziona "RosettaEdge" dal menu di condivisione di sistema.
 3. **Elabora (In Background)**: La *Custom Share Extension* accoda il file. L'utente non deve neanche aprire l'app. In background (grazie a `BGTaskScheduler`), l'app esegue il parsing XML in streaming e lo transcodifica.
 4. **Visualizza**: I parametri clinici (Glicemia, Pressione, Colesterolo) appaiono su Apple Salute o direttamente al polso tramite l'app **watchOS Companion**.
 
@@ -68,7 +68,7 @@ Il risultato? Il PDF burocratico diventa istantaneamente un grafico sanitario in
 
 L'applicazione abbraccia un modello di monetizzazione etico e sostenibile (Zero-Ads, Zero-Data-Selling):
 - **Core Gratuito**: Importazione illimitata di referti personali (Glicemia, Pressione, ecc.) sincronizzati direttamente in Apple Salute.
-- **RosettaHealth PRO**: Sblocca il *Family Vault*, permettendo l'archiviazione di referti appartenenti a terzi (figli minori, genitori anziani) sul dispositivo con isolamento crittografico Face ID.
+- **RosettaEdge PRO**: Sblocca il *Family Vault*, permettendo l'archiviazione di referti appartenenti a terzi (figli minori, genitori anziani) sul dispositivo con isolamento crittografico Face ID.
 
 ---
 
@@ -85,7 +85,7 @@ brew install xcodegen
 xcodegen generate
 
 # 3. Apri il file appena generato e clicca su "Build"
-open RosettaHealth.xcodeproj
+open RosettaEdge.xcodeproj
 ```
 
 ---
@@ -128,7 +128,7 @@ Il motore di mappatura semantica trasla i codici identificativi (LOINC) presenti
 
 ## 👤 Autore & Attribuzione Accademica
 
-Il progetto **RosettaHealth** è ideato, formalizzato e sviluppato da:
+Il progetto **RosettaEdge** è ideato, formalizzato e sviluppato da:
 
 - **Autore:** [Alessandro Mainardi](https://alexmaina.dev/)
 - **Affiliazione:** Alma Mater Studiorum — Università di Bologna, Dipartimento di Informatica — Scienza e Ingegneria (DISI)

@@ -3,7 +3,7 @@
 Last visited: 2026-09-01T23:23:25+02:00
 
 ## Current Status
-Completed exhaustive forensic integrity audit across RosettaHealth codebase (`Sources/` and `Tests/`). Binary verdict: **CLEAN** ✅.
+Completed exhaustive forensic integrity audit across RosettaEdge codebase (`Sources/` and `Tests/`). Binary verdict: **CLEAN** ✅.
 
 ## Plan
 - [x] Task 1: Initialize audit workspace (`DISPATCH.md`, `BRIEFING.md`, `progress.md`)

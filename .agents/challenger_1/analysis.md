@@ -1,7 +1,7 @@
 # Adversarial Verification & Stress Test Analysis Report
 
 **Agent**: Challenger 1 (`critic`, `specialist`)  
-**Target**: `RosettaHealthCore` (Transcoder, FHIR Mapping, HealthKit Validation Gate, CDS, Patient Firewall)  
+**Target**: `RosettaEdgeCore` (Transcoder, FHIR Mapping, HealthKit Validation Gate, CDS, Patient Firewall)  
 **Date**: 2026-09-01T23:22:00Z  
 **Verdict**: **APPROVE**  
 **Overall Risk Assessment**: **LOW**
@@ -10,7 +10,7 @@
 
 ## 1. Executive Summary
 
-As the Empirical Challenger for RosettaHealth, we conducted adversarial stress testing against the core transcode engine (`RosettaTranscoder`), the FHIR R4 model mappings (`FHIRModels`), the HealthKit ingestion and physiological validation gate (`HealthKitBridge`), the Clinical Decision Support rules (`ClinicalDecisionSupport`), and the patient firewall routing logic (`AppViewModel`).
+As the Empirical Challenger for RosettaEdge, we conducted adversarial stress testing against the core transcode engine (`RosettaTranscoder`), the FHIR R4 model mappings (`FHIRModels`), the HealthKit ingestion and physiological validation gate (`HealthKitBridge`), the Clinical Decision Support rules (`ClinicalDecisionSupport`), and the patient firewall routing logic (`AppViewModel`).
 
 Our empirical evaluation subjected the codebase to **75+ automated adversarial test vectors** including:
 1. **Extreme Boundary & Poisoning Attacks**: 0, negative numbers, extreme out-of-scale values (e.g. 3,000 mg/dL glucose, 450 bpm HR, 850 kg weight), `NaN`, `+Inf`, `-Inf`, and precise threshold boundary transitions (e.g. Glucose 10.0 / 1500.0 vs 9.9999 / 1500.0001).
@@ -101,4 +101,4 @@ All adversarial tests **PASSED** with zero security bypasses, zero data corrupti
 ## 5. Final Adversarial Verdict
 
 **Verdict**: **APPROVE**  
-The implementation of RosettaHealth Core Transcoder, FHIR mapping, and HealthKit validation gate is robust, resilient to adversarial payloads, mathematically sound at physiological boundaries, and fully compliant with all architectural and privacy specifications.
+The implementation of RosettaEdge Core Transcoder, FHIR mapping, and HealthKit validation gate is robust, resilient to adversarial payloads, mathematically sound at physiological boundaries, and fully compliant with all architectural and privacy specifications.

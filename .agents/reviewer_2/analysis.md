@@ -1,7 +1,7 @@
 # Comprehensive Review & Adversarial Analysis Report
 
 **Reviewer**: Reviewer 2 (Roles: Reviewer & Critic)  
-**Target Project**: RosettaHealth iOS / watchOS Health Data Transcode & Aggregation Engine  
+**Target Project**: RosettaEdge iOS / watchOS Health Data Transcode & Aggregation Engine  
 **Review Target Date**: 2026-09-01  
 **Overall Verdict**: **APPROVE**  
 
@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary & Review Verdict
 
-An exhaustive architectural, functional, adversarial, and forensic integrity review of the RosettaHealth iOS/watchOS codebase was conducted. The review evaluated HL7 CDA XML parsing, Apple HealthKit integration, Clinical Decision Support (CDS), SwiftData on-device persistence, App Group IPC lifecycle, zero-cloud / GDPR Article 9 privacy invariants, and the integration test suites across Tiers 1–4.
+An exhaustive architectural, functional, adversarial, and forensic integrity review of the RosettaEdge iOS/watchOS codebase was conducted. The review evaluated HL7 CDA XML parsing, Apple HealthKit integration, Clinical Decision Support (CDS), SwiftData on-device persistence, App Group IPC lifecycle, zero-cloud / GDPR Article 9 privacy invariants, and the integration test suites across Tiers 1–4.
 
 ### **Verdict: APPROVE ✅**
 - **Integrity**: 100% Genuine. Zero hardcoded test shortcuts, zero facade implementations, zero fabricated verification artifacts.
@@ -23,7 +23,7 @@ An exhaustive architectural, functional, adversarial, and forensic integrity rev
 
 ## 2. Detailed Technical Findings by Subsystem
 
-### 2.1. Core Engine & Transcoder (`RosettaHealthCore/RosettaTranscoder.swift`)
+### 2.1. Core Engine & Transcoder (`RosettaEdgeCore/RosettaTranscoder.swift`)
 - **Document ID Extraction**:
   - `documentId` is captured from `<ClinicalDocument><id extension="..." root="..."/></ClinicalDocument>` at lines 122–124 and assigned to `FHIRBundle.id` at line 101 (`id: documentId ?? UUID().uuidString`).
 - **European Comma-Decimal Normalization**:
@@ -35,7 +35,7 @@ An exhaustive architectural, functional, adversarial, and forensic integrity rev
 - **XML Security / XXE Mitigation**:
   - `XMLParser.shouldResolveExternalEntities = false` (line 47) prevents external entity resolution and protects against Billion Laughs exponential entity expansion attacks.
 
-### 2.2. HealthKit Bridge & Validation Gate (`RosettaHealthCore/HealthKitBridge.swift`)
+### 2.2. HealthKit Bridge & Validation Gate (`RosettaEdgeCore/HealthKitBridge.swift`)
 - **Physiological Validation Gate**:
   - `isValidPhysiologically(value: Double, for type: HKQuantityTypeIdentifier)` (lines 164–176) is actively invoked in `ingestQuantities` (line 219) and `ingestRawMetrics` (line 267).
   - Out-of-bounds poisoned data (e.g., Glucose 3000 mg/dL, HR 450 bpm, Temp 55°C, Mass 850 kg, Height 4.5m) is filtered into `IngestionResult.skippedObservations` without polluting Apple HealthKit.
@@ -48,12 +48,12 @@ An exhaustive architectural, functional, adversarial, and forensic integrity rev
 - **Singleton Pattern**:
   - `public static let shared = HealthKitBridge()` (line 5) enables clean access from views like `ObservationRowView.swift`.
 
-### 2.3. App Layer, Concurrency & File Lifecycle (`RosettaHealthApp/AppViewModel.swift`)
+### 2.3. App Layer, Concurrency & File Lifecycle (`RosettaEdgeApp/AppViewModel.swift`)
 - **App Group File Lifecycle**:
   - In `syncPendingDocuments` (lines 99–157), `FileManager.default.removeItem(at: file)` is executed at line 147 *only after* transcode, HealthKit ingestion, and SwiftData insertion succeed.
   - If an error is thrown, execution diverts to the `catch` blocks (lines 148–152), leaving the file intact in the App Group container to prevent unrecoverable data loss.
 - **UserDefaults Key Synchronization**:
-  - In `updateWidgetData()` (lines 331–358), metrics are synchronized to `UserDefaults(suiteName: "group.dev.alexmaina.rosettahealth")`:
+  - In `updateWidgetData()` (lines 331–358), metrics are synchronized to `UserDefaults(suiteName: "group.dev.alexmaina.rosettaedge")`:
     - Widget: `widget_metricName`, `widget_metricValue`, `widget_lastUpdate`
     - Apple Watch: `latestMetricValue` (Double), `latestMetricName` (String), `latestMetricUnit` (String)
   - Matches the keys and data types read in `WatchDashboardView.swift:8–15` and `RosettaWidget.swift:17–18`.
@@ -128,6 +128,6 @@ All 21 inventory defects (D1–D21) identified in `PROJECT.md` have been verifie
 
 ## 6. Conclusion
 
-The RosettaHealth codebase satisfies all functional, architectural, privacy, concurrency, and security requirements. The implementation exhibits clean code quality, zero integrity violations, and robust test suite coverage across Tiers 1–4.
+The RosettaEdge codebase satisfies all functional, architectural, privacy, concurrency, and security requirements. The implementation exhibits clean code quality, zero integrity violations, and robust test suite coverage across Tiers 1–4.
 
 **Final Recommendation**: **APPROVE FOR RELEASE**.

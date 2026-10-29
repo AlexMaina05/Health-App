@@ -1,7 +1,7 @@
 ﻿# Test Infrastructure & Architecture Specification (`TEST_INFRA.md`)
 
 ## 1. Overview & Architecture
-RosettaHealth is a privacy-first, on-device iOS clinical document transcode and aggregation system.
+RosettaEdge is a privacy-first, on-device iOS clinical document transcode and aggregation system.
 The test infrastructure is architected to guarantee deterministic, isolated, zero-cloud verification of:
 - HL7 CDA R2 XML SAX parsing into HL7 FHIR R4 / International Patient Summary (IPS) bundles.
 - Physiological validation gating and biometric safety boundaries before HealthKit ingestion.
@@ -39,11 +39,11 @@ The test infrastructure is architected to guarantee deterministic, isolated, zer
 ---
 
 ## 2. Directory Structure & Test Target Layout
-All test suites are contained within `Tests/RosettaHealthCoreTests/`:
+All test suites are contained within `Tests/RosettaEdgeCoreTests/`:
 
 ```
 Tests/
-└── RosettaHealthCoreTests/
+└── RosettaEdgeCoreTests/
     ├── Tier1FeatureCoverageTests.swift       # Tier 1: Core Feature Coverage
     ├── Tier2BoundaryCornerTests.swift        # Tier 2: Boundary, Precision & Security Cases
     ├── Tier3CrossFeaturePipelineTests.swift  # Tier 3: Transcoder + HealthKit + CDS + SwiftData
@@ -93,7 +93,7 @@ swift test --filter RosettaE2ETests
 To run tests using `xcodebuild` targeting the iOS 17 Simulator:
 ```bash
 xcodebuild test \
-  -scheme RosettaHealthCore \
+  -scheme RosettaEdgeCore \
   -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' \
   -resultBundlePath './TestResults.xcresult'
 ```

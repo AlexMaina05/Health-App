@@ -1,4 +1,4 @@
-# In-Depth Architectural & Codebase Survey Report: RosettaHealth iOS
+# In-Depth Architectural & Codebase Survey Report: RosettaEdge iOS
 
 **Author**: Explorer Survey Agent 1  
 **Date**: 2026-09-01T23:04:00+02:00  
@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary
 
-RosettaHealth is designed as a privacy-first, Zero-Cloud (GDPR Art. 9 compliant) iOS application that extracts structured clinical data from Italian Electronic Health Record (FSE 2.0) PDF/A-3 documents containing embedded HL7 CDA Release 2 XML payloads. The pipeline transcodes CDA documents into FHIR R4 / IPS (International Patient Summary) resources, segregates records by patient identity (Codice Fiscale firewall), routes owner metrics to Apple Health (HealthKit) and family records to a local encrypted SwiftData Vault, and computes local Clinical Decision Support (CDS) trend alerts.
+RosettaEdge is designed as a privacy-first, Zero-Cloud (GDPR Art. 9 compliant) iOS application that extracts structured clinical data from Italian Electronic Health Record (FSE 2.0) PDF/A-3 documents containing embedded HL7 CDA Release 2 XML payloads. The pipeline transcodes CDA documents into FHIR R4 / IPS (International Patient Summary) resources, segregates records by patient identity (Codice Fiscale firewall), routes owner metrics to Apple Health (HealthKit) and family records to a local encrypted SwiftData Vault, and computes local Clinical Decision Support (CDS) trend alerts.
 
 Our systematic audit of the entire codebase (`Sources/`, `Tests/`, `MockData/`) revealed several critical defect categories:
 1. **Compilation & Syntax Blockers**: Duplicate variable declarations, undeclared variables across multiple view and model files, mismatched SwiftData parameter signatures, syntax brace mismatches in `OnboardingView.swift`, non-existent static singletons (e.g. `HealthKitBridge.shared`), and non-existent iOS 26 API usages (`@available(iOS 26.0, *)`, `glassEffect`).
@@ -25,14 +25,14 @@ The core parsing engine `RosettaTranscoder` uses Apple's Foundation `XMLParser` 
 
 ### 2.1 Compilation Blockers & Syntax Issues
 - **Duplicate Property Declaration**:
-  - `Sources/RosettaHealthCore/RosettaTranscoder.swift:27-28`:
+  - `Sources/RosettaEdgeCore/RosettaTranscoder.swift:27-28`:
     ```swift
     27: private var currentRangeUnit: String = ""
     28: private var currentRangeUnit: String = ""
     ```
     Duplicate declaration of `currentRangeUnit` fails Swift compilation (`Invalid redeclaration of 'currentRangeUnit'`).
 - **Undeclared Variable `documentId`**:
-  - `Sources/RosettaHealthCore/RosettaTranscoder.swift:112-114`:
+  - `Sources/RosettaEdgeCore/RosettaTranscoder.swift:112-114`:
     ```swift
     if elementName == "id" && currentPath == ["ClinicalDocument", "id"] {
         documentId = attributeDict["extension"] ?? attributeDict["root"]
@@ -40,7 +40,7 @@ The core parsing engine `RosettaTranscoder` uses Apple's Foundation `XMLParser` 
     ```
     `documentId` is neither declared as an instance variable nor in local scope.
 - **Hardcoded Bundle ID & Ignored Document ID**:
-  - `Sources/RosettaHealthCore/RosettaTranscoder.swift:90-95`:
+  - `Sources/RosettaEdgeCore/RosettaTranscoder.swift:90-95`:
     ```swift
     return FHIRBundle(
         id: UUID().uuidString,
@@ -139,7 +139,7 @@ The models in `FHIRModels.swift` represent standard HL7 FHIR R4 resources with I
 - For composite blood pressure strings (`"120/80"`), the parsing in `ingestQuantities` (lines 188-198) only assigns `finalValue` for a single `HKQuantityTypeIdentifier`. It cannot split a single observation into two distinct HealthKit samples (Systolic and Diastolic) when given a composite code.
 
 ### 4.3 Missing Static Singleton `HealthKitBridge.shared`
-- `Sources/RosettaHealthApp/ObservationRowView.swift:108`:
+- `Sources/RosettaEdgeApp/ObservationRowView.swift:108`:
   ```swift
   let bridge = HealthKitBridge.shared
   ```
@@ -153,7 +153,7 @@ The models in `FHIRModels.swift` represent standard HL7 FHIR R4 resources with I
 Throughout the app files, `@available(iOS 26.0, *)` is applied:
 - `VaultDocument.swift:7`
 - `VaultModelActor.swift:6`
-- `RosettaHealthApp.swift:4`
+- `RosettaEdgeApp.swift:4`
 - `MainAppView.swift:5`
 - `FamilyVaultView.swift:5, 98, 202`
 - `ClinicalDashboardView.swift:6`
@@ -213,7 +213,7 @@ Throughout the app files, `@available(iOS 26.0, *)` is applied:
 - `OnboardingView.swift:188-198`: An extra closing brace `}` at line 189 prematurely terminates `Form`, placing the subsequent `Section` outside `Form` and creating mismatched brace counts.
 
 ### 6.4 Non-Existent UI Methods
-- `Sources/RosettaHealthApp/LiquidGlass.swift:7`:
+- `Sources/RosettaEdgeApp/LiquidGlass.swift:7`:
   ```swift
   self.glassEffect(.regular.interactive(), in: .rect(cornerRadius: cornerRadius))
   ```
@@ -274,18 +274,18 @@ Throughout the app files, `@available(iOS 26.0, *)` is applied:
 
 ## 10. Recommended Next Steps for Implementation
 
-1. **Fix `RosettaHealthCore` Transcoder & HealthKit Bridge**:
+1. **Fix `RosettaEdgeCore` Transcoder & HealthKit Bridge**:
    - Fix duplicate `currentRangeUnit` and declare `documentId`.
    - Implement comma-to-dot normalization and relational string fallback (`< 0.05 mg/dL`).
    - Hook up `isValidPhysiologically` validation gate in `HealthKitBridge.ingestQuantities`.
    - Add `HealthKitBridge.shared` and LOINC `"85354-9"` panel handling.
    - Attach narrative text to `FHIRComposition`.
-2. **Fix `RosettaHealthApp` Architecture & ViewModels**:
+2. **Fix `RosettaEdgeApp` Architecture & ViewModels**:
    - Annotate `AppViewModel` and `BiometricAuthManager` with `@Observable`.
    - Harmonize `modelContext:` / `modelContainer:` signatures across `AppViewModel`, `ContentView`, and `BackgroundTaskManager`.
    - Replace `@available(iOS 26.0, *)` with `@available(iOS 17.0, *)`.
    - Fix `OnboardingView.swift` syntax and `FamilyVaultView.swift` undeclared variables.
    - Isolate SwiftData queries in `ClinicalDashboardView` to prevent concurrency violations.
 3. **Integration & End-to-End Testing**:
-   - Ensure all existing unit tests in `Tests/RosettaHealthCoreTests/` pass.
+   - Ensure all existing unit tests in `Tests/RosettaEdgeCoreTests/` pass.
    - Add comprehensive integration tests verifying end-to-end flow from CDA XML parsing to ViewModel state and HealthKit/SwiftData.

@@ -1,6 +1,6 @@
-# RosettaHealth iOS Codebase: Architecture Analysis, Refactoring & Verification Report
+# RosettaEdge iOS Codebase: Architecture Analysis, Refactoring & Verification Report
 
-**Project**: RosettaHealth iOS  
+**Project**: RosettaEdge iOS  
 **Document**: `teamwork_analysis_report.md`  
 **Date**: 2026-09-01  
 **Status**: All Milestones Completed & Verified (Gate: PASS)  
@@ -10,7 +10,7 @@
 
 ## 1. Executive Summary
 
-RosettaHealth is a privacy-first, on-device iOS medical document translation and health record aggregation system. Its primary role is ingesting Italian Electronic Health Record (Fascicolo Sanitario Elettronico - FSE) clinical documents formatted in HL7 CDA Release 2.0 XML, transcoding them into HL7 FHIR R4 International Patient Summary (IPS) bundles, routing biometric data to Apple HealthKit via a physiological validation firewall, persisting non-owner family records into an encrypted SwiftData vault, and surfacing reactive dashboards across iOS, watchOS, and Widget extensions.
+RosettaEdge is a privacy-first, on-device iOS medical document translation and health record aggregation system. Its primary role is ingesting Italian Electronic Health Record (Fascicolo Sanitario Elettronico - FSE) clinical documents formatted in HL7 CDA Release 2.0 XML, transcoding them into HL7 FHIR R4 International Patient Summary (IPS) bundles, routing biometric data to Apple HealthKit via a physiological validation firewall, persisting non-owner family records into an encrypted SwiftData vault, and surfacing reactive dashboards across iOS, watchOS, and Widget extensions.
 
 A systematic survey by multi-agent inspection revealed 21 structural and architectural defects across parsing fidelity, validation gates, SwiftData actor isolation, SwiftUI observation reactivity, cross-platform availability annotations, and privacy settings. Through a structured 5-milestone orchestration workflow, all 21 defects have been resolved with genuine domain logic, strict Zero-Cloud / GDPR Article 9 isolation has been certified, and a 40-test integration suite spanning 4 testing tiers has been established.
 
@@ -20,7 +20,7 @@ A systematic survey by multi-agent inspection revealed 21 structural and archite
 
 ### 2.1 System Architecture & Data Flow
 
-RosettaHealth operates on a strictly decoupled producer-consumer architecture communicating over shared App Groups (`group.dev.alexmaina.rosettahealth`) and local Swift concurrency actors.
+RosettaEdge operates on a strictly decoupled producer-consumer architecture communicating over shared App Groups (`group.dev.alexmaina.rosettaedge`) and local Swift concurrency actors.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -68,13 +68,13 @@ RosettaHealth operates on a strictly decoupled producer-consumer architecture co
 
 ### 2.2 Core Modules & Responsibilities
 
-1. **`RosettaHealthCore` Engine**:
+1. **`RosettaEdgeCore` Engine**:
    - **`RosettaTranscoder`**: An event-driven, memory-efficient SAX XML parser (`XMLParserDelegate`) that processes large CDA documents without loading the entire DOM into memory. It features XML entity bomb (XXE/Billion Laughs) mitigation (`shouldResolveExternalEntities = false`), Italian comma-decimal conversion, qualitative threshold string fallbacks (`< 0.05 mg/dL`), document ID extraction, and multi-section narrative text accumulation.
    - **`HealthKitBridge`**: Interfaces with Apple's `HKHealthStore`. It maps LOINC codes to `HKQuantityTypeIdentifier` and `HKCategoryTypeIdentifier`. Crucially, it hosts the **Physiological Validation Gate** (`isValidPhysiologically`), filtering corrupted or lethal measurements prior to HealthKit ingestion, and generates deterministic sync identifiers (`HKMetadataKeySyncIdentifier`) for idempotent synchronization.
    - **`ClinicalDecisionSupport`**: Evaluates longitudinal vital sign trends (cholesterol, blood glucose, systolic blood pressure) using unit-compatible mathematical threshold evaluations, generating proactive clinical alerts (`TrendAlert`).
    - **`KeychainManager`**: Secure Enclave / Hardware-backed keychain wrapper storing patient fiscal codes with `kSecAttrAccessibleWhenUnlockedThisDeviceOnly` to prevent unauthenticated data exposure.
 
-2. **`RosettaHealthApp` Layer**:
+2. **`RosettaEdgeApp` Layer**:
    - **`AppViewModel`**: `@MainActor`-isolated and annotated with `@Observable`. Orchestrates the document processing lifecycle, firewall routing, and state propagation to SwiftUI views without UI stalls.
    - **`VaultModelActor` & `VaultDocument`**: SwiftData persistence infrastructure configured exclusively with `cloudKitDatabase: .none` to prevent remote synchronization of GDPR Article 9 special categories of health data.
    - **`BackgroundTaskManager`**: Offline background processing (`requiresNetworkConnectivity = false`) consuming pending files dropped by the Share Extension.
@@ -118,7 +118,7 @@ The following 21 defects were identified, analyzed, and resolved:
 
 ## 4. Refactoring Rationale & Line-by-Line Implementation Details
 
-### 4.1 `Sources/RosettaHealthCore/RosettaTranscoder.swift`
+### 4.1 `Sources/RosettaEdgeCore/RosettaTranscoder.swift`
 - **Line 9**: Declared `private var documentId: String? = nil` to hold extracted document metadata.
 - **Line 28**: Removed redundant duplicate declaration of `currentRangeUnit`.
 - **Line 47**: Added `self.parser?.shouldResolveExternalEntities = false` to mitigate XXE and Billion Laughs XML entity expansion attacks.
@@ -137,7 +137,7 @@ The following 21 defects were identified, analyzed, and resolved:
   This preserves both European comma decimals and qualitative inequality thresholds (`"< 0.05 mg/dL"`).
 - **Lines 224–229**: Accumulated section text into `accumulatedNarrativeText`.
 
-### 4.2 `Sources/RosettaHealthCore/HealthKitBridge.swift`
+### 4.2 `Sources/RosettaEdgeCore/HealthKitBridge.swift`
 - **Line 5**: Added `public static let shared = HealthKitBridge()`.
 - **Lines 164–176**: Configured clinical boundaries in `isValidPhysiologically`:
   - Blood Glucose: `10.0 ... 1500.0 mg/dL`
@@ -160,7 +160,7 @@ The following 21 defects were identified, analyzed, and resolved:
   let syncIdentifier = "FSE-\(fhirBundle.id)-\(coding.code)-\(obs.effectiveDateTime)"
   ```
 
-### 4.3 `Sources/RosettaHealthCore/ClinicalDecisionSupport.swift`
+### 4.3 `Sources/RosettaEdgeCore/ClinicalDecisionSupport.swift`
 - **Lines 35–41**: Added unit compatibility checks before extracting quantity double values:
   ```swift
   if recent[0].quantity.is(compatibleWith: HKUnit(from: "mg/dL")) {
@@ -170,7 +170,7 @@ The following 21 defects were identified, analyzed, and resolved:
   }
   ```
 
-### 4.4 `Sources/RosettaHealthApp/AppViewModel.swift`
+### 4.4 `Sources/RosettaEdgeApp/AppViewModel.swift`
 - **Line 13**: Added `@Observable` macro; decorated `@AppStorage` properties with `@ObservationIgnored`.
 - **Lines 62, 80, 208**: Harmonized parameter signatures to `modelContainer: ModelContainer? = nil, modelContext: ModelContext? = nil`.
 - **Lines 147–155**: Removed unconditional `defer { removeItem }`; file deletion is strictly executed upon successful transcode/ingestion or unrecoverable corruption.
@@ -185,14 +185,14 @@ The following 21 defects were identified, analyzed, and resolved:
   defaults.set(metric.unit, forKey: "latestMetricUnit")
   ```
 
-### 4.5 `Sources/RosettaHealthApp/MainAppView.swift` & `SettingsView.swift`
+### 4.5 `Sources/RosettaEdgeApp/MainAppView.swift` & `SettingsView.swift`
 - **`MainAppView.swift` Line 18**: Hardcoded local SwiftData configuration:
   ```swift
   let config = ModelConfiguration(cloudKitDatabase: .none)
   ```
 - **`SettingsView.swift`**: Removed `isCloudSyncEnabled` toggle; added a verified "100% On-Device & Zero-Cloud (GDPR Art. 9)" compliance badge.
 
-### 4.6 `Sources/RosettaHealthApp/Vault/ClinicalDashboardView.swift`
+### 4.6 `Sources/RosettaEdgeApp/Vault/ClinicalDashboardView.swift`
 - **Lines 26–38**: Resolved SwiftData actor crossing by introducing a Sendable DTO:
   ```swift
   struct DocumentDTO: Sendable {
@@ -238,12 +238,12 @@ A comprehensive static analysis and regex audit across all files in `Sources/` a
 
 ## 6. Comprehensive Verification Results
 
-### 6.1 Multi-Tier Test Suite Summary (`Tests/RosettaHealthCoreTests/`)
+### 6.1 Multi-Tier Test Suite Summary (`Tests/RosettaEdgeCoreTests/`)
 
 The test suite comprises **40 test cases across 10 Swift test files**:
 
 ```
-Tests/RosettaHealthCoreTests/
+Tests/RosettaEdgeCoreTests/
 ├── Tier1FeatureCoverageTests.swift          (5 tests: Full-fidelity transcode, gate acceptance/rejection, CF routing)
 ├── Tier2BoundaryCornerTests.swift           (11 tests: XML errors, XXE protection, exact limits, comma parsing, inequalities)
 ├── Tier3CrossFeaturePipelineTests.swift     (6 tests: Transcoder + CDS alert pipelines, SwiftData in-memory isolation)
@@ -303,6 +303,6 @@ Tests/RosettaHealthCoreTests/
 
 ## 7. Conclusion & Operational Recommendations
 
-1. **Production Readiness**: The RosettaHealth iOS codebase is fully refactored, type-safe, and robust against pathological input data and malicious XML attacks.
+1. **Production Readiness**: The RosettaEdge iOS codebase is fully refactored, type-safe, and robust against pathological input data and malicious XML attacks.
 2. **Privacy Assurance**: The Zero-Cloud and GDPR Article 9 guarantees are structurally enforced through hardcoded local storage configurations (`cloudKitDatabase: .none`), hardware-encrypted file protection, and the complete exclusion of networking libraries.
-3. **Continuous Integration**: The 40 XCTest test cases in `Tests/RosettaHealthCoreTests/` should be integrated into Xcode Cloud or GitHub Actions CI pipelines via `swift test` or `xcodebuild test`.
+3. **Continuous Integration**: The 40 XCTest test cases in `Tests/RosettaEdgeCoreTests/` should be integrated into Xcode Cloud or GitHub Actions CI pipelines via `swift test` or `xcodebuild test`.

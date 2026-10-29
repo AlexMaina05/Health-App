@@ -1,4 +1,4 @@
-# 5-Component Handoff Report: RosettaHealth Explorer Survey 1
+# 5-Component Handoff Report: RosettaEdge Explorer Survey 1
 
 **Agent ID**: `explorer_survey_1`  
 **Parent Orchestrator ID**: `2d8a70f0-17ce-40db-b254-97397dff1c4e`  
@@ -10,7 +10,7 @@
 ## 1. Observation
 
 ### Obs 1: Duplicate Member & Undeclared Identifier in `RosettaTranscoder.swift`
-- **File**: `Sources/RosettaHealthCore/RosettaTranscoder.swift:27-28, 112-114`
+- **File**: `Sources/RosettaEdgeCore/RosettaTranscoder.swift:27-28, 112-114`
 - **Verbatim Code**:
   ```swift
   27: private var currentRangeUnit: String = ""
@@ -24,7 +24,7 @@
 - **Finding**: `currentRangeUnit` is declared twice on consecutive lines. `documentId` is assigned on line 113 without prior declaration in the class.
 
 ### Obs 2: Data Loss in Numeric and Inequality CDA Parsing
-- **File**: `Sources/RosettaHealthCore/RosettaTranscoder.swift:157-165`
+- **File**: `Sources/RosettaEdgeCore/RosettaTranscoder.swift:157-165`
 - **Verbatim Code**:
   ```swift
   157: if elementName == "value" {
@@ -40,7 +40,7 @@
 - **Finding**: If `valStr` contains a comma (`"94,5"`) or inequality operators (`"< 0.05"`), `Double(valStr)` returns `nil`. Because `type == "PQ"`, execution skips the `else if` branch. Both `currentObsValue` and `currentObsValueString` remain `nil`, causing total measurement loss.
 
 ### Obs 3: Hardcoded Bundle UUID Discards Extracted Document ID
-- **File**: `Sources/RosettaHealthCore/RosettaTranscoder.swift:90-95`
+- **File**: `Sources/RosettaEdgeCore/RosettaTranscoder.swift:90-95`
 - **Verbatim Code**:
   ```swift
   90: return FHIRBundle(
@@ -53,21 +53,21 @@
 - **Finding**: `bundle.id` ignores `documentId`, breaking `RosettaTranscoderTests2.testDocumentIDExtraction` which expects `bundle.id == "SOLE_DOC_12345"`.
 
 ### Obs 4: Discarded Narrative Text in FHIR Composition
-- **File**: `Sources/RosettaHealthCore/RosettaTranscoder.swift:73-79, 182-187`
+- **File**: `Sources/RosettaEdgeCore/RosettaTranscoder.swift:73-79, 182-187`
 - **Finding**: `accumulatedNarrativeText` accumulates section text during parsing, but `FHIRComposition` initialization on line 73 does not pass `text: FHIRNarrative(div: accumulatedNarrativeText)`.
 
 ### Obs 5: Physiological Validation Gate Dead Code in `HealthKitBridge.swift`
-- **File**: `Sources/RosettaHealthCore/HealthKitBridge.swift:155-167, 169-238`
+- **File**: `Sources/RosettaEdgeCore/HealthKitBridge.swift:155-167, 169-238`
 - **Finding**: `isValidPhysiologically(value:for:)` is defined as a private method at line 155, but is never invoked anywhere in `ingestQuantities` or `ingestRawMetrics`. Lethal values (such as 3000 mg/dL glucose) are not blocked, failing `ValidationGateTests.testGlucosePhysiologicalLimits`.
 
 ### Obs 6: Missing Static Singleton in `HealthKitBridge.swift`
-- **File**: `Sources/RosettaHealthApp/ObservationRowView.swift:108` vs `Sources/RosettaHealthCore/HealthKitBridge.swift:4-5`
+- **File**: `Sources/RosettaEdgeApp/ObservationRowView.swift:108` vs `Sources/RosettaEdgeCore/HealthKitBridge.swift:4-5`
 - **Verbatim Code**:
   `let bridge = HealthKitBridge.shared` (in `ObservationRowView.swift`)
 - **Finding**: `HealthKitBridge` does not define `public static let shared = HealthKitBridge()`.
 
 ### Obs 7: Parameter Mismatch & Non-Existent Scope Variables in `AppViewModel.swift`
-- **File**: `Sources/RosettaHealthApp/AppViewModel.swift:61, 78, 203, 237` vs `Sources/RosettaHealthApp/ContentView.swift:76, 293, 325`
+- **File**: `Sources/RosettaEdgeApp/AppViewModel.swift:61, 78, 203, 237` vs `Sources/RosettaEdgeApp/ContentView.swift:76, 293, 325`
 - **Verbatim Code in `AppViewModel.swift`**:
   ```swift
   203: public func processPDF(url: URL, modelContainer: Any? = nil) async {
@@ -77,7 +77,7 @@
 - **Finding**: `modelContext` is not an argument in `processPDF` and is not defined in `AppViewModel`. `ContentView.swift` calls `requestHealthKitAccess(modelContainer:)` and `syncPendingDocuments(modelContainer:)` while `AppViewModel` declares `modelContext:`.
 
 ### Obs 8: Undefined Identifiers in Views & Background Task
-- **File**: `Sources/RosettaHealthApp/Vault/FamilyVaultView.swift:226-227`
+- **File**: `Sources/RosettaEdgeApp/Vault/FamilyVaultView.swift:226-227`
 - **Verbatim Code**:
   ```swift
   } catch {
@@ -85,7 +85,7 @@
       showError = true
   }
   ```
-- **File**: `Sources/RosettaHealthApp/BackgroundTaskManager.swift:60, 68`
+- **File**: `Sources/RosettaEdgeApp/BackgroundTaskManager.swift:60, 68`
 - **Verbatim Code**:
   ```swift
   var contextToUse = modelContext
@@ -95,26 +95,26 @@
 - **Finding**: `activeError` and `showError` in `PDFViewerWrapper` are undeclared. `modelContext` and `containerToUse` in `BackgroundTaskManager` are undeclared.
 
 ### Obs 9: Syntax Error in `OnboardingView.swift`
-- **File**: `Sources/RosettaHealthApp/OnboardingView.swift:188-198`
+- **File**: `Sources/RosettaEdgeApp/OnboardingView.swift:188-198`
 - **Finding**: Extra closing brace `}` at line 189 prematurely terminates `Form`, producing a mismatched brace hierarchy.
 
 ### Obs 10: Fantasy `@available(iOS 26.0, *)` and `LiquidGlass.swift` Non-Existent API
-- **File**: `Sources/RosettaHealthApp/Vault/VaultDocument.swift:7`, `Sources/RosettaHealthApp/LiquidGlass.swift:7`, and 10 other files.
+- **File**: `Sources/RosettaEdgeApp/Vault/VaultDocument.swift:7`, `Sources/RosettaEdgeApp/LiquidGlass.swift:7`, and 10 other files.
 - **Finding**: Target deployment is iOS 17.0 (`project.yml:5`), but code specifies `iOS 26.0` and calls non-existent `glassEffect`.
 
 ### Obs 11: Missing `@Observable` Macro on `AppViewModel`
-- **File**: `Sources/RosettaHealthApp/AppViewModel.swift:13`
+- **File**: `Sources/RosettaEdgeApp/AppViewModel.swift:13`
 - **Finding**: `AppViewModel` lacks the `@Observable` macro, breaking SwiftUI state observation and reactive UI updates.
 
 ### Obs 12: SwiftData Actor Boundary Concurrency Violation
-- **File**: `Sources/RosettaHealthApp/Vault/ClinicalDashboardView.swift:31-32`
+- **File**: `Sources/RosettaEdgeApp/Vault/ClinicalDashboardView.swift:31-32`
 - **Finding**: Main-actor bound `@Model` array `[VaultDocument]` is passed directly into `Task.detached`, violating actor isolation.
 
 ---
 
 ## 2. Logic Chain
 
-1. **Obs 1, Obs 6, Obs 7, Obs 8, Obs 9, Obs 10** demonstrate that the current codebase contains severe syntax and compilation errors across `RosettaHealthCore` and `RosettaHealthApp` that prevent clean compilation.
+1. **Obs 1, Obs 6, Obs 7, Obs 8, Obs 9, Obs 10** demonstrate that the current codebase contains severe syntax and compilation errors across `RosettaEdgeCore` and `RosettaEdgeApp` that prevent clean compilation.
 2. **Obs 2 and Obs 3** demonstrate that `RosettaTranscoder` fails to parse valid Italian FSE CDA documents that use commas or inequality boundaries, and discards document metadata, causing clinical data loss and test suite failures in `RosettaTranscoderTests2`.
 3. **Obs 4** proves that clinical narrative text from CDA sections is extracted during SAX traversal but dropped from the generated FHIR Composition.
 4. **Obs 5** shows that HealthKit physiological safety checking (`isValidPhysiologically`) is dead code, allowing corrupted data ingestion and causing `ValidationGateTests` to fail.
@@ -132,7 +132,7 @@
 
 ## 4. Conclusion
 
-The architectural foundation of RosettaHealth (CDA SAX parsing -> FHIR R4 / IPS -> Codice Fiscale segregation firewall -> HealthKit / SwiftData Vault) is conceptually robust, but suffers from critical implementation defects across:
+The architectural foundation of RosettaEdge (CDA SAX parsing -> FHIR R4 / IPS -> Codice Fiscale segregation firewall -> HealthKit / SwiftData Vault) is conceptually robust, but suffers from critical implementation defects across:
 1. Syntax and compilation errors in core files.
 2. Data loss in numeric CDA parsing and narrative extraction.
 3. Inactive HealthKit validation gates.
@@ -159,7 +159,7 @@ To independently verify all observations and conclusions:
    - Inspect `OnboardingView.swift` lines 188-198.
    - Inspect `LiquidGlass.swift` line 7.
 3. **Verify Test Failures**:
-   - Run existing test suites in `Tests/RosettaHealthCoreTests/`:
+   - Run existing test suites in `Tests/RosettaEdgeCoreTests/`:
      - `RosettaTranscoderTests2.swift` (fails on dirty XML fallback and document ID extraction).
      - `ValidationGateTests.swift` (fails on glucose physiological limits).
      - `FSEEdgeCasesTests.swift` (fails on narrative entry count expectation).

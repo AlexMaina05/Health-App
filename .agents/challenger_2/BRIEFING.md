@@ -1,7 +1,7 @@
 # BRIEFING - 2026-09-01T23:25:00Z
 
 ## Mission
-Adversarial verification of SwiftData persistence, concurrency/actor isolation, Zero-Cloud GDPR compliance, App Group / WatchOS IPC alignment, and PII privacy masking for RosettaHealth iOS.
+Adversarial verification of SwiftData persistence, concurrency/actor isolation, Zero-Cloud GDPR compliance, App Group / WatchOS IPC alignment, and PII privacy masking for RosettaEdge iOS.
 
 ## 🔒 My Identity
 - Archetype: EMPIRICAL CHALLENGER
@@ -22,14 +22,14 @@ Adversarial verification of SwiftData persistence, concurrency/actor isolation, 
 
 ## Review Scope
 - **Files to review**:
-  - Sources/RosettaHealthApp/AppViewModel.swift
-  - Sources/RosettaHealthApp/MainAppView.swift
-  - Sources/RosettaHealthApp/RosettaHealthApp.swift
-  - Sources/RosettaHealthApp/BackgroundTaskManager.swift
-  - Sources/RosettaHealthApp/Vault/VaultDocument.swift
-  - Sources/RosettaHealthApp/Vault/VaultModelActor.swift
-  - Sources/RosettaHealthApp/Vault/ClinicalDashboardView.swift
-  - Sources/RosettaHealthApp/Vault/FamilyVaultView.swift
+  - Sources/RosettaEdgeApp/AppViewModel.swift
+  - Sources/RosettaEdgeApp/MainAppView.swift
+  - Sources/RosettaEdgeApp/RosettaEdgeApp.swift
+  - Sources/RosettaEdgeApp/BackgroundTaskManager.swift
+  - Sources/RosettaEdgeApp/Vault/VaultDocument.swift
+  - Sources/RosettaEdgeApp/Vault/VaultModelActor.swift
+  - Sources/RosettaEdgeApp/Vault/ClinicalDashboardView.swift
+  - Sources/RosettaEdgeApp/Vault/FamilyVaultView.swift
   - Sources/ShareExtension/ShareViewController.swift
   - Sources/RosettaWidget/RosettaWidget.swift
   - Sources/RosettaWatch/WatchDashboardView.swift

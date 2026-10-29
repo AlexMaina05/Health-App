@@ -5,7 +5,7 @@ Last visited: 2026-09-01T23:08:15+02:00
 ## Status: Completed
 
 ### Tasks
-- [x] 1. Investigate current code in Sources/RosettaHealthCore and Tests/RosettaHealthCoreTests
+- [x] 1. Investigate current code in Sources/RosettaEdgeCore and Tests/RosettaEdgeCoreTests
 - [x] 2. Fix RosettaTranscoder.swift (duplicate property, documentId property, value parsing fallbacks, FHIRBundle.id, FHIRComposition narrative)
 - [x] 3. Fix HealthKitBridge.swift (shared singleton, wire physiological validation gate, unit consistency with CDS, deterministic sync identifier)
 - [x] 4. Check ClinicalDecisionSupport.swift & FHIRModels.swift for compatibility and unit alignment

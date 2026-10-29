@@ -1,7 +1,7 @@
 # BRIEFING — 2026-09-01T23:23:45+02:00
 
 ## Mission
-Comprehensive code review and adversarial verification of RosettaHealth iOS codebase (Sources and Tests) verifying defects D1-D21 fixes, Swift 5.10 / iOS 17 compatibility, SwiftData actor safety, @Observable bindings, and GDPR Art. 9 / Zero-Cloud compliance.
+Comprehensive code review and adversarial verification of RosettaEdge iOS codebase (Sources and Tests) verifying defects D1-D21 fixes, Swift 5.10 / iOS 17 compatibility, SwiftData actor safety, @Observable bindings, and GDPR Art. 9 / Zero-Cloud compliance.
 
 ## 🔒 My Identity
 - Archetype: reviewer_critic
@@ -23,10 +23,10 @@ Comprehensive code review and adversarial verification of RosettaHealth iOS code
 
 ## Review Scope
 - **Files to review**:
-  - `Sources/RosettaHealthCore/` (`RosettaTranscoder.swift`, `HealthKitBridge.swift`, `ClinicalDecisionSupport.swift`, `FHIRModels.swift`)
-  - `Sources/RosettaHealthApp/` (`AppViewModel.swift`, `MainAppView.swift`, `SettingsView.swift`, `LiquidGlass.swift`, `OnboardingView.swift`, `Vault/*`, `BackgroundTaskManager.swift`, etc.)
+  - `Sources/RosettaEdgeCore/` (`RosettaTranscoder.swift`, `HealthKitBridge.swift`, `ClinicalDecisionSupport.swift`, `FHIRModels.swift`)
+  - `Sources/RosettaEdgeApp/` (`AppViewModel.swift`, `MainAppView.swift`, `SettingsView.swift`, `LiquidGlass.swift`, `OnboardingView.swift`, `Vault/*`, `BackgroundTaskManager.swift`, etc.)
   - `Sources/ShareExtension/`, `Sources/RosettaWidget/`, `Sources/RosettaWatch/`
-  - `Tests/RosettaHealthCoreTests/` (10 test files)
+  - `Tests/RosettaEdgeCoreTests/` (10 test files)
 - **Interface contracts**: `e:/Code/Health-App/PROJECT.md`, `ORIGINAL_REQUEST.md`, `TEST_READY.md`
 - **Review criteria**: Correctness, Swift 5.10/iOS 17 compilation, D1-D21 resolution, Concurrency & SwiftData actor boundaries, @Observable bindings, Zero-Cloud/GDPR Art. 9 compliance, Test validity & non-triviality.
 

@@ -1,10 +1,10 @@
 ﻿# Data Protection Impact Assessment (DPIA)
-**Valutazione d'Impatto sulla Protezione dei Dati - RosettaHealth v3.0**
+**Valutazione d'Impatto sulla Protezione dei Dati - RosettaEdge v3.0**
 
 Documento redatto conformemente alle linee guida WP248 (GDPR Art. 35) e metodologia ENISA/CNIL.
 
 ## 1. Descrizione del Trattamento
-L'app RosettaHealth esegue operazioni di decodifica, profilazione clinica automatizzata (Clinical Decision Support) e storage a lungo termine di referti sanitari (Fascicolo Sanitario Elettronico FSE) contenenti Dati Particolari (Art. 9 GDPR).
+L'app RosettaEdge esegue operazioni di decodifica, profilazione clinica automatizzata (Clinical Decision Support) e storage a lungo termine di referti sanitari (Fascicolo Sanitario Elettronico FSE) contenenti Dati Particolari (Art. 9 GDPR).
 
 ## 2. Valutazione della Necessità e Proporzionalità
 Il trattamento locale è strettamente necessario per l'erogazione del servizio di aggregazione clinica. Non esistono alternative meno invasive (Data Minimization rispettata tramite approccio Zero-Cloud).

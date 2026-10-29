@@ -1,5 +1,5 @@
 ## 2026-09-01T21:20:22Z
-You are Challenger 1 for RosettaHealth adversarial verification.
+You are Challenger 1 for RosettaEdge adversarial verification.
 
 Working Directory: e:/Code/Health-App/.agents/challenger_1/
 Workspace Root: e:/Code/Health-App

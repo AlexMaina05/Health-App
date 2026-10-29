@@ -1,4 +1,4 @@
-# Master Plan: RosettaHealth Codebase Analysis, Refactoring & Testing
+# Master Plan: RosettaEdge Codebase Analysis, Refactoring & Testing
 
 ## Phase 0: Survey & Discovery (Current)
 - Dispatch 3 Explorers in parallel to inspect the codebase:

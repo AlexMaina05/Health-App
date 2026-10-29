@@ -1,0 +1,335 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="80%">
+      <stop offset="0%" stop-color="#0a1526"/>
+      <stop offset="50%" stop-color="#060c18"/>
+      <stop offset="100%" stop-color="#03060d"/>
+    </radialGradient>
+
+    <!-- Accent Glows -->
+    <radialGradient id="cyanAmbient" cx="30%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.16"/>
+      <stop offset="60%" stop-color="#00e5ff" stop-opacity="0.02"/>
+      <stop offset="100%" stop-color="#00e5ff" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="emeraldAmbient" cx="70%" cy="50%" r="45%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.14"/>
+      <stop offset="60%" stop-color="#10b981" stop-opacity="0.02"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Grid Pattern -->
+    <pattern id="circuitGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.8" stroke-opacity="0.45"/>
+      <circle cx="0" cy="0" r="1.5" fill="#38bdf8" fill-opacity="0.3"/>
+    </pattern>
+
+    <!-- Card Background Linear Gradients -->
+    <linearGradient id="cardGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#111c30" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#09101f" stop-opacity="0.95"/>
+    </linearGradient>
+
+    <linearGradient id="coreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#10b981" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#0c172a" stop-opacity="0.95"/>
+    </linearGradient>
+
+    <linearGradient id="borderCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0.5"/>
+    </linearGradient>
+
+    <linearGradient id="appleHealthGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff2d55"/>
+      <stop offset="100%" stop-color="#ff375f"/>
+    </linearGradient>
+
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="badgeGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- 1. Background Fill -->
+  <rect width="1200" height="630" fill="url(#bgGlow)"/>
+  <rect width="1200" height="630" fill="url(#circuitGrid)"/>
+  <rect width="1200" height="630" fill="url(#cyanAmbient)"/>
+  <rect width="1200" height="630" fill="url(#emeraldAmbient)"/>
+
+  <!-- Top Decorative Header Bar -->
+  <rect x="0" y="0" width="1200" height="4" fill="url(#borderCyan)"/>
+
+  <!-- 2. System Title & Badges Header -->
+  <g id="header-group" transform="translate(60, 48)">
+    <rect x="0" y="0" width="36" height="36" rx="8" fill="#00e5ff" fill-opacity="0.12" stroke="#00e5ff" stroke-width="1.5"/>
+    <path d="M 18 10 L 18 26 M 10 18 L 26 18" stroke="#00e5ff" stroke-width="3" stroke-linecap="round"/>
+    
+    <text x="48" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Plus Jakarta Sans', sans-serif" font-size="24" font-weight="800" fill="#ffffff" letter-spacing="0.5">
+      RosettaEdge <tspan font-weight="400" fill="#94a3b8">| Mobile Edge Architecture</tspan>
+    </text>
+
+    <!-- Top Badges -->
+    <g transform="translate(720, 4)">
+      <!-- Badge Zero-Cloud -->
+      <rect x="0" y="0" width="150" height="28" rx="14" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1.2"/>
+      <circle cx="16" cy="14" r="4" fill="#10b981" filter="url(#softGlow)"/>
+      <text x="28" y="19" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" fill="#34d399">ZERO-CLOUD EDGE</text>
+
+      <!-- Badge GDPR Art. 9 -->
+      <rect x="160" y="0" width="195" height="28" rx="14" fill="#00e5ff" fill-opacity="0.12" stroke="#00e5ff" stroke-width="1.2"/>
+      <text x="175" y="19" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" fill="#38bdf8">GDPR ART. 9 COMPLIANT</text>
+    </g>
+  </g>
+
+  <!-- 3. Architecture Blueprint 3-Column Pipeline -->
+
+  <!-- ================= LEFT COLUMN: HL7 CDA R2 / FSE 2.0 ================= -->
+  <g id="col-cda" transform="translate(60, 115)">
+    <rect x="0" y="0" width="310" height="380" rx="14" fill="url(#cardGradDark)" stroke="#334155" stroke-width="1.5"/>
+    
+    <!-- Header -->
+    <rect x="0" y="0" width="310" height="52" rx="14" fill="#1e293b" fill-opacity="0.6"/>
+    <text x="20" y="32" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="700" fill="#e2e8f0">
+      01 • INGESTION FSE 2.0
+    </text>
+    <rect x="235" y="16" width="55" height="20" rx="4" fill="#f59e0b" fill-opacity="0.18" stroke="#f59e0b" stroke-width="1"/>
+    <text x="246" y="30" font-family="monospace" font-size="11" font-weight="700" fill="#fbbf24">XML</text>
+
+    <!-- Document Card Interior -->
+    <rect x="18" y="68" width="274" height="88" rx="8" fill="#0b1324" stroke="#1e293b"/>
+    <text x="32" y="92" font-family="monospace" font-size="12" fill="#38bdf8">&lt;ClinicalDocument&gt;</text>
+    <text x="44" y="112" font-family="monospace" font-size="11" fill="#64748b">codeSystem="2.16.840..."</text>
+    <text x="44" y="130" font-family="monospace" font-size="11" fill="#10b981">templateId: FSE 2.0 IT</text>
+    <text x="32" y="148" font-family="monospace" font-size="12" fill="#38bdf8">&lt;/ClinicalDocument&gt;</text>
+
+    <!-- LOINC Ontologies Extract -->
+    <text x="20" y="182" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" fill="#94a3b8">
+      ONTOLOGIE CLINICHE ESTRATTE:
+    </text>
+
+    <!-- Observation Box 1: Colesterolo Totale -->
+    <g transform="translate(18, 196)">
+      <rect x="0" y="0" width="274" height="48" rx="6" fill="#0f172a" stroke="#1e293b"/>
+      <text x="14" y="20" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="600" fill="#ffffff">Colesterolo Totale</text>
+      <text x="14" y="38" font-family="monospace" font-size="11" fill="#00e5ff">LOINC 2093-3</text>
+      <text x="190" y="28" font-family="monospace" font-size="13" font-weight="700" fill="#e2e8f0">210 mg/dL</text>
+    </g>
+
+    <!-- Observation Box 2: Glicemia -->
+    <g transform="translate(18, 252)">
+      <rect x="0" y="0" width="274" height="48" rx="6" fill="#0f172a" stroke="#1e293b"/>
+      <text x="14" y="20" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="600" fill="#ffffff">Glicemia Basale</text>
+      <text x="14" y="38" font-family="monospace" font-size="11" fill="#00e5ff">LOINC 2339-0</text>
+      <text x="200" y="28" font-family="monospace" font-size="13" font-weight="700" fill="#e2e8f0">92 mg/dL</text>
+    </g>
+
+    <!-- Observation Box 3: Creatinina -->
+    <g transform="translate(18, 308)">
+      <rect x="0" y="0" width="274" height="48" rx="6" fill="#0f172a" stroke="#1e293b"/>
+      <text x="14" y="20" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="600" fill="#ffffff">Creatinina Sierica</text>
+      <text x="14" y="38" font-family="monospace" font-size="11" fill="#00e5ff">LOINC 2160-0</text>
+      <text x="195" y="28" font-family="monospace" font-size="13" font-weight="700" fill="#e2e8f0">0.95 mg/dL</text>
+    </g>
+  </g>
+
+  <!-- Flow Connector Left -> Center -->
+  <g transform="translate(378, 290)">
+    <line x1="0" y1="0" x2="40" y2="0" stroke="#00e5ff" stroke-width="2.5" stroke-dasharray="4,4"/>
+    <polygon points="44,0 36,-5 36,5" fill="#00e5ff"/>
+    <text x="2" y="-12" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="700" fill="#38bdf8">XML STREAM</text>
+  </g>
+
+  <!-- ================= CENTER COLUMN: ROSETTA CORE ENGINE ================= -->
+  <g id="col-core" transform="translate(430, 95)">
+    <!-- Glowing Outer Core Border -->
+    <rect x="-4" y="-4" width="348" height="428" rx="18" fill="none" stroke="url(#borderCyan)" stroke-width="2" filter="url(#softGlow)" stroke-opacity="0.8"/>
+    <rect x="0" y="0" width="340" height="420" rx="16" fill="url(#coreGrad)" stroke="#38bdf8" stroke-width="1.8"/>
+
+    <!-- Core Header -->
+    <rect x="0" y="0" width="340" height="58" rx="16" fill="#0f1d36" fill-opacity="0.9"/>
+    <circle cx="28" cy="29" r="8" fill="#00e5ff" filter="url(#softGlow)"/>
+    <text x="46" y="35" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="800" fill="#ffffff">
+      ROSETTA CORE ENGINE
+    </text>
+    <rect x="250" y="18" width="72" height="22" rx="4" fill="#00e5ff" fill-opacity="0.2" stroke="#00e5ff" stroke-width="1"/>
+    <text x="260" y="33" font-family="monospace" font-size="11" font-weight="700" fill="#38bdf8">SWIFT 5.10</text>
+
+    <!-- Sub-Block 1: Identity Firewall -->
+    <g transform="translate(20, 72)">
+      <rect x="0" y="0" width="300" height="66" rx="8" fill="#0c1629" stroke="#1e293b"/>
+      <text x="14" y="24" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700" fill="#f87171">
+        🛡️ Identity Firewall &amp; Pseudonimizzazione
+      </text>
+      <text x="14" y="44" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#94a3b8">
+        Separazione deterministica metadati paziente (Art. 9)
+      </text>
+      <text x="14" y="58" font-family="monospace" font-size="10" fill="#10b981">
+        HMAC-SHA256 • Secure Enclave Key
+      </text>
+    </g>
+
+    <!-- Sub-Block 2: Deterministic Transcoder -->
+    <g transform="translate(20, 148)">
+      <rect x="0" y="0" width="300" height="84" rx="8" fill="#0c1629" stroke="#00e5ff" stroke-width="1.2"/>
+      <text x="14" y="24" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700" fill="#38bdf8">
+        ⚙️ RosettaTranscoder &amp; Mapping
+      </text>
+      <text x="14" y="44" font-family="monospace" font-size="11" fill="#e2e8f0">
+        LOINC: 2093-3 → HKQuantityType
+      </text>
+      <text x="14" y="60" font-family="monospace" font-size="11" fill="#a7f3d0">
+        Unit: mg/dL → mg/dL (1:1 Isomorfo)
+      </text>
+      <text x="14" y="76" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" fill="#94a3b8">
+        Validazione intervalli fisiologici &amp; anomalie
+      </text>
+    </g>
+
+    <!-- Sub-Block 3: Clinical Decision Support (CDS) -->
+    <g transform="translate(20, 242)">
+      <rect x="0" y="0" width="300" height="74" rx="8" fill="#0c1629" stroke="#1e293b"/>
+      <text x="14" y="24" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700" fill="#fbbf24">
+        🧠 Clinical Decision Support (CDS)
+      </text>
+      <text x="14" y="44" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#94a3b8">
+        Analisi trend temporale &amp; score di rischio CV
+      </text>
+      <text x="14" y="62" font-family="monospace" font-size="11" fill="#60a5fa">
+        Algoritmo ESC/EAS On-Device
+      </text>
+    </g>
+
+    <!-- Sub-Block 4: Security & Privacy Vault -->
+    <g transform="translate(20, 326)">
+      <rect x="0" y="0" width="300" height="74" rx="8" fill="#091224" stroke="#10b981" stroke-width="1.2"/>
+      <text x="14" y="24" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700" fill="#34d399">
+        🔐 Vault &amp; Zero-Cloud In-Memory
+      </text>
+      <text x="14" y="44" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#94a3b8">
+        Nessuna telemetria • Nessun server remoto
+      </text>
+      <text x="14" y="62" font-family="monospace" font-size="10" fill="#38bdf8">
+        Ephemeral Buffer • RAM Wipe post-transcoding
+      </text>
+    </g>
+  </g>
+
+  <!-- Flow Connector Center -> Right -->
+  <g transform="translate(778, 290)">
+    <line x1="0" y1="0" x2="40" y2="0" stroke="#10b981" stroke-width="2.5" stroke-dasharray="4,4"/>
+    <polygon points="44,0 36,-5 36,5" fill="#10b981"/>
+    <text x="2" y="-12" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="700" fill="#34d399">HK STORE</text>
+  </g>
+
+  <!-- ================= RIGHT COLUMN: APPLE HEALTHKIT & CLIENTS ================= -->
+  <g id="col-healthkit" transform="translate(830, 115)">
+    <rect x="0" y="0" width="310" height="380" rx="14" fill="url(#cardGradDark)" stroke="#334155" stroke-width="1.5"/>
+    
+    <!-- Header -->
+    <rect x="0" y="0" width="310" height="52" rx="14" fill="#1e293b" fill-opacity="0.6"/>
+    <rect x="18" y="14" width="24" height="24" rx="6" fill="url(#appleHealthGrad)"/>
+    <path d="M 26 26 C 22 22 22 17 26 17 C 28 17 30 19 30 20 C 30 19 32 17 34 17 C 38 17 38 22 34 26 L 30 30 Z" fill="#ffffff"/>
+    <text x="50" y="32" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="700" fill="#ffffff">
+      APPLE HEALTHKIT
+    </text>
+    <rect x="220" y="16" width="75" height="20" rx="4" fill="#10b981" fill-opacity="0.18" stroke="#10b981" stroke-width="1"/>
+    <text x="228" y="30" font-family="monospace" font-size="10" font-weight="700" fill="#34d399">ENCRYPTED</text>
+
+    <!-- Destination 1: HKQuantitySample -->
+    <g transform="translate(18, 68)">
+      <rect x="0" y="0" width="274" height="74" rx="8" fill="#0f172a" stroke="#1e293b"/>
+      <text x="14" y="22" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" fill="#f43f5e">
+        ❤️ HKClinicalRecord &amp; Samples
+      </text>
+      <text x="14" y="42" font-family="monospace" font-size="11" fill="#94a3b8">
+        HKQuantityType: .bloodGlucose
+      </text>
+      <text x="14" y="60" font-family="monospace" font-size="11" fill="#94a3b8">
+        HKQuantityType: .cholesterol
+      </text>
+    </g>
+
+    <!-- Destination 2: iOS UI (SwiftUI Liquid Glass) -->
+    <g transform="translate(18, 152)">
+      <rect x="0" y="0" width="274" height="70" rx="8" fill="#0f172a" stroke="#1e293b"/>
+      <text x="14" y="22" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" fill="#38bdf8">
+        📱 RosettaEdgeApp (iOS 17+)
+      </text>
+      <text x="14" y="42" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#94a3b8">
+        SwiftUI • Dynamic Island • Widgets
+      </text>
+      <text x="14" y="58" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" fill="#34d399">
+        Audit trail visivo per cartella clinica
+      </text>
+    </g>
+
+    <!-- Destination 3: watchOS Standalone -->
+    <g transform="translate(18, 232)">
+      <rect x="0" y="0" width="274" height="66" rx="8" fill="#0f172a" stroke="#1e293b"/>
+      <text x="14" y="22" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" fill="#a78bfa">
+        ⌚ RosettaWatch (watchOS 10+)
+      </text>
+      <text x="14" y="42" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#94a3b8">
+        Monitoraggio rapido &amp; Smart Stack
+      </text>
+      <text x="14" y="56" font-family="monospace" font-size="10" fill="#c084fc">
+        Notifiche critiche real-time
+      </text>
+    </g>
+
+    <!-- Destination 4: Family Vault -->
+    <g transform="translate(18, 308)">
+      <rect x="0" y="0" width="274" height="58" rx="8" fill="#0f172a" stroke="#1e293b"/>
+      <text x="14" y="22" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" fill="#34d399">
+        👨‍👩‍👧 Family Vault P2P
+      </text>
+      <text x="14" y="42" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#94a3b8">
+        Condivisione offline cifrata AirDrop / NFC
+      </text>
+    </g>
+  </g>
+
+  <!-- 4. Bottom Footer Metadata Bar -->
+  <g id="footer-meta" transform="translate(60, 532)">
+    <rect x="0" y="0" width="1080" height="64" rx="10" fill="#0b1220" stroke="#1e293b" stroke-width="1.2"/>
+    
+    <!-- Author & Affiliation -->
+    <text x="24" y="28" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700" fill="#ffffff">
+      Autore: Alessandro Mainardi
+    </text>
+    <text x="24" y="48" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#94a3b8">
+      Alma Mater Studiorum - Università di Bologna (DISI)
+    </text>
+
+    <!-- Persistent Identifiers -->
+    <g transform="translate(420, 16)">
+      <rect x="0" y="0" width="160" height="32" rx="6" fill="#1e293b" stroke="#334155"/>
+      <text x="12" y="21" font-family="monospace" font-size="11" fill="#38bdf8">ORCID: 0009-0003-7003-7247</text>
+    </g>
+
+    <g transform="translate(595, 16)">
+      <rect x="0" y="0" width="125" height="32" rx="6" fill="#1e293b" stroke="#334155"/>
+      <text x="12" y="21" font-family="monospace" font-size="11" fill="#a78bfa">Wikidata: Q141886579</text>
+    </g>
+
+    <g transform="translate(735, 16)">
+      <rect x="0" y="0" width="180" height="32" rx="6" fill="#10b981" fill-opacity="0.15" stroke="#10b981"/>
+      <text x="12" y="21" font-family="monospace" font-size="11" font-weight="700" fill="#34d399">DOI: 10.5281/zenodo.23735226</text>
+    </g>
+
+    <g transform="translate(930, 16)">
+      <rect x="0" y="0" width="130" height="32" rx="6" fill="#00e5ff" fill-opacity="0.12" stroke="#00e5ff"/>
+      <text x="12" y="21" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" fill="#00e5ff">📄 PAPER 41 PAG.</text>
+    </g>
+  </g>
+</svg>

@@ -1,5 +1,5 @@
 ## 2026-09-01T21:01:36Z
-You are Explorer 3 for the RosettaHealth iOS codebase survey.
+You are Explorer 3 for the RosettaEdge iOS codebase survey.
 
 Working Directory: e:/Code/Health-App/.agents/explorer_survey_3/
 Workspace Root: e:/Code/Health-App

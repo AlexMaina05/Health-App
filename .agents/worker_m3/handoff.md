@@ -1,16 +1,16 @@
 # Handoff Report: Worker 3 (Milestone 3: Zero-Cloud & GDPR Isolation Hardening)
 
 ## 1. Observation
-- **`Sources/RosettaHealthApp/MainAppView.swift` (Lines 18-20)**:
+- **`Sources/RosettaEdgeApp/MainAppView.swift` (Lines 18-20)**:
   Previously contained dynamic CloudKit enablement:
   ```swift
   let syncEnabled = UserDefaults.standard.bool(forKey: "isCloudSyncEnabled")
   let config = ModelConfiguration(cloudKitDatabase: syncEnabled ? .automatic : .none)
   ```
   This created a compliance risk of syncing sensitive health records under GDPR Article 9.
-- **`Sources/RosettaHealthApp/SettingsView.swift` (Lines 22)**:
+- **`Sources/RosettaEdgeApp/SettingsView.swift` (Lines 22)**:
   Contained `@AppStorage("isCloudSyncEnabled") private var isCloudSyncEnabled: Bool = false` with no explicit Zero-Cloud GDPR Article 9 disclosure badge.
-- **`Sources/RosettaHealthApp/AppViewModel.swift` (Line 239)**:
+- **`Sources/RosettaEdgeApp/AppViewModel.swift` (Line 239)**:
   Logged unredacted patient names directly in OSLog:
   ```swift
   logger.notice("Referto di \(patientInfo.name) deviato verso il Family Vault (Bypass HealthKit).")
@@ -45,11 +45,11 @@ Milestone 3 (Zero-Cloud & GDPR Isolation Hardening) is completely implemented an
 
 ## 5. Verification Method
 1. **Verify SwiftData CloudKit Setting**:
-   - Inspect `Sources/RosettaHealthApp/MainAppView.swift`: verify line 18 contains `let config = ModelConfiguration(cloudKitDatabase: .none)`.
+   - Inspect `Sources/RosettaEdgeApp/MainAppView.swift`: verify line 18 contains `let config = ModelConfiguration(cloudKitDatabase: .none)`.
 2. **Verify SettingsView UI**:
-   - Inspect `Sources/RosettaHealthApp/SettingsView.swift`: verify absence of `isCloudSyncEnabled` and presence of GDPR Art. 9 section.
+   - Inspect `Sources/RosettaEdgeApp/SettingsView.swift`: verify absence of `isCloudSyncEnabled` and presence of GDPR Art. 9 section.
 3. **Verify OSLog Privacy Mask**:
-   - Inspect `Sources/RosettaHealthApp/AppViewModel.swift`: verify `logger.notice("Referto di \(patientInfo.name, privacy: .private) ...")`.
+   - Inspect `Sources/RosettaEdgeApp/AppViewModel.swift`: verify `logger.notice("Referto di \(patientInfo.name, privacy: .private) ...")`.
 4. **Verify Zero Network Transmissions via Ripgrep**:
    ```bash
    rg "URLSession|Alamofire|import Network|WebSocket|Firebase|Sentry|Mixpanel" Sources/

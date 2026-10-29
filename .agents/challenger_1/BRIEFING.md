@@ -1,7 +1,7 @@
 # BRIEFING — 2026-09-01T23:23:00Z
 
 ## Mission
-Adversarial stress testing and empirical challenge of RosettaHealth Transcoder, FHIR mapping, CDA parser, and HealthKit validation gate logic.
+Adversarial stress testing and empirical challenge of RosettaEdge Transcoder, FHIR mapping, CDA parser, and HealthKit validation gate logic.
 
 ## 🔒 My Identity
 - Archetype: challenger

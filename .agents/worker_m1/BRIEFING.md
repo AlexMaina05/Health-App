@@ -1,7 +1,7 @@
 # BRIEFING — 2026-09-01T23:08:15+02:00
 
 ## Mission
-Refactor RosettaHealthCore (RosettaTranscoder, HealthKitBridge, CDS, FHIRModels) and fix Core test suite for Milestone 1.
+Refactor RosettaEdgeCore (RosettaTranscoder, HealthKitBridge, CDS, FHIRModels) and fix Core test suite for Milestone 1.
 
 ## 🔒 My Identity
 - Archetype: worker
@@ -12,13 +12,13 @@ Refactor RosettaHealthCore (RosettaTranscoder, HealthKitBridge, CDS, FHIRModels)
 
 ## 🔒 Key Constraints
 - Exclusive write ownership:
-  - `Sources/RosettaHealthCore/RosettaTranscoder.swift`
-  - `Sources/RosettaHealthCore/HealthKitBridge.swift`
-  - `Sources/RosettaHealthCore/ClinicalDecisionSupport.swift`
-  - `Sources/RosettaHealthCore/FHIRModels.swift`
-  - `Tests/RosettaHealthCoreTests/RosettaTranscoderTests2.swift`
-  - `Tests/RosettaHealthCoreTests/ValidationGateTests.swift`
-  - `Tests/RosettaHealthCoreTests/FSEEdgeCasesTests.swift`
+  - `Sources/RosettaEdgeCore/RosettaTranscoder.swift`
+  - `Sources/RosettaEdgeCore/HealthKitBridge.swift`
+  - `Sources/RosettaEdgeCore/ClinicalDecisionSupport.swift`
+  - `Sources/RosettaEdgeCore/FHIRModels.swift`
+  - `Tests/RosettaEdgeCoreTests/RosettaTranscoderTests2.swift`
+  - `Tests/RosettaEdgeCoreTests/ValidationGateTests.swift`
+  - `Tests/RosettaEdgeCoreTests/FSEEdgeCasesTests.swift`
 - Strict Zero-Cloud / GDPR Art. 9 compliance (no URLSession, Alamofire, network transmissions).
 - No cheating, no hardcoded test shortcuts or dummy logic. Real state and genuine parsing logic.
 
@@ -47,13 +47,13 @@ Refactor RosettaHealthCore (RosettaTranscoder, HealthKitBridge, CDS, FHIRModels)
 
 ## Change Tracker
 - **Files modified**:
-  - `Sources/RosettaHealthCore/RosettaTranscoder.swift` (Resolved D1, D2, D3, D4, D5)
-  - `Sources/RosettaHealthCore/HealthKitBridge.swift` (Resolved D6, D7, D9)
-  - `Sources/RosettaHealthCore/ClinicalDecisionSupport.swift` (Resolved D8)
-  - `Sources/RosettaHealthCore/FHIRModels.swift` (FHIRBundleEntry fullUrl optionality)
-  - `Tests/RosettaHealthCoreTests/RosettaTranscoderTests2.swift` (Entry filtering & assertion fixes)
-  - `Tests/RosettaHealthCoreTests/ValidationGateTests.swift` (Initializer syntax & validation assertions)
-  - `Tests/RosettaHealthCoreTests/FSEEdgeCasesTests.swift` (Composition narrative text verification)
+  - `Sources/RosettaEdgeCore/RosettaTranscoder.swift` (Resolved D1, D2, D3, D4, D5)
+  - `Sources/RosettaEdgeCore/HealthKitBridge.swift` (Resolved D6, D7, D9)
+  - `Sources/RosettaEdgeCore/ClinicalDecisionSupport.swift` (Resolved D8)
+  - `Sources/RosettaEdgeCore/FHIRModels.swift` (FHIRBundleEntry fullUrl optionality)
+  - `Tests/RosettaEdgeCoreTests/RosettaTranscoderTests2.swift` (Entry filtering & assertion fixes)
+  - `Tests/RosettaEdgeCoreTests/ValidationGateTests.swift` (Initializer syntax & validation assertions)
+  - `Tests/RosettaEdgeCoreTests/FSEEdgeCasesTests.swift` (Composition narrative text verification)
 - **Build status**: Verified clean syntax and contracts across all modified files
 - **Pending issues**: None
 

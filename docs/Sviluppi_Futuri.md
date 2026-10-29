@@ -1,12 +1,12 @@
 # Sviluppi Futuri e Roadmap Architetturale (v4.0+)
 
-Avendo completato l'integrazione con Apple HealthKit, la messa in sicurezza multi-profilo (Family Vault), l'estensione ai Widget, i Background Tasks notturni, l'annotazione vettoriale dei PDF e la Companion App per watchOS (in rigoroso rispetto del GDPR Zero-Cloud), le seguenti funzionalità rappresentano i prossimi passi per trasformare RosettaHealth nel punto di riferimento HealthTech europeo.
+Avendo completato l'integrazione con Apple HealthKit, la messa in sicurezza multi-profilo (Family Vault), l'estensione ai Widget, i Background Tasks notturni, l'annotazione vettoriale dei PDF e la Companion App per watchOS (in rigoroso rispetto del GDPR Zero-Cloud), le seguenti funzionalità rappresentano i prossimi passi per trasformare RosettaEdge nel punto di riferimento HealthTech europeo.
 
 ---
 
 ## 1. Dashboard Olistica Proprietaria (Oltre i limiti di Apple Health)
 Apple Salute (HealthKit) limita storicamente i propri grafici nativi a un set predefinito di metriche (`HKQuantityTypeIdentifier`), escludendo parametri fondamentali della medicina di base (es. **Creatinina sierica, TSH, FT4, Transaminasi, Ferritina, Emoglobina Glicata**). 
-L'obiettivo è sviluppare un'interfaccia proprietaria in *Swift Charts* all'interno di RosettaHealth. L'App diventerà un aggregatore clinico assoluto: leggerà i dati autorizzati da Apple Salute e li intersecherà con i dati avanzati estratti dai referti FHIR archiviati nel Vault, offrendo al paziente (e al medico curante) un panorama ematologico completo e senza punti ciechi, superando i vincoli di sistema imposti da Cupertino.
+L'obiettivo è sviluppare un'interfaccia proprietaria in *Swift Charts* all'interno di RosettaEdge. L'App diventerà un aggregatore clinico assoluto: leggerà i dati autorizzati da Apple Salute e li intersecherà con i dati avanzati estratti dai referti FHIR archiviati nel Vault, offrendo al paziente (e al medico curante) un panorama ematologico completo e senza punti ciechi, superando i vincoli di sistema imposti da Cupertino.
 
 ---
 
@@ -26,7 +26,7 @@ Espandere l'attuale mappatura LOINC statica con un database vettoriale locale (e
 
 ## 6. Integrazione Apple Intelligence (AppIntents e Siri)
 Sfruttando le nuove capacità semantiche di Siri (con esecuzione strettamente locale su Apple Silicon), implementare l'interrogazione vocale autonoma tramite il framework `AppIntents`. 
-Esempio di query: *"Ehi Siri, chiedi a RosettaHealth se il mio colesterolo e la mia creatinina sono peggiorati rispetto al referto dell'anno scorso"*.
+Esempio di query: *"Ehi Siri, chiedi a RosettaEdge se il mio colesterolo e la mia creatinina sono peggiorati rispetto al referto dell'anno scorso"*.
 
 ---
 
@@ -38,7 +38,7 @@ In ottica di espansione del mercato, è prevista una versione per ecosistema And
 
 ## 📚 Riferimenti Bibliografici & Monografia Ufficiale
 
-- **Monografia Tecnica Accademica**: [Scarica il Paper Completo (PDF, 44 Pagine)](https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf)
+- **Monografia Tecnica Accademica**: [Scarica il Paper Completo (PDF, 44 Pagine)](https://alexmaina.dev/Health-App/rosettaedge-monografia-tecnica.pdf)
 - **Autore**: [Alessandro Mainardi](https://alexmaina.dev/) — Alma Mater Studiorum Università di Bologna (DISI)
 - **Identificatori Persistenti**: ORCID [0009-0003-7003-7247](https://orcid.org/0009-0003-7003-7247) · Wikidata [Q141886579](https://www.wikidata.org/wiki/Q141886579) · DOI [10.5281/zenodo.23735226](https://doi.org/10.5281/zenodo.23735226)
 - **Portale Ufficiale**: [alexmaina.dev](https://alexmaina.dev/)

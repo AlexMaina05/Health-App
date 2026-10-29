@@ -1,6 +1,6 @@
 ## 2026-09-01T21:20:21Z
 
-You are Reviewer 1 for RosettaHealth iOS codebase verification.
+You are Reviewer 1 for RosettaEdge iOS codebase verification.
 
 Working Directory: e:/Code/Health-App/.agents/reviewer_1/
 Workspace Root: e:/Code/Health-App
@@ -10,10 +10,10 @@ Test Readiness: e:/Code/Health-App/TEST_READY.md
 
 Task:
 1. Perform an in-depth code review of all refactored files in `Sources/` and `Tests/`:
-   - `Sources/RosettaHealthCore/` (`RosettaTranscoder.swift`, `HealthKitBridge.swift`, `ClinicalDecisionSupport.swift`, `FHIRModels.swift`)
-   - `Sources/RosettaHealthApp/` (`AppViewModel.swift`, `MainAppView.swift`, `SettingsView.swift`, `LiquidGlass.swift`, `OnboardingView.swift`, `Vault/*`, `BackgroundTaskManager.swift`, etc.)
+   - `Sources/RosettaEdgeCore/` (`RosettaTranscoder.swift`, `HealthKitBridge.swift`, `ClinicalDecisionSupport.swift`, `FHIRModels.swift`)
+   - `Sources/RosettaEdgeApp/` (`AppViewModel.swift`, `MainAppView.swift`, `SettingsView.swift`, `LiquidGlass.swift`, `OnboardingView.swift`, `Vault/*`, `BackgroundTaskManager.swift`, etc.)
    - `Sources/ShareExtension/`, `Sources/RosettaWidget/`, `Sources/RosettaWatch/`
-   - `Tests/RosettaHealthCoreTests/` (all 10 test files including `RosettaE2ETests.swift`, `Tier1FeatureCoverageTests.swift`, `Tier2BoundaryCornerTests.swift`, `Tier3CrossFeaturePipelineTests.swift`, `Tier4RealWorldWorkloadTests.swift`)
+   - `Tests/RosettaEdgeCoreTests/` (all 10 test files including `RosettaE2ETests.swift`, `Tier1FeatureCoverageTests.swift`, `Tier2BoundaryCornerTests.swift`, `Tier3CrossFeaturePipelineTests.swift`, `Tier4RealWorldWorkloadTests.swift`)
 2. Verify:
    - Syntax and compilation correctness under Swift 5.10 / iOS 17.0+
    - Elimination of all identified defects (D1 through D21)

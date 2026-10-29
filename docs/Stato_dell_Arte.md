@@ -1,6 +1,6 @@
 # Analisi dello Stato dell'Arte: Fascicolo Sanitario Elettronico e Interoperabilità Consumer
 
-Questo documento analizza lo stato attuale dell'infrastruttura sanitaria digitale (con particolare focus sul panorama italiano), l'evoluzione degli standard di interoperabilità clinica e le limitazioni degli attuali ecosistemi consumer. L'analisi contestualizza la necessità architetturale e l'innovazione introdotta dal progetto **RosettaHealth**.
+Questo documento analizza lo stato attuale dell'infrastruttura sanitaria digitale (con particolare focus sul panorama italiano), l'evoluzione degli standard di interoperabilità clinica e le limitazioni degli attuali ecosistemi consumer. L'analisi contestualizza la necessità architetturale e l'innovazione introdotta dal progetto **RosettaEdge**.
 
 ---
 
@@ -48,9 +48,9 @@ Ad oggi, un paziente italiano che desidera monitorare i propri valori storici (e
 
 ---
 
-## 5. Il Vuoto Tecnologico Colmato da RosettaHealth
+## 5. Il Vuoto Tecnologico Colmato da RosettaEdge
 
-Dall'analisi dello stato dell'arte emerge un vuoto infrastrutturale che isola il cittadino dai propri dati sanitari. **RosettaHealth** si inserisce esattamente in questa frattura, proponendo un'architettura che supera tutti i limiti analizzati:
+Dall'analisi dello stato dell'arte emerge un vuoto infrastrutturale che isola il cittadino dai propri dati sanitari. **RosettaEdge** si inserisce esattamente in questa frattura, proponendo un'architettura che supera tutti i limiti analizzati:
 
 1. **Interoperabilità Retroattiva (Local Transcoder)**: Invece di attendere l'adeguamento statale a FHIR, l'app intercetta il PDF/A-3, estrae l'XML CDA locale e lo converte in FHIR R4 JSON istantaneamente e *on-device*, fungendo da ponte (Rosetta Stone) tra la vecchia sanità e il nuovo ecosistema.
 2. **Dual-Track Ingestion (Bypass delle API Restricted)**: Non potendo usare l'API riservata `HKClinicalRecord`, l'app scompone chirurgicamente il dato in due vie legali e pubbliche: il salvataggio documentale integrale (`HKCDADocumentSample`) per l'archiviazione formale, e l'estrazione quantitativa selettiva (`HKQuantitySample`) per popolare i grafici di sistema.
@@ -63,7 +63,7 @@ Dall'analisi dello stato dell'arte emerge un vuoto infrastrutturale che isola il
 
 ## 📚 Riferimenti Bibliografici & Monografia Ufficiale
 
-- **Monografia Tecnica Accademica**: [Scarica il Paper Completo (PDF, 44 Pagine)](https://alexmaina.dev/Health-App/rosettahealth-monografia-tecnica.pdf)
+- **Monografia Tecnica Accademica**: [Scarica il Paper Completo (PDF, 44 Pagine)](https://alexmaina.dev/Health-App/rosettaedge-monografia-tecnica.pdf)
 - **Autore**: [Alessandro Mainardi](https://alexmaina.dev/) — Alma Mater Studiorum Università di Bologna (DISI)
 - **Identificatori Persistenti**: ORCID [0009-0003-7003-7247](https://orcid.org/0009-0003-7003-7247) · Wikidata [Q141886579](https://www.wikidata.org/wiki/Q141886579) · DOI [10.5281/zenodo.23735226](https://doi.org/10.5281/zenodo.23735226)
 - **Portale Ufficiale**: [alexmaina.dev](https://alexmaina.dev/)

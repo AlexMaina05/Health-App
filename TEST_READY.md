@@ -5,7 +5,7 @@
 **Timestamp**: 2026-09-01T23:20:00Z  
 **Author**: Test Writer (`worker_test_m4`)  
 **Target Platform**: iOS 17.0+ / watchOS 10.0+  
-**Target Target**: `RosettaHealthCoreTests`
+**Target Target**: `RosettaEdgeCoreTests`
 
 ---
 
@@ -16,7 +16,7 @@
 swift test
 
 # Execute test suite filtered by target
-swift test --filter RosettaHealthCoreTests
+swift test --filter RosettaEdgeCoreTests
 
 # Execute specific Tier test suites
 swift test --filter Tier1FeatureCoverageTests
@@ -26,7 +26,7 @@ swift test --filter Tier4RealWorldWorkloadTests
 swift test --filter RosettaE2ETests
 
 # Execute via Xcodebuild (macOS / CI runner)
-xcodebuild test -scheme RosettaHealthCore -destination "platform=iOS Simulator,name=iPhone 15,OS=17.0"
+xcodebuild test -scheme RosettaEdgeCore -destination "platform=iOS Simulator,name=iPhone 15,OS=17.0"
 ```
 
 ---

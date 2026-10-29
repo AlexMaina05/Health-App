@@ -1,14 +1,14 @@
 # BRIEFING — 2026-09-01T21:23:05Z
 
 ## Mission
-Independent architectural, functional, adversarial, and integrity review of the RosettaHealth iOS codebase.
+Independent architectural, functional, adversarial, and integrity review of the RosettaEdge iOS codebase.
 
 ## 🔒 My Identity
 - Archetype: reviewer_critic
 - Roles: reviewer, critic
 - Working directory: e:/Code/Health-App/.agents/reviewer_2
 - Original parent: 2d8a70f0-17ce-40db-b254-97397dff1c4e
-- Milestone: RosettaHealth Verification
+- Milestone: RosettaEdge Verification
 - Instance: 2 of 2
 
 ## 🔒 Key Constraints

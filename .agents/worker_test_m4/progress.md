@@ -5,7 +5,7 @@ Last visited: 2026-09-01T23:20:00Z
 ## Status
 - [x] Initialized workspace and briefing
 - [x] Inspect source code, mock data, and existing tests
-- [x] Design and implement Tier 1-4 integration test suites in `Tests/RosettaHealthCoreTests/`:
+- [x] Design and implement Tier 1-4 integration test suites in `Tests/RosettaEdgeCoreTests/`:
   - [x] `Tier1FeatureCoverageTests.swift` (5 tests)
   - [x] `Tier2BoundaryCornerTests.swift` (11 tests)
   - [x] `Tier3CrossFeaturePipelineTests.swift` (6 tests)

@@ -5,13 +5,13 @@ import HealthKit
 @available(watchOS 10.0, *)
 public struct WatchDashboardView: View {
     // Leggiamo dall'App Group condiviso (stesso meccanismo dei Widget)
-    @AppStorage("latestMetricValue", store: UserDefaults(suiteName: "group.dev.alexmaina.rosettahealth"))
+    @AppStorage("latestMetricValue", store: UserDefaults(suiteName: "group.dev.alexmaina.rosettaedge"))
     private var latestMetricValue: Double = 0.0
     
-    @AppStorage("latestMetricName", store: UserDefaults(suiteName: "group.dev.alexmaina.rosettahealth"))
+    @AppStorage("latestMetricName", store: UserDefaults(suiteName: "group.dev.alexmaina.rosettaedge"))
     private var latestMetricName: String = "Nessun Dato"
     
-    @AppStorage("latestMetricUnit", store: UserDefaults(suiteName: "group.dev.alexmaina.rosettahealth"))
+    @AppStorage("latestMetricUnit", store: UserDefaults(suiteName: "group.dev.alexmaina.rosettaedge"))
     private var latestMetricUnit: String = ""
     
     public init() {}
@@ -59,7 +59,7 @@ public struct WatchDashboardView: View {
                 }
                 .padding()
             }
-            .navigationTitle("RosettaHealth")
+            .navigationTitle("RosettaEdge")
             .navigationBarTitleDisplayMode(.inline)
         }
     }

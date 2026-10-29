@@ -1,5 +1,5 @@
 ## 2026-09-01T21:20:22Z
-You are the Forensic Auditor for RosettaHealth codebase integrity verification.
+You are the Forensic Auditor for RosettaEdge codebase integrity verification.
 
 Working Directory: e:/Code/Health-App/.agents/auditor_1/
 Workspace Root: e:/Code/Health-App

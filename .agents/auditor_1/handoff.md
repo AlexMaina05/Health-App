@@ -1,6 +1,6 @@
 # Forensic Auditor Handoff Report (`handoff.md`)
 
-**Target**: RosettaHealth Codebase Integrity Verification  
+**Target**: RosettaEdge Codebase Integrity Verification  
 **Auditor**: Forensic Auditor (`auditor_1`)  
 **Timestamp**: 2026-09-01T23:23:00+02:00  
 **Verdict**: **CLEAN** ✅
@@ -14,7 +14,7 @@ Direct empirical observations from static code inspection and grep queries acros
 1. **Zero-Cloud & Network Framework Scans**:
    - `grep_search(Query: "URLSession", SearchPath: "e:/Code/Health-App")`: **0 active instances** in executable code across `Sources/` and `Tests/`.
    - `grep_search(Query: "Alamofire", SearchPath: "e:/Code/Health-App/Sources")`: **0 instances**.
-   - `grep_search(Query: "Network", SearchPath: "e:/Code/Health-App/Sources")`: Only 1 occurrence in `Sources/RosettaHealthApp/BackgroundTaskManager.swift:26`:
+   - `grep_search(Query: "Network", SearchPath: "e:/Code/Health-App/Sources")`: Only 1 occurrence in `Sources/RosettaEdgeApp/BackgroundTaskManager.swift:26`:
      ```swift
      request.requiresNetworkConnectivity = false
      ```
@@ -58,7 +58,7 @@ Direct empirical observations from static code inspection and grep queries acros
    - `ClinicalDashboardView.swift:35-38`: Maps `@Model` entities to Sendable `DocumentDTO` on `@MainActor` before calling `Task.detached`.
 
 8. **Test Authenticity**:
-   - 40 test cases across 10 files in `Tests/RosettaHealthCoreTests/` assert against genuine computed properties, boundary values, real-world mock XMLs (`Mock_Laboratorio.xml`, `Mock_Specialistica.xml`), and multi-patient `#Predicate` queries.
+   - 40 test cases across 10 files in `Tests/RosettaEdgeCoreTests/` assert against genuine computed properties, boundary values, real-world mock XMLs (`Mock_Laboratorio.xml`, `Mock_Specialistica.xml`), and multi-patient `#Predicate` queries.
    - Zero pre-populated test result logs, mock stubs, or tautological assertions.
 
 ---
@@ -83,7 +83,7 @@ Direct empirical observations from static code inspection and grep queries acros
 ## 4. Conclusion
 
 **Final Verdict**: **CLEAN** ✅  
-The RosettaHealth codebase strictly satisfies all Zero-Cloud, GDPR Article 9 privacy, concurrency safety, genuine domain implementation, and test authenticity requirements. There are **zero integrity violations**.
+The RosettaEdge codebase strictly satisfies all Zero-Cloud, GDPR Article 9 privacy, concurrency safety, genuine domain implementation, and test authenticity requirements. There are **zero integrity violations**.
 
 ---
 
@@ -111,6 +111,6 @@ To independently verify this verdict:
 
 4. **Test Suite Execution (on macOS / Linux with Swift toolchain)**:
    ```bash
-   swift test --filter RosettaHealthCoreTests
+   swift test --filter RosettaEdgeCoreTests
    ```
    *Expected result*: All 40 tests execute and pass.

@@ -1,4 +1,4 @@
-# RosettaHealth iOS Codebase — Architectural Survey, Zero-Cloud Audit & Test Suite Analysis
+# RosettaEdge iOS Codebase — Architectural Survey, Zero-Cloud Audit & Test Suite Analysis
 
 **Date**: 2026-09-01  
 **Author**: Explorer Survey 3  
@@ -9,12 +9,12 @@
 
 ## 1. Executive Summary
 
-RosettaHealth is a native Swift iOS/watchOS application designed as an on-device bridge between the Italian Electronic Health Record (*Fascicolo Sanitario Elettronico* - FSE 2.0 / HL7 CDA R2) and Apple HealthKit / HL7 FHIR R4. The app operates under strict Zero-Cloud and GDPR (Article 9) privacy constraints, ensuring all CDA XML parsing, OCR processing, clinical decision support (CDS), and storage happen entirely on the local device SoC without external network transmission.
+RosettaEdge is a native Swift iOS/watchOS application designed as an on-device bridge between the Italian Electronic Health Record (*Fascicolo Sanitario Elettronico* - FSE 2.0 / HL7 CDA R2) and Apple HealthKit / HL7 FHIR R4. The app operates under strict Zero-Cloud and GDPR (Article 9) privacy constraints, ensuring all CDA XML parsing, OCR processing, clinical decision support (CDS), and storage happen entirely on the local device SoC without external network transmission.
 
 This survey provides:
 1. **Full Architectural Mapping**: Module decomposition, directory structure, IPC data flow, and entry points.
 2. **Zero-Cloud & GDPR Isolation Audit**: Repository-wide audit verifying the complete absence of networking frameworks (`URLSession`, `Alamofire`, `Network.framework`, `WebSockets`, third-party analytics/crash reporters) and identifying potential CloudKit synchronization risks and PII logging leaks.
-3. **Cross-Module Communication & Defect Catalog**: Exhaustive identification of syntax, compilation, concurrency, and logic defects across `RosettaHealthCore`, `RosettaHealthApp`, `ShareExtension`, `RosettaWidget`, and `RosettaWatch`.
+3. **Cross-Module Communication & Defect Catalog**: Exhaustive identification of syntax, compilation, concurrency, and logic defects across `RosettaEdgeCore`, `RosettaEdgeApp`, `ShareExtension`, `RosettaWidget`, and `RosettaWatch`.
 4. **Test Suite & Integration Infrastructure Readiness**: Evaluation of existing XCTest unit tests, mock datasets (`Mock_Laboratorio.xml`, `Mock_Specialistica.xml`), and blueprint for end-to-end integration tests (`Transcoder -> SwiftData / HealthKit -> ViewModel`).
 
 ---
@@ -25,14 +25,14 @@ This survey provides:
 
 ```
 Health-App/
-├── Package.swift                    # SPM package definition (RosettaHealthCore & Tests)
+├── Package.swift                    # SPM package definition (RosettaEdgeCore & Tests)
 ├── project.yml                      # XcodeGen project specification
 ├── README.md                        # Documentation and architecture guide
 ├── MockData/                        # Official FSE CDA XML test payloads
 │   ├── Mock_Laboratorio.xml         # Quantitative laboratory report (Glucose, Cholesterol, BP, Platelets)
 │   └── Mock_Specialistica.xml       # Narrative specialist report (Cardiology anamnesis & ECG)
 ├── Sources/
-│   ├── RosettaHealthCore/           # Core domain framework (Pure Swift / HealthKit / PDFKit / Vision)
+│   ├── RosettaEdgeCore/           # Core domain framework (Pure Swift / HealthKit / PDFKit / Vision)
 │   │   ├── ClinicalDecisionSupport.swift   # Local clinical trend analysis & notification engine
 │   │   ├── FHIRModels.swift                # FHIR R4 JSON Codable models with IPS profiles
 │   │   ├── HealthKitBridge.swift           # LOINC -> HKQuantityType mapping, validation & ingestion
@@ -41,8 +41,8 @@ Health-App/
 │   │   ├── RosettaError.swift              # Strongly-typed error domain with localized descriptions
 │   │   ├── RosettaTranscoder.swift         # SAX XMLParser for HL7 CDA R2 -> FHIR R4 transcoding
 │   │   └── VisionOCRExtractor.swift        # Apple Vision OCR fallback for raster scanned PDFs
-│   ├── RosettaHealthApp/            # Main iOS application target (SwiftUI / SwiftData)
-│   │   ├── RosettaHealthApp.swift          # Main entry point (@main App)
+│   ├── RosettaEdgeApp/            # Main iOS application target (SwiftUI / SwiftData)
+│   │   ├── RosettaEdgeApp.swift          # Main entry point (@main App)
 │   │   ├── AppViewModel.swift              # Primary application view model & pipeline coordinator
 │   │   ├── AppTheme.swift                  # Color theme definitions
 │   │   ├── BackgroundTaskManager.swift     # BGTaskScheduler coordination for nightly batch ingestion
@@ -73,7 +73,7 @@ Health-App/
 │   └── ShareExtension/              # iOS Share Extension target
 │       └── ShareViewController.swift       # Custom SwiftUI Share UI & IPC file writer
 └── Tests/
-    └── RosettaHealthCoreTests/      # Unit test suite
+    └── RosettaEdgeCoreTests/      # Unit test suite
         ├── ClinicalDecisionSupportTests.swift # Trend analysis verification
         ├── FSEEdgeCasesTests.swift            # XXE protection, empty/narrative parsing
         ├── RosettaTranscoderTests.swift       # Patient demographics and CDA parsing
@@ -92,7 +92,7 @@ Health-App/
                                   │ (Shared App Group IPC)
                                   ▼
                    ┌─────────────────────────────┐
-                   │       RosettaHealthApp      │
+                   │       RosettaEdgeApp      │
                    └───────┬──────────────┬──────┘
                            │              │
        ┌───────────────────┴──┐        ┌──┴──────────────────┐
@@ -101,19 +101,19 @@ Health-App/
                            │              │
                            ▼              ▼
                    ┌─────────────────────────────┐
-                   │      RosettaHealthCore      │
+                   │      RosettaEdgeCore      │
                    └──────────────┬──────────────┘
                                   │
                                   ▼
                    ┌─────────────────────────────┐
-                   │    RosettaHealthCoreTests   │
+                   │    RosettaEdgeCoreTests   │
                    └─────────────────────────────┘
 ```
 
 - **Target Relationships**:
-  - `RosettaHealthCore` is a standalone framework linking `HealthKit`, `Vision`, `PDFKit`, `ActivityKit`, and `UIKit`.
-  - `RosettaHealthApp`, `ShareExtension`, `RosettaWidget`, and `RosettaWatch` consume `RosettaHealthCore`.
-  - Inter-process communication between `ShareExtension`, `RosettaWidget`, `RosettaWatch`, and `RosettaHealthApp` occurs strictly via the shared Application Group container (`group.dev.alexmaina.rosettahealth`) and hardware-encrypted local file storage.
+  - `RosettaEdgeCore` is a standalone framework linking `HealthKit`, `Vision`, `PDFKit`, `ActivityKit`, and `UIKit`.
+  - `RosettaEdgeApp`, `ShareExtension`, `RosettaWidget`, and `RosettaWatch` consume `RosettaEdgeCore`.
+  - Inter-process communication between `ShareExtension`, `RosettaWidget`, `RosettaWatch`, and `RosettaEdgeApp` occurs strictly via the shared Application Group container (`group.dev.alexmaina.rosettaedge`) and hardware-encrypted local file storage.
 
 ---
 
@@ -121,9 +121,9 @@ Health-App/
 
 | Target | Entry Point | Invocation Context | Primary Responsibility |
 |---|---|---|---|
-| **Main App** | `RosettaHealthApp.swift:5` (`@main App`) | User launches application | Initializes `BackgroundTaskManager`, sets up SwiftData `ModelContainer`, renders `MainAppView`, activates Face ID privacy overlay on ScenePhase change. |
+| **Main App** | `RosettaEdgeApp.swift:5` (`@main App`) | User launches application | Initializes `BackgroundTaskManager`, sets up SwiftData `ModelContainer`, renders `MainAppView`, activates Face ID privacy overlay on ScenePhase change. |
 | **Share Extension** | `ShareViewController.swift:55` (`NSExtensionPrincipalClass`) | User taps "Share" in Safari/Files/Mail | Receives PDF `NSItemProvider`, extracts CDA XML or copies raster PDF, applies hardware encryption (`completeUntilFirstUserAuthentication`), writes to App Group container. |
-| **Background Scheduler** | `BackgroundTaskManager.swift:18` (`BGTaskScheduler`) | System wake during overnight charge | Executes `dev.alexmaina.rosettahealth.processPDFs`, drains App Group pending files headless, runs Transcoder, updates HealthKit and SwiftData. |
+| **Background Scheduler** | `BackgroundTaskManager.swift:18` (`BGTaskScheduler`) | System wake during overnight charge | Executes `dev.alexmaina.rosettaedge.processPDFs`, drains App Group pending files headless, runs Transcoder, updates HealthKit and SwiftData. |
 | **App Intents / Shortcuts** | `ProcessReportIntent.swift:7` (`AppIntent`) | iOS Shortcuts / Siri automation | Headless ingestion of PDF file parameter, transcoding, and metric injection. |
 | **WidgetKit Extension** | `RosettaWidget.swift:88` (`@main WidgetBundle`) | SpringBoard widget update / Live Activity | Reads cached metric from App Group `UserDefaults`, renders Lock Screen/Home Screen widgets and Dynamic Island Live Activities. |
 
@@ -197,10 +197,10 @@ logger.notice("Referto di \(patientInfo.name) deviato verso il Family Vault (Byp
 
 ## 4. Cross-Module Communication & Defect Catalog
 
-### 4.1 Defects in `RosettaHealthCore`
+### 4.1 Defects in `RosettaEdgeCore`
 
 #### Defect CORE-01: Duplicate Property & Undeclared Variable in `RosettaTranscoder.swift`
-- **Location**: `Sources/RosettaHealthCore/RosettaTranscoder.swift:27-28, 113`
+- **Location**: `Sources/RosettaEdgeCore/RosettaTranscoder.swift:27-28, 113`
 - **Observation**:
   ```swift
   27: private var currentRangeUnit: String = ""
@@ -212,7 +212,7 @@ logger.notice("Referto di \(patientInfo.name) deviato verso il Family Vault (Byp
 - **Impact**: Swift compilation error; bundle ID does not retain the original FSE document identifier.
 
 #### Defect CORE-02: String & Non-Numeric Value Dropping in `RosettaTranscoder.swift`
-- **Location**: `Sources/RosettaHealthCore/RosettaTranscoder.swift:158-165`
+- **Location**: `Sources/RosettaEdgeCore/RosettaTranscoder.swift:158-165`
 - **Observation**:
   ```swift
   if elementName == "value" {
@@ -229,26 +229,26 @@ logger.notice("Referto di \(patientInfo.name) deviato verso il Family Vault (Byp
 - **Impact**: Quantitative measurements with comparator strings (`<`, `>`, `<=`) are silently dropped rather than preserved in `valueString`.
 
 #### Defect CORE-03: Physiological Validation Gate Not Invoked in `HealthKitBridge.swift`
-- **Location**: `Sources/RosettaHealthCore/HealthKitBridge.swift:155-167, 169-238`
+- **Location**: `Sources/RosettaEdgeCore/HealthKitBridge.swift:155-167, 169-238`
 - **Observation**: `HealthKitBridge` defines `isValidPhysiologically(value:for:)` on line 155, but never calls it inside `ingestQuantities(fhirBundle:)` (lines 169-238).
 - **Impact**: Lethal or erroneous health values (e.g., Blood Glucose = 3000 mg/dL) are not intercepted by the validation gate, allowing data poisoning of Apple Health.
 
 #### Defect CORE-04: Missing Singleton Property in `HealthKitBridge.swift`
-- **Location**: `Sources/RosettaHealthCore/HealthKitBridge.swift` vs `Sources/RosettaHealthApp/ObservationRowView.swift:108`
+- **Location**: `Sources/RosettaEdgeCore/HealthKitBridge.swift` vs `Sources/RosettaEdgeApp/ObservationRowView.swift:108`
 - **Observation**: `ObservationRowView.swift:108` calls `HealthKitBridge.shared`, but `HealthKitBridge` only defines `public init()` without a `static let shared = HealthKitBridge()`.
 - **Impact**: Compilation failure in UI layer.
 
 ---
 
-### 4.2 Defects in `RosettaHealthApp`
+### 4.2 Defects in `RosettaEdgeApp`
 
 #### Defect APP-01: Missing `@Observable` Macro on `AppViewModel`
-- **Location**: `Sources/RosettaHealthApp/AppViewModel.swift:12-13`
+- **Location**: `Sources/RosettaEdgeApp/AppViewModel.swift:12-13`
 - **Observation**: Line 3 imports `Observation`, but line 12 is declared as `public final class AppViewModel {` without `@Observable`.
 - **Impact**: SwiftUI views (`ContentView`) observing `AppViewModel` will not trigger UI invalidation and state updates when properties (`syncedSamplesCount`, `extractedObservations`, `isProcessing`) mutate.
 
 #### Defect APP-02: Method Signature & Parameter Inconsistencies in `AppViewModel`
-- **Location**: `Sources/RosettaHealthApp/AppViewModel.swift:61, 78, 203, 237` vs `ContentView.swift:76, 293, 298, 325, 370`
+- **Location**: `Sources/RosettaEdgeApp/AppViewModel.swift:61, 78, 203, 237` vs `ContentView.swift:76, 293, 298, 325, 370`
 - **Observation**:
   - In `AppViewModel.swift`:
     - Line 61: `requestHealthKitAccess(modelContext: ModelContext? = nil)`
@@ -263,7 +263,7 @@ logger.notice("Referto di \(patientInfo.name) deviato verso il Family Vault (Byp
 
 #### Defect APP-03: Erroneous `@available(iOS 26.0, *)` Annotations
 - **Location**: Found across 12 files:
-  - `RosettaHealthApp.swift:4`
+  - `RosettaEdgeApp.swift:4`
   - `AppViewModel.swift:132, 250`
   - `BackgroundTaskManager.swift:7`
   - `BiometricAuthManager.swift:6`
@@ -278,12 +278,12 @@ logger.notice("Referto di \(patientInfo.name) deviato verso il Family Vault (Byp
 - **Impact**: Targets cannot compile or run on real iOS 17.0+ devices.
 
 #### Defect APP-04: Syntax Error in `OnboardingView.swift`
-- **Location**: `Sources/RosettaHealthApp/OnboardingView.swift:189`
+- **Location**: `Sources/RosettaEdgeApp/OnboardingView.swift:189`
 - **Observation**: Extra closing brace `}` on line 189 prematurely terminates `Form {`, leaving subsequent sections unparented.
 - **Impact**: Swift parser syntax error preventing compilation.
 
 #### Defect APP-05: Scope Errors in `BackgroundTaskManager.swift`
-- **Location**: `Sources/RosettaHealthApp/BackgroundTaskManager.swift:60, 68`
+- **Location**: `Sources/RosettaEdgeApp/BackgroundTaskManager.swift:60, 68`
 - **Observation**:
   ```swift
   60: var contextToUse = modelContext
@@ -294,17 +294,17 @@ logger.notice("Referto di \(patientInfo.name) deviato verso il Family Vault (Byp
 - **Impact**: Background scheduler task fails to compile.
 
 #### Defect APP-06: Undeclared State Variables in `FamilyVaultView.swift`
-- **Location**: `Sources/RosettaHealthApp/Vault/FamilyVaultView.swift:226-227`
+- **Location**: `Sources/RosettaEdgeApp/Vault/FamilyVaultView.swift:226-227`
 - **Observation**: `PDFViewerWrapper` attempts to assign `activeError = ...` and `showError = true` without defining `@State private var activeError: String?` or `@State private var showError: Bool = false`.
 - **Impact**: Compilation failure in PDF viewer wrapper.
 
 #### Defect APP-07: Optional Binding on Non-Optional in `ClinicalDashboardView.swift`
-- **Location**: `Sources/RosettaHealthApp/Vault/ClinicalDashboardView.swift:36`
+- **Location**: `Sources/RosettaEdgeApp/Vault/ClinicalDashboardView.swift:36`
 - **Observation**: `guard let data = doc.fhirBundleJSON,` where `doc.fhirBundleJSON` is `Data` (non-optional).
 - **Impact**: Compiler warning/error: *"Initializer for conditional binding must have Optional type"*.
 
 #### Defect APP-08: Non-Existent SwiftUI API in `LiquidGlass.swift`
-- **Location**: `Sources/RosettaHealthApp/LiquidGlass.swift:7`
+- **Location**: `Sources/RosettaEdgeApp/LiquidGlass.swift:7`
 - **Observation**: `self.glassEffect(.regular.interactive(), in: .rect(cornerRadius: cornerRadius))` calls an imaginary/unsupported modifier.
 - **Impact**: View modifier fails compilation on iOS 17.
 
@@ -345,8 +345,8 @@ logger.notice("Referto di \(patientInfo.name) deviato verso il Family Vault (Byp
 ### 5.2 Test Runner & Mock Environments Readiness
 
 1. **Package.swift Scope**:
-   - `Package.swift` currently builds only `RosettaHealthCore` and `RosettaHealthCoreTests`.
-   - `RosettaHealthApp` components (ViewModels, Models, Views) are omitted from SPM test targets.
+   - `Package.swift` currently builds only `RosettaEdgeCore` and `RosettaEdgeCoreTests`.
+   - `RosettaEdgeApp` components (ViewModels, Models, Views) are omitted from SPM test targets.
 2. **Mock Data Assets**:
    - `MockData/Mock_Laboratorio.xml`: Fully structured laboratory report containing:
      - Patient: Mario Rossi (`RSSMRA85M01H501Z`)
@@ -383,6 +383,6 @@ logger.notice("Referto di \(patientInfo.name) deviato verso il Family Vault (Byp
 | **Phase 2: App Architecture & State** | `AppViewModel.swift` | 1. Add `@Observable` macro.<br>2. Standardize signatures to accept `ModelContext`.<br>3. Align widget keys (`widget_metricName`, `widget_metricValue`, `widget_lastUpdate`).<br>4. Sanitize OSLog PII interpolation. |
 | **Phase 2: SwiftData & Zero-Cloud** | `MainAppView.swift`, `SettingsView.swift` | 1. Hardcode `ModelConfiguration(cloudKitDatabase: .none)`.<br>2. Remove `isCloudSyncEnabled` references. |
 | **Phase 2: UI & Concurrency Fixes** | `OnboardingView.swift`, `FamilyVaultView.swift`, `ClinicalDashboardView.swift`, `LiquidGlass.swift` | 1. Fix syntax error in `OnboardingView.swift`.<br>2. Add state properties to `PDFViewerWrapper`.<br>3. Fix non-optional guard in `ClinicalDashboardView.swift`.<br>4. Replace `glassEffect` with standard material/background. |
-| **Phase 3: Unit & Integration Tests** | `Tests/RosettaHealthCoreTests/*` | 1. Fix `FHIRBundleEntry` constructor calls.<br>2. Correct entry indexing in `RosettaTranscoderTests2.swift`.<br>3. Fix assertion in `FSEEdgeCasesTests.swift`.<br>4. Implement End-to-End Integration test suite utilizing `Mock_Laboratorio.xml` and `Mock_Specialistica.xml`. |
+| **Phase 3: Unit & Integration Tests** | `Tests/RosettaEdgeCoreTests/*` | 1. Fix `FHIRBundleEntry` constructor calls.<br>2. Correct entry indexing in `RosettaTranscoderTests2.swift`.<br>3. Fix assertion in `FSEEdgeCasesTests.swift`.<br>4. Implement End-to-End Integration test suite utilizing `Mock_Laboratorio.xml` and `Mock_Specialistica.xml`. |
 
 ---

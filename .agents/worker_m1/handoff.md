@@ -1,24 +1,24 @@
 # Handoff Report — Milestone 1: Core Transcoder & HealthKit Bridge Refactoring
 
 ## 1. Observation
-During inspection of `Sources/RosettaHealthCore` and `Tests/RosettaHealthCoreTests`:
-- `Sources/RosettaHealthCore/RosettaTranscoder.swift`:
+During inspection of `Sources/RosettaEdgeCore` and `Tests/RosettaEdgeCoreTests`:
+- `Sources/RosettaEdgeCore/RosettaTranscoder.swift`:
   - Lines 27-28 contained duplicate declaration of `private var currentRangeUnit: String = ""`.
   - Line 113 assigned `documentId = attributeDict["extension"] ?? attributeDict["root"]` without `documentId` being declared as a class property.
   - Value parsing for `PQ`, `REAL`, `INT` at line 159 attempted direct `Double(valStr)` parsing without replacing comma decimals (`"94,5"`) and failed completely on inequality strings like `"< 0.05"`, discarding valid clinical measurements.
   - Transcoder initialized `FHIRBundle` at line 91 with a random `UUID().uuidString`, ignoring the extracted `documentId`.
   - Transcoder initialized `FHIRComposition` at line 73 with `text: nil`, discarding `accumulatedNarrativeText`.
   - Observation creation skipped elements where `code` text was placed in `<originalText>` or child elements without attributes.
-- `Sources/RosettaHealthCore/HealthKitBridge.swift`:
+- `Sources/RosettaEdgeCore/HealthKitBridge.swift`:
   - `HealthKitBridge` lacked `public static let shared = HealthKitBridge()`, causing compilation errors in views such as `ObservationRowView.swift`.
   - `isValidPhysiologically(value:for:)` was defined at lines 155-167 but was never called in `ingestQuantities` (line 169) or `ingestRawMetrics` (line 241), allowing toxic/out-of-bound samples to enter HealthKit.
   - `loincToHKMap` lacked composite Blood Pressure panel LOINC codes (`85354-9`, `55284-4`).
   - Sync identifiers used ephemeral `UUID()` strings (`FSE-\(obs.id)` where `obs.id = UUID()`), breaking HealthKit deduplication and idempotency on re-ingestion.
-- `Sources/RosettaHealthCore/ClinicalDecisionSupport.swift`:
+- `Sources/RosettaEdgeCore/ClinicalDecisionSupport.swift`:
   - Lines 32-35 performed unconditional `doubleValue(for: HKUnit(from: "mg/dL"))` or `HKUnit.count()`, risking `NSInvalidArgumentException` crashes when processing dietary cholesterol samples saved in `mg`.
-- `Sources/RosettaHealthCore/FHIRModels.swift`:
+- `Sources/RosettaEdgeCore/FHIRModels.swift`:
   - `FHIRBundleEntry.fullUrl` was non-optional with no default value, causing syntax friction with test fixtures creating mock entries.
-- `Tests/RosettaHealthCoreTests/`:
+- `Tests/RosettaEdgeCoreTests/`:
   - `RosettaTranscoderTests2.swift`: Looked for `FHIRObservation` at `bundle.entry.first?.resource` which was actually `FHIRComposition`, causing false test failures.
   - `ValidationGateTests.swift`: Used invalid `FHIRBundleEntry(resource: ...)` syntax and required active physiological validation.
   - `FSEEdgeCasesTests.swift`: Asserted `bundle.entry.count == 0` for narrative XML, contradicting the presence of mandatory `FHIRComposition` and `FHIRPatient` bundle entries.
@@ -51,16 +51,16 @@ All defects assigned to Milestone 1 (D1, D2, D3, D4, D5, D6, D7, D8, D9) have be
 
 ## 5. Verification Method
 1. **File Inspection**:
-   - Inspect `Sources/RosettaHealthCore/RosettaTranscoder.swift` lines 6-30, 70-105, 140-290.
-   - Inspect `Sources/RosettaHealthCore/HealthKitBridge.swift` lines 4-65, 155-255.
-   - Inspect `Sources/RosettaHealthCore/ClinicalDecisionSupport.swift` lines 25-60.
-   - Inspect `Sources/RosettaHealthCore/FHIRModels.swift` lines 30-38.
-   - Inspect `Tests/RosettaHealthCoreTests/RosettaTranscoderTests2.swift`, `ValidationGateTests.swift`, and `FSEEdgeCasesTests.swift`.
+   - Inspect `Sources/RosettaEdgeCore/RosettaTranscoder.swift` lines 6-30, 70-105, 140-290.
+   - Inspect `Sources/RosettaEdgeCore/HealthKitBridge.swift` lines 4-65, 155-255.
+   - Inspect `Sources/RosettaEdgeCore/ClinicalDecisionSupport.swift` lines 25-60.
+   - Inspect `Sources/RosettaEdgeCore/FHIRModels.swift` lines 30-38.
+   - Inspect `Tests/RosettaEdgeCoreTests/RosettaTranscoderTests2.swift`, `ValidationGateTests.swift`, and `FSEEdgeCasesTests.swift`.
 2. **Swift Package Build & Test Command**:
    - On an iOS development machine / macOS runner with Xcode / Swift toolchain:
      ```sh
      swift build
-     swift test --filter RosettaHealthCoreTests
+     swift test --filter RosettaEdgeCoreTests
      ```
 3. **Expected Results**:
    - `RosettaTranscoderTests2.testDirtyXMLValuesFallback` passes: observation `valueString` is `"< 0.05 mg/dL"`, `valueQuantity` is `nil`.

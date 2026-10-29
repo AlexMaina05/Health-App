@@ -12,7 +12,7 @@ Milestone 2: App Architecture, Concurrency & UI Reactivity - Completed normaliza
 
 ## 🔒 Key Constraints
 - Exclusive Write Ownership:
-  - `Sources/RosettaHealthApp/**`
+  - `Sources/RosettaEdgeApp/**`
   - `Sources/ShareExtension/ShareViewController.swift`
   - `Sources/RosettaWidget/RosettaWidget.swift`
   - `Sources/RosettaWatch/WatchDashboardView.swift`
@@ -42,20 +42,20 @@ Milestone 2: App Architecture, Concurrency & UI Reactivity - Completed normaliza
 
 ## Change Tracker
 - **Files modified**:
-  - `Sources/RosettaHealthApp/Vault/VaultDocument.swift`: Normalized to `@available(iOS 17.0, *)`
-  - `Sources/RosettaHealthApp/Vault/VaultModelActor.swift`: Normalized to `@available(iOS 17.0, *)`
-  - `Sources/RosettaHealthApp/RosettaHealthApp.swift`: Normalized to `@available(iOS 17.0, *)`
-  - `Sources/RosettaHealthApp/BackgroundTaskManager.swift`: Normalized availability and fixed container resolution
-  - `Sources/RosettaHealthApp/MainAppView.swift`: Normalized to `@available(iOS 17.0, *)`
-  - `Sources/RosettaHealthApp/Vault/ClinicalDashboardView.swift`: Normalized availability and eliminated cross-actor SwiftData leak
-  - `Sources/RosettaHealthApp/Vault/FamilyVaultView.swift`: Normalized availability and added error state variables to PDFViewerWrapper
-  - `Sources/RosettaHealthApp/SpotlightManager.swift`: Normalized to `@available(iOS 17.0, *)`
-  - `Sources/RosettaHealthApp/BiometricAuthManager.swift`: Normalized availability and added `@Observable`
-  - `Sources/RosettaHealthApp/OnboardingView.swift`: Normalized availability and fixed extra closing brace in Form
+  - `Sources/RosettaEdgeApp/Vault/VaultDocument.swift`: Normalized to `@available(iOS 17.0, *)`
+  - `Sources/RosettaEdgeApp/Vault/VaultModelActor.swift`: Normalized to `@available(iOS 17.0, *)`
+  - `Sources/RosettaEdgeApp/RosettaEdgeApp.swift`: Normalized to `@available(iOS 17.0, *)`
+  - `Sources/RosettaEdgeApp/BackgroundTaskManager.swift`: Normalized availability and fixed container resolution
+  - `Sources/RosettaEdgeApp/MainAppView.swift`: Normalized to `@available(iOS 17.0, *)`
+  - `Sources/RosettaEdgeApp/Vault/ClinicalDashboardView.swift`: Normalized availability and eliminated cross-actor SwiftData leak
+  - `Sources/RosettaEdgeApp/Vault/FamilyVaultView.swift`: Normalized availability and added error state variables to PDFViewerWrapper
+  - `Sources/RosettaEdgeApp/SpotlightManager.swift`: Normalized to `@available(iOS 17.0, *)`
+  - `Sources/RosettaEdgeApp/BiometricAuthManager.swift`: Normalized availability and added `@Observable`
+  - `Sources/RosettaEdgeApp/OnboardingView.swift`: Normalized availability and fixed extra closing brace in Form
   - `Sources/ShareExtension/ShareViewController.swift`: Normalized availability annotations
   - `Sources/RosettaWidget/RosettaWidget.swift`: Normalized `#available` check
-  - `Sources/RosettaHealthApp/AppViewModel.swift`: Added `@Observable`, parameter harmonization, D18 file deletion protection, and Watch UserDefaults keys
-  - `Sources/RosettaHealthApp/LiquidGlass.swift`: Replaced non-existent API with `.background(.ultraThinMaterial, ...)`
+  - `Sources/RosettaEdgeApp/AppViewModel.swift`: Added `@Observable`, parameter harmonization, D18 file deletion protection, and Watch UserDefaults keys
+  - `Sources/RosettaEdgeApp/LiquidGlass.swift`: Replaced non-existent API with `.background(.ultraThinMaterial, ...)`
 - **Build status**: Clean
 - **Pending issues**: None
 

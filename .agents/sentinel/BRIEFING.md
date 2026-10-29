@@ -1,7 +1,7 @@
 # BRIEFING — 2026-09-01T21:27:46Z
 
 ## Mission
-Coordinate and monitor architectural analysis, cross-module refactoring (Transcoder, HealthKit, ViewModel), and integration testing for RosettaHealth iOS codebase.
+Coordinate and monitor architectural analysis, cross-module refactoring (Transcoder, HealthKit, ViewModel), and integration testing for RosettaEdge iOS codebase.
 
 ## 🔒 My Identity
 - Archetype: sentinel
@@ -16,7 +16,7 @@ Coordinate and monitor architectural analysis, cross-module refactoring (Transco
 - Clean up any temporary analysis scripts (.py) before completion
 
 ## User Context
-- **Last user request**: RosettaHealth iOS architectural analysis, cross-module communication refactoring, zero-cloud verification, integration tests, handoff report.
+- **Last user request**: RosettaEdge iOS architectural analysis, cross-module communication refactoring, zero-cloud verification, integration tests, handoff report.
 - **Pending clarifications**: none
 - **Delivered results**: Architectural analysis, 21 resolved defects, Zero-Cloud hardening, 40 XCTest integration tests, temporary script cleanup, `teamwork_analysis_report.md`.
 

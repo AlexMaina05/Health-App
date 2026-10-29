@@ -7,7 +7,7 @@ Original Request: e:/Code/Health-App/ORIGINAL_REQUEST.md (MUST read first)
 Project Scope: e:/Code/Health-App/PROJECT.md
 
 Exclusive Write Ownership:
-- `Sources/RosettaHealthApp/**` (all Swift files under `Sources/RosettaHealthApp/`, including `Vault/`, `Intents/`, etc.)
+- `Sources/RosettaEdgeApp/**` (all Swift files under `Sources/RosettaEdgeApp/`, including `Vault/`, `Intents/`, etc.)
 - `Sources/ShareExtension/ShareViewController.swift`
 - `Sources/RosettaWidget/RosettaWidget.swift`
 - `Sources/RosettaWatch/WatchDashboardView.swift`
@@ -18,20 +18,20 @@ DO NOT CHEAT. All implementations must be genuine. DO NOT hardcode test results,
 Detailed Tasks:
 1. Normalize Availability Annotations (D10):
    - Replace all instances of `@available(iOS 26.0, *)` and `if #available(iOS 26.0, *)` with `@available(iOS 17.0, *)` / `if #available(iOS 17.0, *)` (or remove redundant annotations if base target is already iOS 17.0) across all files:
-     - `Sources/RosettaHealthApp/Vault/VaultDocument.swift`
-     - `Sources/RosettaHealthApp/Vault/VaultModelActor.swift`
-     - `Sources/RosettaHealthApp/RosettaHealthApp.swift`
-     - `Sources/RosettaHealthApp/BackgroundTaskManager.swift`
-     - `Sources/RosettaHealthApp/MainAppView.swift`
-     - `Sources/RosettaHealthApp/Vault/ClinicalDashboardView.swift`
-     - `Sources/RosettaHealthApp/Vault/FamilyVaultView.swift`
-     - `Sources/RosettaHealthApp/SpotlightManager.swift`
-     - `Sources/RosettaHealthApp/BiometricAuthManager.swift`
-     - `Sources/RosettaHealthApp/OnboardingView.swift`
+     - `Sources/RosettaEdgeApp/Vault/VaultDocument.swift`
+     - `Sources/RosettaEdgeApp/Vault/VaultModelActor.swift`
+     - `Sources/RosettaEdgeApp/RosettaEdgeApp.swift`
+     - `Sources/RosettaEdgeApp/BackgroundTaskManager.swift`
+     - `Sources/RosettaEdgeApp/MainAppView.swift`
+     - `Sources/RosettaEdgeApp/Vault/ClinicalDashboardView.swift`
+     - `Sources/RosettaEdgeApp/Vault/FamilyVaultView.swift`
+     - `Sources/RosettaEdgeApp/SpotlightManager.swift`
+     - `Sources/RosettaEdgeApp/BiometricAuthManager.swift`
+     - `Sources/RosettaEdgeApp/OnboardingView.swift`
      - `Sources/ShareExtension/ShareViewController.swift`
      - `Sources/RosettaWidget/RosettaWidget.swift`
-     - `Sources/RosettaHealthApp/AppViewModel.swift`
-     - `Sources/RosettaHealthApp/LiquidGlass.swift`
+     - `Sources/RosettaEdgeApp/AppViewModel.swift`
+     - `Sources/RosettaEdgeApp/LiquidGlass.swift`
 2. Fix `LiquidGlass.swift` (D17):
    - Replace non-existent `glassEffect(.regular.interactive(), ...)` with standard SwiftUI `.background(.ultraThinMaterial)` / `.background(.thinMaterial)` with rounded corner styling that compiles cleanly on iOS 17.0+.
 3. ViewModel State Reactivity & Parameter Consistency (D11, D12, D18, D19):
@@ -48,6 +48,6 @@ Detailed Tasks:
    - `FamilyVaultView.swift`: Add `@State private var activeError: String? = nil` and `@State private var showError: Bool = false` to `PDFViewerWrapper` so lines 226-227 compile.
    - `BackgroundTaskManager.swift`: Correct references to `modelContext` and `containerToUse` so background sync initializes or receives `ModelContainer` correctly.
    - `ObservationRowView.swift`: Ensure `HealthKitBridge.shared` is utilized.
-6. Verify all changes across `Sources/RosettaHealthApp/`, `ShareExtension/`, `RosettaWidget/`, and `RosettaWatch/` for compilation correctness and type safety.
+6. Verify all changes across `Sources/RosettaEdgeApp/`, `ShareExtension/`, `RosettaWidget/`, and `RosettaWatch/` for compilation correctness and type safety.
 7. Document all changes and rationale in `e:/Code/Health-App/.agents/worker_m2/handoff.md`.
 8. Update `progress.md` and send a message to orchestrator upon completion.

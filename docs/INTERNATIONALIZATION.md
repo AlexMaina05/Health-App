@@ -1,4 +1,4 @@
-﻿# 🌍 RosettaHealth - Roadmap di Internazionalizzazione (i18n)
+﻿# 🌍 RosettaEdge - Roadmap di Internazionalizzazione (i18n)
 *Documento strategico per l'espansione nel mercato sanitario europeo.*
 
 ## Il Contesto

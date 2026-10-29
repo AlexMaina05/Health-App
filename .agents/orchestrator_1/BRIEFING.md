@@ -1,7 +1,7 @@
 # BRIEFING — 2026-09-01T23:25:35+02:00
 
 ## Mission
-Analyze RosettaHealth iOS codebase architecture, resolve cross-module communication defects/bottlenecks, maintain strict Zero-Cloud/GDPR isolation, write comprehensive integration tests, clean up temp scripts, and produce teamwork_analysis_report.md.
+Analyze RosettaEdge iOS codebase architecture, resolve cross-module communication defects/bottlenecks, maintain strict Zero-Cloud/GDPR isolation, write comprehensive integration tests, clean up temp scripts, and produce teamwork_analysis_report.md.
 
 ## 🔒 My Identity
 - Archetype: orchestrator

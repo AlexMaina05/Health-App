@@ -1,6 +1,6 @@
-# Forensic Integrity Audit Report: RosettaHealth
+# Forensic Integrity Audit Report: RosettaEdge
 
-**Target Work Product**: RosettaHealth iOS / watchOS Codebase (`Sources/` and `Tests/`)  
+**Target Work Product**: RosettaEdge iOS / watchOS Codebase (`Sources/` and `Tests/`)  
 **Auditor**: Forensic Auditor (`auditor_1`)  
 **Audit Date**: 2026-09-01T23:22:30+02:00  
 **Profile**: General Project (Forensic Integrity & Anti-Cheat)  
@@ -10,17 +10,17 @@
 
 ## 1. Executive Summary
 
-An exhaustive forensic integrity audit was conducted across all Swift source files in `Sources/` and test files in `Tests/` of the RosettaHealth workspace. The audit independently evaluated:
+An exhaustive forensic integrity audit was conducted across all Swift source files in `Sources/` and test files in `Tests/` of the RosettaEdge workspace. The audit independently evaluated:
 1. **Domain Logic Authenticity & Anti-Cheat Verification**: Confirmed that all modules implement genuine domain logic—including real event-driven SAX XML parsing (`XMLParserDelegate`), dynamic physiological threshold mathematical evaluations, clinical decision support (CDS) trend calculations, SwiftData CRUD operations via dedicated `@ModelActor`s, Sendable DTO boundary transfers, and reactive SwiftUI bindings. No hardcoded test responses, dummy facades, stubbed values, or bypassed checks were found.
 2. **Zero-Cloud, GDPR Art. 9 & Privacy Isolation**: Performed full static codebase scans for networking symbols (`URLSession`, `Alamofire`, `Network.framework`, `WebSocket`, `Firebase`, `Sentry`, `Mixpanel`, `TelemetryDeck`, `Crashlytics`). All returned 0 instances in executable code. SwiftData is strictly configured with `cloudKitDatabase: .none`. Logging incorporates `.private` OSLog masks to prevent PII leakage. Background processing explicitly sets `requiresNetworkConnectivity = false`. Keychain storage utilizes `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`.
-3. **Test Authenticity Verification**: Inspected all 40 unit and integration test cases across 10 test files in `Tests/RosettaHealthCoreTests/`. Every test asserts against dynamically computed outputs from real XML transcoding and physiological validation engines rather than tautological assertions or self-certifying mocks.
+3. **Test Authenticity Verification**: Inspected all 40 unit and integration test cases across 10 test files in `Tests/RosettaEdgeCoreTests/`. Every test asserts against dynamically computed outputs from real XML transcoding and physiological validation engines rather than tautological assertions or self-certifying mocks.
 
 ---
 
 ## 2. Scope & Methodology
 
 ### 2.1 Codebase Inventory
-- **Core Engine (`Sources/RosettaHealthCore/`)**:
+- **Core Engine (`Sources/RosettaEdgeCore/`)**:
   - `RosettaTranscoder.swift` (324 lines)
   - `HealthKitBridge.swift` (307 lines)
   - `ClinicalDecisionSupport.swift` (116 lines)
@@ -29,10 +29,10 @@ An exhaustive forensic integrity audit was conducted across all Swift source fil
   - `VisionOCRExtractor.swift` (154 lines)
   - `ParsingAttributes.swift` (23 lines)
   - `RosettaError.swift` (91 lines)
-- **Application & Vault (`Sources/RosettaHealthApp/`)**:
+- **Application & Vault (`Sources/RosettaEdgeApp/`)**:
   - `AppViewModel.swift` (466 lines)
   - `MainAppView.swift` (126 lines)
-  - `RosettaHealthApp.swift` (17 lines)
+  - `RosettaEdgeApp.swift` (17 lines)
   - `BackgroundTaskManager.swift` (84 lines)
   - `BiometricAuthManager.swift` (55 lines)
   - `KeychainManager.swift` (48 lines)
@@ -56,7 +56,7 @@ An exhaustive forensic integrity audit was conducted across all Swift source fil
   - `RosettaWidget/RosettaWidget.swift` (96 lines)
   - `RosettaWidget/RosettaParsingLiveActivity.swift` (59 lines)
   - `RosettaWatch/WatchDashboardView.swift` (68 lines)
-- **Test Suite (`Tests/RosettaHealthCoreTests/`)**:
+- **Test Suite (`Tests/RosettaEdgeCoreTests/`)**:
   - `Tier1FeatureCoverageTests.swift` (215 lines, 5 tests)
   - `Tier2BoundaryCornerTests.swift` (325 lines, 11 tests)
   - `Tier3CrossFeaturePipelineTests.swift` (266 lines, 6 tests)
@@ -112,7 +112,7 @@ An exhaustive forensic integrity audit was conducted across all Swift source fil
 ### 3.5 Application Layer & UI Reactivity (`AppViewModel.swift`, `ContentView.swift`, etc.)
 - **Reactivity**: `AppViewModel` conforms to `@Observable` (iOS 17+) and `@MainActor`.
 - **Patient Firewall Routing**: Dispatches documents to Apple HealthKit only when `isOwner` matches the configured fiscal code (or anonymous fuzzy name match); non-owner documents are diverted to the SwiftData Family Vault.
-- **App Group & Watch IPC Synchronization**: Coordinates shared keys (`latestMetricValue`, `latestMetricName`, `latestMetricUnit`, `widget_metricValue`) across the app group suite (`group.dev.alexmaina.rosettahealth`).
+- **App Group & Watch IPC Synchronization**: Coordinates shared keys (`latestMetricValue`, `latestMetricName`, `latestMetricUnit`, `widget_metricValue`) across the app group suite (`group.dev.alexmaina.rosettaedge`).
 - **Verdict**: **AUTHENTIC** — Robust state management and reactive SwiftUI integration.
 
 ---
@@ -137,7 +137,7 @@ An exhaustive forensic integrity audit was conducted across all Swift source fil
 
 ## 5. Test Authenticity Audit Findings
 
-Every test file in `Tests/RosettaHealthCoreTests/` was inspected for assertion authenticity:
+Every test file in `Tests/RosettaEdgeCoreTests/` was inspected for assertion authenticity:
 
 | # | Test File | Test Method | Genuine Logic Asserted | Fake/Dummy Detected? | Status |
 |---|---|---|---|---|---|
@@ -193,7 +193,7 @@ Every test file in `Tests/RosettaHealthCoreTests/` was inspected for assertion a
 ================================================================================
 FINAL FORENSIC VERDICT: CLEAN ✅
 ================================================================================
-The RosettaHealth codebase has passed all static analysis, anti-cheat,
+The RosettaEdge codebase has passed all static analysis, anti-cheat,
 zero-cloud, GDPR Article 9 privacy, and test authenticity verification checks.
 All 21 cataloged architectural defects (D1-D21) have genuine, high-fidelity
 implementations with zero cheating, zero facades, and 100% on-device isolation.

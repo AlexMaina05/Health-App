@@ -7,12 +7,12 @@ Original Request: e:/Code/Health-App/ORIGINAL_REQUEST.md (MUST read first)
 Project Scope: e:/Code/Health-App/PROJECT.md
 
 Exclusive Write Ownership:
-- `Tests/**` (e.g. `Tests/RosettaHealthCoreTests/RosettaIntegrationTests.swift`, `Tests/RosettaHealthCoreTests/E2EDataFlowTests.swift`, etc.)
+- `Tests/**` (e.g. `Tests/RosettaEdgeCoreTests/RosettaIntegrationTests.swift`, `Tests/RosettaEdgeCoreTests/E2EDataFlowTests.swift`, etc.)
 - `TEST_INFRA.md` at workspace root
 - `TEST_READY.md` at workspace root
 
 Detailed Tasks:
-1. Design and write comprehensive XCTest integration tests in `Tests/` (e.g. `Tests/RosettaHealthCoreTests/E2EIntegrationTests.swift` or `Tests/RosettaHealthCoreTests/RosettaE2ETests.swift`):
+1. Design and write comprehensive XCTest integration tests in `Tests/` (e.g. `Tests/RosettaEdgeCoreTests/E2EIntegrationTests.swift` or `Tests/RosettaEdgeCoreTests/RosettaE2ETests.swift`):
    - Tier 1 (Feature Coverage):
      - Transcode CDA XML to FHIR Bundle with full fidelity.
      - Physiological validation gate filtering (glucose, blood pressure, cholesterol).

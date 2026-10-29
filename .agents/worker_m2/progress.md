@@ -7,7 +7,7 @@ Completed all Milestone 2 tasks (D10 through D19). Verified all files, created h
 
 ## Progress Steps
 - [x] Initialized DISPATCH.md, BRIEFING.md, and progress.md
-- [x] Investigate all target files in `Sources/RosettaHealthApp/`, `ShareExtension/`, `RosettaWidget/`, `RosettaWatch/`
+- [x] Investigate all target files in `Sources/RosettaEdgeApp/`, `ShareExtension/`, `RosettaWidget/`, `RosettaWatch/`
 - [x] Task 1: Normalize Availability Annotations (iOS 26.0 -> iOS 17.0) across all 14 files (D10)
 - [x] Task 2: Fix `LiquidGlass.swift` (D17)
 - [x] Task 3: Fix `AppViewModel.swift` & `BiometricAuthManager.swift` reactivity (@Observable), parameter mismatches, processPDF line 237, premature file deletion, and watchOS UserDefaults keys (D11, D12, D18, D19)

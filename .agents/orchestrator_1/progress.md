@@ -20,5 +20,5 @@ Current iteration: 1 / 32 (Completed with full PASS)
 - **Auditor**: CLEAN (0 integrity violations, genuine domain implementations)
 - **Reviewers (2)**: APPROVE
 - **Challengers (2)**: APPROVE
-- **Total Tests**: 40 tests across 10 test files in `Tests/RosettaHealthCoreTests/`
+- **Total Tests**: 40 tests across 10 test files in `Tests/RosettaEdgeCoreTests/`
 - **Zero-Cloud Audit**: 100% compliant (0 network calls, SwiftData `cloudKitDatabase: .none`, PII masked)

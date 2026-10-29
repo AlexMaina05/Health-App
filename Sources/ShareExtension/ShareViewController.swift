@@ -2,7 +2,7 @@ import UIKit
 import SwiftUI
 import Observation
 import UniformTypeIdentifiers
-import RosettaHealthCore
+import RosettaEdgeCore
 
 // MARK: - SwiftUI Custom UI for Share Extension
 @available(iOS 17.0, *)
@@ -116,7 +116,7 @@ final class ShareViewController: UIViewController {
                     defer { try? FileManager.default.removeItem(at: safeURL) }
                     
                     do {
-                        guard let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.dev.alexmaina.rosettahealth") else {
+                        guard let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.dev.alexmaina.rosettaedge") else {
                             throw RosettaError.appGroupContainerUnavailable
                         }
                         
@@ -155,7 +155,7 @@ final class ShareViewController: UIViewController {
                         await MainActor.run {
                             self.viewState.statusText = "Errore Sconosciuto"
                             self.viewState.isError = true
-                            let genericError = NSError(domain: "RosettaHealth", code: -1, userInfo: [NSLocalizedDescriptionKey: error.localizedDescription])
+                            let genericError = NSError(domain: "RosettaEdge", code: -1, userInfo: [NSLocalizedDescriptionKey: error.localizedDescription])
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                                 self.extensionContext?.cancelRequest(withError: genericError)
                             }

@@ -1,7 +1,7 @@
 # BRIEFING — 2026-09-01T23:23:20+02:00
 
 ## Mission
-Perform exhaustive forensic integrity checks across RosettaHealth codebase (Sources/ and Tests/) to ensure zero cheating, genuine domain logic, zero network/cloud calls, and authentic tests.
+Perform exhaustive forensic integrity checks across RosettaEdge codebase (Sources/ and Tests/) to ensure zero cheating, genuine domain logic, zero network/cloud calls, and authentic tests.
 
 ## 🔒 My Identity
 - Archetype: forensic_auditor
@@ -22,7 +22,7 @@ Perform exhaustive forensic integrity checks across RosettaHealth codebase (Sour
 - Updated: 2026-09-01T23:23:20+02:00
 
 ## Audit Scope
-- **Work product**: RosettaHealth Sources/ and Tests/
+- **Work product**: RosettaEdge Sources/ and Tests/
 - **Profile loaded**: General Project (Forensic Integrity)
 - **Audit type**: forensic integrity check
 

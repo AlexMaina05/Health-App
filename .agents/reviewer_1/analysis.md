@@ -1,16 +1,16 @@
-# RosettaHealth iOS Codebase Review & Adversarial Verification Analysis
+# RosettaEdge iOS Codebase Review & Adversarial Verification Analysis
 
 **Reviewer**: Reviewer 1 (Roles: reviewer, critic)  
 **Date**: 2026-09-01T23:23:00+02:00  
 **Target Platform**: Swift 5.10 / iOS 17.0+ / watchOS 10.0+  
-**Target Modules**: `Sources/RosettaHealthCore`, `Sources/RosettaHealthApp`, `Sources/ShareExtension`, `Sources/RosettaWidget`, `Sources/RosettaWatch`, `Tests/RosettaHealthCoreTests`  
+**Target Modules**: `Sources/RosettaEdgeCore`, `Sources/RosettaEdgeApp`, `Sources/ShareExtension`, `Sources/RosettaWidget`, `Sources/RosettaWatch`, `Tests/RosettaEdgeCoreTests`  
 **Verdict**: **APPROVE** ✅
 
 ---
 
 ## 1. Executive Summary
 
-A comprehensive, adversarial code review and structural verification was conducted on the RosettaHealth iOS codebase. All 33 Swift source files and all 10 test suite files (comprising 40 unit and integration tests across 4 tiers + E2E scenarios) were systematically audited.
+A comprehensive, adversarial code review and structural verification was conducted on the RosettaEdge iOS codebase. All 33 Swift source files and all 10 test suite files (comprising 40 unit and integration tests across 4 tiers + E2E scenarios) were systematically audited.
 
 Key Findings:
 1. **Defects D1 through D21**: 100% eliminated with robust, production-grade implementations.
@@ -97,7 +97,7 @@ Key Findings:
 
 ## 4. Test Suite Inventory & Multi-Tier Verification
 
-The test target `RosettaHealthCoreTests` consists of 10 test files with **40 test cases**:
+The test target `RosettaEdgeCoreTests` consists of 10 test files with **40 test cases**:
 
 1. **`Tier1FeatureCoverageTests.swift` (5 tests)**: Full-fidelity CDA to FHIR transcoding, physiological gate acceptance/rejection, owner fiscal code matching, and anonymous name fuzzy matching.
 2. **`Tier2BoundaryCornerTests.swift` (11 tests)**: Malformed XML errors, missing root header errors, empty data handling, Billion Laughs XXE defense, exact threshold boundaries (Glucose, BP, HR, Temp), European comma decimals, inequality strings (`"< 0.05"`), composite BP (`"125/82"`), and multi-section narratives.
@@ -116,4 +116,4 @@ The test target `RosettaHealthCoreTests` consists of 10 test files with **40 tes
 
 **Verdict**: **APPROVE** ✅
 
-The refactored RosettaHealth codebase satisfies all functional, architectural, concurrency, security, and privacy requirements. All 21 identified defects (D1 through D21) have been resolved with zero regressions or shortcuts.
+The refactored RosettaEdge codebase satisfies all functional, architectural, concurrency, security, and privacy requirements. All 21 identified defects (D1 through D21) have been resolved with zero regressions or shortcuts.
