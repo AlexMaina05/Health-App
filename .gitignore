@@ -73,3 +73,7 @@ android/
 paper/
 paper/**
 
+# AI Agent workflows & internal deliberation
+.agents/
+
+
