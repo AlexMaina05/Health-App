@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software or cite the architectural monograph, please cite it as below."
+authors:
+  - family-names: "Mainardi"
+    given-names: "Alessandro"
+    orcid: "https://orcid.org/0009-0003-7003-7247"
+    affiliation: "Alma Mater Studiorum - Università di Bologna (UniBo), Dipartimento di Informatica - Scienza e Ingegneria (DISI)"
+title: "RosettaEdge: Mobile Edge Zero-Cloud Architecture for FSE 2.0 & Apple HealthKit Deterministic Semantic Interoperability"
+version: 1.0.0
+doi: 10.5281/zenodo.23781231
+date-released: 2026-10-28
+url: "https://alexmaina.dev/RosettaEdge/"
+repository-code: "https://github.com/AlexMaina05/RosettaEdge"
+keywords:
+  - "apple-healthkit"
+  - "fse-2"
+  - "hl7-cda"
+  - "zero-cloud"
+  - "privacy-by-design"
+  - "ios17"
+  - "swift"
+  - "sqlcipher"
+  - "electronic-health-records"
+  - "unibo"
