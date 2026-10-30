@@ -1,10 +1,10 @@
-- [**← Home di RosettaEdge**](https://alexmaina.dev/Health-App/)
+- [**← Home di RosettaEdge**](https://alexmaina.dev/RosettaEdge/)
 - [**← Portale alexmaina.dev**](https://alexmaina.dev/)
 
 - **Progetto RosettaEdge**
   - [Panoramica Generale](README.md)
-  - [📖 Monografia Online & Viewer](https://alexmaina.dev/Health-App/monografia/)
-  - [📄 Monografia Tecnica (PDF)](https://alexmaina.dev/Health-App/rosettaedge-monografia-tecnica.pdf ':ignore')
+  - [📖 Monografia Online & Viewer](https://alexmaina.dev/RosettaEdge/monografia/)
+  - [📄 Monografia Tecnica (PDF)](https://alexmaina.dev/RosettaEdge/rosettaedge-monografia-tecnica.pdf ':ignore')
   - [Guida Utente](GUIDA_UTENTE.md)
 
 - **Ingegneria del Software**

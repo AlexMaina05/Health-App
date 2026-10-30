@@ -8,10 +8,10 @@
 - Academic Affiliation: Alma Mater Studiorum - Università di Bologna, Dipartimento di Informatica - Scienza e Ingegneria (DISI)
 - Monograph DOI: 10.5281/zenodo.23781231
 - Monograph Length: 44 pages (ISO A4, formal LaTeX specification)
-- Monograph PDF: https://alexmaina.dev/Health-App/rosettaedge-monografia-tecnica.pdf
-- Interactive Documentation Portal: https://alexmaina.dev/Health-App/doc/
-- Production Showcase: https://alexmaina.dev/Health-App/
-- Source Code Repository: https://github.com/AlexMaina05/Health-App
+- Monograph PDF: https://alexmaina.dev/RosettaEdge/rosettaedge-monografia-tecnica.pdf
+- Interactive Documentation Portal: https://alexmaina.dev/RosettaEdge/doc/
+- Production Showcase: https://alexmaina.dev/RosettaEdge/
+- Source Code Repository: https://github.com/AlexMaina05/RosettaEdge
 
 ## Core Architectural Innovations
 

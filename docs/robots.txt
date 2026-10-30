@@ -23,4 +23,4 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://alexmaina.dev/Health-App/sitemap.xml
+Sitemap: https://alexmaina.dev/RosettaEdge/sitemap.xml
